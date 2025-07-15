@@ -58,7 +58,10 @@ quick:
 quickc:
 	nice povray ${SCENE}.ini -V +W380 +H252 +Q9 -A +d +c ${POVOPT}
 
-final: 720p
+final: tiktok
+
+tiktok:
+	nice povray ${SCENE}.ini -V +W1080 +H1920 +Q11 +AM2 +A0.1 +R3 ${POVOPT}
 
 720p:
 	nice povray ${SCENE}.ini -V +W1280 +H720 +Q11 +AM2 +A0.1 +R3 ${POVOPT}
