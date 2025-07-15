@@ -926,23 +926,28 @@ void Viewer::openPovFile() {
 
   *ini << "[240p]" << "\n"
        << "Width=426" << "\n"
-       << "Height=240" << "\n"
-       << "Antialias=Off" << "\n";
+       << "Height=240" << "\n";
   *ini << "[720p]" << "\n"
        << "Width=1280" << "\n"
-       << "Height=720" << "\n"
-       << "Antialias=On" << "\n"
-       << "Display=Off" << "\n";
+       << "Height=720" << "\n";
   *ini << "[1080p]" << "\n"
        << "Width=1920" << "\n"
-       << "Height=1080" << "\n"
-       << "Antialias=On" << "\n"
-       << "Display=Off" << "\n";
-  *ini << "[2160p]" << "\n"
+       << "Height=1080" << "\n";
+  *ini << "[TikTok]" << "\n"
+       << "Width=1080" << "\n"
+       << "Height=1920" << "\n";
+  *ini << "[4K]" << "\n"
        << "Width=3840" << "\n"
-       << "Height=2160" << "\n"
-       << "Antialias=On" << "\n"
-       << "Display=Off" << "\n";
+       << "Height=2160" << "\n";
+  *ini << "[8K]" << "\n"
+       << "Width=7680" << "\n"
+       << "Height=4320" << "\n";
+  *ini << "[DIN-A4-300dpi]" << "\n"
+       << "Width=3508" << "\n"
+       << "Height=2480" << "\n";
+  *ini << "[DIN-A4-600dpi]" << "\n"
+       << "Width=7016" << "\n"
+       << "Height=4961" << "\n";
 
   if (_fileINI != NULL) {
     _fileINI->close();
@@ -1641,9 +1646,17 @@ void Viewer::onQuickRender(QString povargs) {
     renderWidth = geometry().width();
     renderHeight = geometry().height();
   } else if (renderResolution.contains("x")) {
-    Q_ASSERT(renderResolution.split("x").length() == 2);
-    renderWidth = renderResolution.split("x")[0].toInt();
-    renderHeight = renderResolution.split("x")[1].toInt();
+    QRegExp rx("(\\d+)");
+    QString str = renderResolution;
+    QStringList list;
+    int pos = 0;
+
+    while ((pos = rx.indexIn(str, pos)) != -1) {
+      list << rx.cap(1);
+      pos += rx.matchedLength();
+    }
+    renderWidth = list.at(0).toInt();
+    renderHeight = list.at(1).toInt();
   } else {
     renderWidth = geometry().width();
     renderHeight = geometry().height();

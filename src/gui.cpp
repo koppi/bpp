@@ -29,12 +29,14 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent) {
 
   QStringList settings;
   settings << "view size";
-  settings << "  426x240";
-  settings << "  640x360";
-  settings << " 1280x720";
-  settings << "1920x1080";
-  settings << "2560x1440";
-  settings << "3840x2160";
+  settings << "  426x240 (240p)";
+  settings << " 1280x720 (720p)";
+  settings << "1920x1080 (1080p)";
+  settings << "1080x1920 TikTok (9:16)";
+  settings << "3840x2160 YouTube 4K";
+  settings << "7680x4320 YouTube 8K";
+  settings << "3508x2480 DIN A4 300dpi (1∶√2)";
+  settings << "7016x4961 DIN A4 600dpi (1∶√2)";
 
   renderSettings->addItems(settings);
   renderSettings->setEditable(true);
