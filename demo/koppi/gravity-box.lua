@@ -4,21 +4,12 @@
 
 -- Notice: POV-Ray export requires the user_defined cam feature
 
-color = require "module/color"
-metal = require "module/metal"
+local color = require "module/color"
+local metal = require "module/metal"
 
--- print(v.glAmbient) --btVector3(1,0,0))
-
-v.glAmbient = 0.3
-v.glDiffuse = 0.1
-v.glLight0 = btVector4(10,10,10,10)
-v.glLight1 = btVector4(10,10,10,10)
-v.glSpecular = 0.3
-v.glModelAmbient = 0.6
-
-v.timeStep      = 1/10
-v.fixedTimeStep = v.timeStep / 2
-v.maxSubSteps   = 25
+v.timeStep      = 1/25 -- fps
+-- v.fixedTimeStep = v.timeStep / 2
+-- v.maxSubSteps   = 25
 
 mod_gravity = 1  -- modulate gravity
 pov_export  = 0  -- povray export on / off
