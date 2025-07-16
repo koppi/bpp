@@ -8,18 +8,18 @@ v.timeStep      = 1/5
 v.maxSubSteps   = 100
 v.fixedTimeStep = 1/50
 
-plane = Plane(0,1,0,0,200)
+local plane = Plane(0,1,0,0,200)
 plane.col = "#111111"
 v:add(plane)
 
-b=Mesh("demo/mesh/box.3ds",0)
+local b = Mesh("demo/mesh/box.3ds",0)
 b.pos=btVector3(0,20.15,0)
 b.col="#ff0000"
 v:add(b)
 
 v:preSim(function(N)
   if (N%5==0 and N < 500) then
-    c=Cylinder(7,1.1,1)
+    local c = Cylinder(7,1.1,1)
     q = btQuaternion(1,0,0,1)
     o = btVector3(math.random(-2,2),150,math.random(-2,2))
     c.trans=btTransform(q,o)  
