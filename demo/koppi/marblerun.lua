@@ -4,16 +4,16 @@
 
 -- Please disable deactivation state
 
-color = require "module/color"
-marble = require "module/marble"
-path_extrude = require "module/path_extrude"
+local color = require "module/color"
+local marble = require "module/marble"
+local path_extrude = require "module/path_extrude"
 
 v.timeStep      = 1/6
 v.maxSubSteps   = 200
 v.fixedTimeStep = 1/40
 
-speed = 0.175
-s1 = 9e99
+local speed = 0.175
+local s1 = 9e99
 
 -- POV-Ray scene settings
 v.pre_sdl = [==[
@@ -65,7 +65,7 @@ object {
 
 ]==]
 
-p = Plane(0,1,0,0,100)
+p = Plane(0,1,0,0,25)
 p.pos = btVector3(0,-0.5,0)
 p.col = "#111111"
 p.sdl = [[
@@ -118,7 +118,7 @@ wheel(]]..tostring(rad)..[[);]], 20);
   return w
 end
 
-function tower(width, height, depth, px, py, pz)
+local function tower(width, height, depth, px, py, pz)
   t = OpenSCAD([[
 module tower(width, height, depth) {
   $fn = 126;
@@ -135,11 +135,11 @@ module tower(width, height, depth) {
 }
 tower(]]..tostring(width)..[[,]]..tostring(height)..[[,]]..tostring(depth)..[[);]], 0);
   t.pos = btVector3(px, py, pz)
-  t.col = color.red
+  t.col = color.pov_gray25
   return t
 end
 
-function box(c, width, height, depth, px, py, pz)
+local function box(c, width, height, depth, px, py, pz)
   t = OpenSCAD([[
 module box(c, width, height, depth) {
   $fn = 70;
@@ -164,7 +164,7 @@ box(]]..tostring(c)..[[,]]..tostring(width)..[[,]]..tostring(height)..[[,]]..tos
   return t
 end
 
-b = box(1, 3,2,10, mwx+1,mwy+3.9,mwz+5.55)
+local b = box(1, 3,2,10, mwx+1,mwy+3.9,mwz+5.55)
 b.sdl = [[
   pigment { color ReferenceRGB(<0.9,0.8,0.3>) }
   finish {
@@ -175,27 +175,19 @@ b.sdl = [[
 ]]
 v:add(b)
 
-w = wheel(9, mwx+0,mwy+10,mwz+0)
+local w = wheel(9, mwx+0,mwy+10,mwz+0)
 v:add(w)
 
 t = tower(15,10,2, mwx+0,mwy+5,mwz-2)
-t.sdl = [[
-  pigment { color ReferenceRGB(Red) * contrast }
-  finish {
-    diffuse .6
-    phong .75
-    phong_size 25
-  }
-]]
 v:add(t)
 
-pivot0 = btVector3(0,0,-2)
-axis0  = btVector3(0,0,1)
+local pivot0 = btVector3(0,0,-2)
+local axis0  = btVector3(0,0,1)
 
-pivot1 = btVector3(0,5,0)
-axis1  = btVector3(0,0,1)
+local pivot1 = btVector3(0,5,0)
+local axis1  = btVector3(0,0,1)
 
-con0 = btHingeConstraint(
+local con0 = btHingeConstraint(
   w.body, t.body,
   pivot0, pivot1, axis0, axis1)
 
@@ -203,7 +195,7 @@ con0:enableAngularMotor(true, speed, s1)
 
 v:addConstraint(con0)
 
-path = OpenSCAD(path_extrude.sdl .. [[
+local path = OpenSCAD(path_extrude.sdl .. [[
 
 o = 1.45;
 i = 1.35;
@@ -220,15 +212,7 @@ rotate([270,-90,0])
 path_extrude(points=pts, path=p, merge=false);
 
 ]], 0)
---path.col = "#00007f";
-path.sdl = [[
-  pigment { color ReferenceRGB(White) * contrast }
-  finish {
-    diffuse .6
-    phong .75
-    phong_size 25
-  }
-]]
+path.col = color.pov_gray25;
 path.friction = 1
 path.col = color.gray
 path.pos = btVector3(mwx,mwy,mwz)

@@ -41,7 +41,7 @@ v.pre_sdl = [[
 
 v.gravity = btVector3(0,-9.81,0)
 
-plane = Plane(0,1,0,0,200)
+local plane = Plane(0,1,0,0,200)
 plane.pos = btVector3(0,1,0)
 plane.col = "#222"
 plane.friction = 10
@@ -56,7 +56,7 @@ v:preStop(function(N)
 end)
 
 function cubex(px, py, pz)
-  c = Cube(2,1,1,.0001)
+  local c = Cube(2,1,1,.0001)
   c.pos = btVector3(px,py-0.05,pz)
   c.col = "#7f0000"
   c.sdl = [[
@@ -66,7 +66,7 @@ function cubex(px, py, pz)
 end
 
 function cubez(px, py, pz)
-  c = Cube(1,1,2,.001)
+  local c = Cube(1,1,2,.001)
   c.pos = btVector3(px,py-0.05,pz)
   c.col = "#ff0000"
   c.sdl = [[
