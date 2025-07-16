@@ -1679,28 +1679,23 @@ void Viewer::onQuickRender(QString povargs) {
     sceneName = "no_name";
   }
 
-  QString povray;
-  QString opts;
+  QString povrayExeDefault;
+  QString includesDefault;
+
+  QString pwd = qgetenv("PWD");
 
 #ifdef Q_OS_WIN
-  povray = _settings
-               ->value("povray/executable",
-                       "C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe")
-               .toString();
-  opts =
-      _settings
-          ->value("povray/preview", "+LC:\\msys64\\home\\koppi\\bpp\\includes "
-                                    "+L..\\..\\includes -c +d -A +p +Q11 +GA")
-          .toString();
+  povrayExeDefault = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
+  includesDefault  = QString("+L%1\\\\bpp\\includes").arg(pwd);
 #else
-  povray = _settings->value("povray/executable", "/usr/bin/povray").toString();
-  opts =
-      _settings
-          ->value(
-              "povray/preview",
-              "+L/usr/share/bpp/includes +L../../includes -c +d -A +p +Q11 +GA")
-          .toString();
+  povrayExeDefault = QString("/usr/bin/povray");
+  includesDefault  = QString("+L%1/bpp/includes").arg(pwd);
 #endif
+
+  QString previewDefault = QString("%1 -c +d -A +p +Q11 +GA").arg(includesDefault);
+
+  QString povray = _settings->value("povray/executable", povrayExeDefault).toString();
+  QString opts =   _settings->value("povray/preview", previewDefault).toString();
 
   args << opts.split(" ");
 

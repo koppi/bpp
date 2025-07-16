@@ -69,30 +69,31 @@ void Prefs::setupPages() {
   QString cache =
       QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 
-  QString povopt;
+  QString povrayExeDefault;
+  QString includesDefault;
+
+  QString pwd = qgetenv("PWD");
 
 #ifdef Q_OS_WIN
-  povopt = "+L" + cache +
-           " +L/usr/share/bpp/includes +L../../includes -c +d -A +p +Q11 +GA";
+  povrayExeDefault = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
+  includesDefault  = QString("+L%1\\bpp\\includes").arg(pwd);
 #else
-  povopt = "+L" + cache +
-           " +LC:\\msys64\\home\\koppi\\bpp\\includes +L..\\..\\includes -c +d "
-           "-A +p +Q11 +GA";
+  povrayExeDefault = QString("/usr/bin/povray");
+  includesDefault  = QString("+L%1/bpp/includes").arg(pwd);
 #endif
 
-  this->defaultmap["povray/preview"] =
-      _settings->value("povray/preview", povopt).toString();
+  QString previewDefault = QString("%1 -c +d -A +p +Q11 +GA").arg(includesDefault);
 
-#ifdef Q_OS_WIN
+  QString povray = _settings->value("povray/executable", povrayExeDefault).toString();
+  QString opts =   _settings->value("povray/preview", previewDefault).toString();
+
   this->defaultmap["povray/executable"] =
       _settings
-          ->value("povray/executable",
-                  "C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe")
+          ->value("povray/executable", povray)
           .toString();
-#else
-  this->defaultmap["povray/executable"] =
-      _settings->value("povray/executable", "/usr/bin/povray").toString();
-#endif
+
+  this->defaultmap["povray/preview"] =
+      _settings->value("povray/preview", opts).toString();
 
 #ifdef Q_OS_WIN
   this->defaultmap["openscad/executable"] =
