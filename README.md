@@ -33,23 +33,6 @@ Select your operating system:
  * [Build on Windows](https://github.com/bullet-physics-playground/bpp/wiki/Build-on-Windows)
  * [Build on Mac OS-X](https://github.com/bullet-physics-playground/bpp/wiki/Build-on-Mac-OS-X)
 
-### Running
-
-Once the build is complete, you can run the application from the `release`
-directory.
-
-*   **With GUI:**
-
-    ```bash
-bpp
-    ```
-
-*   **Without GUI (Command-Line):**
-
-    ```bash
-echo "render = 1" | bpp -f demo/basic/00-hello-pov.lua -n 400 -i
-    ```
-
 ## Usage
 
 ### GUI
