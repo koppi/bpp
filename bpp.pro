@@ -16,9 +16,6 @@ win32 {
   CONFIG += build_with_msys2
   include(msys2.pri)
 
-#  CONFIG += build_with_mxe
-#  include(mxe.pri)
-
   RESOURCES   += res.qrc humanity.qrc
 
   RC_FILE      = bpp.rc
@@ -63,24 +60,24 @@ win32 {
 QMAKE_CXXFLAGS_RELEASE += -O3
 QMAKE_CXXFLAGS_DEBUG   += -O0
 
-CONFIG(debug, debug|release){
-  DESTDIR = ./debug
-  OBJECTS_DIR = debug/.obj
-  MOC_DIR = debug/.moc
-  RCC_DIR = debug/.rcc
-  UI_DIR = debug/.ui
-}
+#CONFIG(debug, debug|release){
+#  DESTDIR = ./debug
+#  OBJECTS_DIR = debug/.obj
+#  MOC_DIR = debug/.moc
+#  RCC_DIR = debug/.rcc
+#  UI_DIR = debug/.ui
+#}
 
-CONFIG(release, debug|release){
-  DESTDIR = ./release
-  OBJECTS_DIR = release/.obj
-  MOC_DIR = release/.moc
-  RCC_DIR = release/.rcc
-  UI_DIR = release/.ui
-}
+#CONFIG(release, debug|release){
+#  DESTDIR = ./release
+#  OBJECTS_DIR = release/.obj
+#  MOC_DIR = release/.moc
+#  RCC_DIR = release/.rcc
+#  UI_DIR = release/.ui
+#}
 
-INCLUDEPATH += /usr/include/bullet
-INCLUDEPATH += /usr/local/include/bullet
+#INCLUDEPATH += /usr/include/bullet
+#INCLUDEPATH += /usr/local/include/bullet
 
 unix:link_pkgconfig {
 #  message("Using pkg-config "$$system(pkg-config --version)".")
