@@ -816,15 +816,15 @@ void Viewer::clear() {
     _cam->setUpVector(btVector3(0, 1, 0), true);
   }
 
-  _light0 = btVector4(200.0, 200.0, 200.0, 0.4);
-  _light1 = btVector4(-100.0, 1.0, -100.0, 0.0);
+  _light0 = btVector4(100.0, 200.0, 100.0, 0.4);
+  _light1 = btVector4(-200.0, 100.0, -200.0, 0.2);
 
-  _gl_ambient = btVector3(0.3f, 0.3f, 0.3f);
-  _gl_diffuse = btVector4(0.8f, 0.8f, 0.8f, 1.0f);
-  _gl_shininess = btScalar(50.0);
-  _gl_specular_col = btVector4(0.85f, 0.85f, 0.85f, 1.0f);
-  _gl_specular = btVector4(0.0f, 0.0f, 0.0f, 0.0f);
-  _gl_model_ambient = btVector4(0.0f, 0.0f, 0.0f, 0.0f);
+  _gl_ambient = btVector3(0.2f, 0.2f, 0.2f);
+  _gl_diffuse = btVector4(0.7f, 0.7f, 0.7f, 1.0f);
+  _gl_shininess = btScalar(100.0);
+  _gl_specular_col = btVector4(1.0f, 1.0f, 1.0f, 1.0f);
+  _gl_specular = btVector4(1.0f, 1.0f, 1.0f, 1.0f);
+  _gl_model_ambient = btVector4(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
 void Viewer::resetCamView() {
@@ -1084,16 +1084,16 @@ void Viewer::init() {
     showEntireScene();
   }
 
-  _light0 = btVector4(200.0, 200.0, 200.0, 0.2);
-  _light1 = btVector4(400.0, 400.0, 200.0, 0.1);
+  _light0 = btVector4(100.0, 200.0, 100.0, 0.4);
+  _light1 = btVector4(-200.0, 100.0, -200.0, 0.2);
 
-  _gl_ambient = btVector3(.1f, .1f, 1.0f);
-  _gl_diffuse = btVector4(.9f, .9f, .9f, 1.0f);
-  _gl_specular = btVector4(.85f, .85f, .85f, 1.0f);
-  _gl_shininess = btScalar(50.0);
-  _gl_specular_col = btVector4(0.0f, 0.0f, 0.0f, 0.0f);
+  _gl_ambient = btVector3(0.2f, 0.2f, 0.2f);
+  _gl_diffuse = btVector4(0.7f, 0.7f, 0.7f, 1.0f);
+  _gl_specular = btVector4(1.0f, 1.0f, 1.0f, 1.0f);
+  _gl_shininess = btScalar(100.0);
+  _gl_specular_col = btVector4(1.0f, 1.0f, 1.0f, 1.0f);
 
-  _gl_model_ambient = btVector4(.4f, .4f, .4f, 1.0f);
+  _gl_model_ambient = btVector4(0.2f, 0.2f, 0.2f, 1.0f);
 
   _initialCameraPosition = camera()->position();
   _initialCameraOrientation = camera()->orientation();
