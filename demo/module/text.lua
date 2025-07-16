@@ -1,7 +1,7 @@
 local M = {}
 
 function M.new(params)
-    params    = params or {}
+   params    = params or {}
    options   = {
       str    = "ABC",
       font   = "Arial",
@@ -21,25 +21,25 @@ function M.new(params)
 
    for k,v in pairs(params) do options[k] = v end
 
-   str  = options.str
-   font = options.font
-   height = options.height
-   size = options.size
-   mass = options.mass
-   col  = options.col
-   x    = options.x
-   y    = options.y
-   z    = options.z
-   post_sdl = options.post_sdl
+   local str  = options.str
+   local font = options.font
+   local height = options.height
+   local size = options.size
+   local mass = options.mass
+   local col  = options.col
+   local x    = options.x
+   local y    = options.y
+   local z    = options.z
+   local post_sdl = options.post_sdl
 
-  t = OpenSCAD([[
+  local t = OpenSCAD([[
   text = "]]..str..[[";
   font = "]]..font..[[";
   linear_extrude(height = ]]..height..[[) {
     text(
       text = text, font = font,
       size = ]]..size..[[, halign = "center");
-  }]],0)
+  }]], mass)
   t.pos = btVector3(x,y,z)
   t.col = col
   t.post_sdl = post_sdl

@@ -3,12 +3,12 @@
 // for LightSys see - http://www.ignorancia.org/en/index.php?page=Lightsys
 #declare use_rad        = 0;  // 0/1/2
 #declare use_lightsys   = 1;  // 0/1
-#declare use_lightsys_setting = 0; // 0/1
+#declare use_lightsys_setting = 1; // 0/1
 #declare use_cie_whitepoint = 0; // 0/1/2/3
 #declare use_lightsys_light1 = 0;
 #declare use_area_light = 0;  // 0/1
 #declare use_background = 0;  // 0/1/2
-#declare use_clouds     = 3;  // 0/1/2/3
+#declare use_clouds     = 0;  // 0/1/2/3
 #declare use_plane      = 0;  // 0/1
 #declare use_plane_tex  = 0;  // 0/1/2
 #declare use_photons    = 0;  // 0/1/2

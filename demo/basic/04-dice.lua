@@ -1,36 +1,35 @@
 --
 -- Dice
 --
-color = require "module/color"
-dice  = require "module/dice"
-text  = require "module/text"
+
+local color = require "module/color"
+local dice  = require "module/dice"
+local text  = require "module/text"
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 20
 v.fixedTimeStep = 1/120
 
 v.pre_sdl = [==[
-
 #include "finish.inc"
 #include "textures.inc"
 #include "dice.inc"
-
 ]==]
 
 p = Plane(0,1,0,0,10)
-p.col = "#050"
+p.col = color.pov_tan
 p.friction = 100
-p.sdl = [[ texture { pigment { color White } }]]
+--p.sdl = [[ texture { pigment { color White } }]]
 v:add(p)
 
 v:add(text.new({ str = "Bullet Physics Playground",
-  size = 1, height = .1, y = 8, z = -2}))
+  size = 1, height = 1, y = 8, z = -2, mass = 0}))
 txt = text.new({ str = "version 0.1.6",
-  size = 1, height = .1, y = 6, z = -2})
+  size = 1, height = 1, y = 6, z = -2, mass = 0})
 v:add(txt)
 
 function run()
-  d = dice.new({ mass = 10, col = "#f00" })
+  d = dice.new({ mass = 10, col = color.random_google() })
   d.friction = 100
   d.pos=btVector3(0,0.45,0)
   v:add(d)
@@ -39,7 +38,7 @@ end
 run()run()
 
 v:postSim(function(N)
-  if (N % 1 == 0 and N < 10000) then
+  if (N % 1 == 0 and N < 1000) then
     run()
   end
 
@@ -67,7 +66,7 @@ v.cam:setUpVector(btVector3(0,1,0), false)
 v.cam.pos  = btVector3(0, 4, 550)
 v.cam.look = btVector3(0,4,0)
 
---v.cam.focal_blur      = 10
+v.cam.focal_blur      = 10
 v.cam.focal_aperture  = 5
 --- set blur point to txt shape position
 v.cam.focal_point = txt.pos
