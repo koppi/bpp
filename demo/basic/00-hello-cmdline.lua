@@ -12,7 +12,7 @@
 --   gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
 --
 
-debug_pov = 0 -- debug pov sdl generation
+debug_pov = 1 -- debug pov sdl generation
 
 --
 -- SCENE SETUP
@@ -87,7 +87,10 @@ v:postSim(function(N)
   if (debug_pov == 0) then
     print(N.." "..s.pos.x.." "..s.pos.y.." "..s.pos.z)
   end
-  if (debug_pov == 1) then print(v:toPOV()) end
+  if (debug_pov == 1) then
+    v:clearDebugText()
+    print(v:toPOV())
+  end
 end)
 
 -- EOF
