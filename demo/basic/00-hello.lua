@@ -652,6 +652,7 @@ v:onCommand(function(N, cmd)
   f(v)
 end)
 
+--[[
 v:onJoystick(function(N, joy)
   d = 1
   p = v.cam.pos
@@ -684,3 +685,6 @@ v:onJoystick(function(N, joy)
   end
   v.cam.look = l
 end)
+]]
+
+-- EOF
