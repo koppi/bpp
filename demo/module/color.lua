@@ -257,10 +257,10 @@ end
 
 function M.random_google()
    local scheme = {
-      "#ff0000",
-      "#34a853",
-      "#fbbb04",
-      "#4285f4",
+      "#4285F4",
+      "#DB4437",
+      "#F4B400",
+      "#0F9D58",
    }
 
    return scheme[ math.random( #scheme ) ]
