@@ -182,53 +182,8 @@ DEPENDPATH  += src/wrapper
 INCLUDEPATH += src
 DEPENDPATH  += src
 
-SOURCES += src/main.cpp \
-           src/viewer.cpp \
-           src/objects/object.cpp \
-           src/objects/objects.cpp \
-           src/objects/palette.cpp \
-           src/objects/cube.cpp \
-           src/objects/sphere.cpp \
-           src/objects/plane.cpp \
-           src/objects/cylinder.cpp \
-           src/objects/mesh.cpp \
-           src/objects/cam.cpp \
-           src/wrapper/lua_bullet.cpp \
-           src/gui.cpp \
-           src/cmd.cpp \
-           src/code.cpp \
-           src/high.cpp \
-           src/prefs.cpp \
-           src/objects/openscad.cpp \
-    src/joystick/joystickhandler.cpp \
-    src/joystick/joystickinfo.cpp \
-    src/joystick/joystickinterface.cpp \
-    src/joystick/joystickinterfacesdl.cpp
-
-HEADERS += src/viewer.h \
-           src/objects/object.h \
-           src/objects/palette.h \
-           src/objects/objects.h \
-           src/objects/cube.h \
-           src/objects/sphere.h \
-           src/objects/plane.h \
-           src/objects/cylinder.h \
-           src/objects/mesh.h \
-           src/objects/cam.h \
-           src/wrapper/lua_bullet.h \
-           src/wrapper/lua_converters.h \
-           src/gui.h \
-           src/code.h \
-           src/high.h \
-           src/cmd.h \
-           src/prefs.h \
-           src/objects/openscad.h \
-    src/joystick/joystickballvector.h \
-    src/joystick/joystickconstants.h \
-    src/joystick/joystickhandler.h \
-    src/joystick/joystickinfo.h \
-    src/joystick/joystickinterface.h \
-    src/joystick/joystickinterfacesdl.h
+SOURCES += $$files("src/*.cpp", true)
+HEADERS += $$files("src/*.h", true)
 
 FORMS   += src/gui.ui \
            src/prefs.ui
@@ -236,20 +191,12 @@ FORMS   += src/gui.ui \
 ICON    = icons/bpp.svg
 
 OTHER_FILES += README.md \
-               icons/bpp.svg \
-               icons/bpp.png \
-               icons/bpp.hqx \
-               icons/bpp.icns \
-               icons/bpp.ico \
                bpp.nsi \
                License \
-               debian/changelog \
-               demo/*
+               debian/changelog
 
-DIRS_DC = object_script.* .ui .moc .rcc .obj *.pro.user $$TARGET
-
-unix:QMAKE_DISTCLEAN  += -r $$DIRS_DC
-win32:QMAKE_DISTCLEAN += /s /f /q $$DIRS_DC && rd /s /q $$DIRS_DC
+OTHER_FILES += $$files("icons/*.*", true)
+OTHER_FILES += $$files("demo/*.*", true)
 
 win32:DISTFILES += \
     msys2.pri
