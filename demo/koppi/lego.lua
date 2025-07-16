@@ -10,7 +10,7 @@
 lego  = require "module/lego"
 trans = require "module/trans"
 
-l00 = lego.new({ fun  = "KLOTZ(1, 4, 3, Tile=false, Technic=true);", mass = 0 })
+l00 = lego.new({ fun  = "KLOTZ(1, 4, 1, Tile=false, Technic=false);", mass = 0 })
 
 trans.move(l00, btVector3(0,0,0))
 trans.rotate(l00, btQuaternion(1,0,1,1), btVector3(3.1416,0,0))

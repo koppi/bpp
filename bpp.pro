@@ -9,7 +9,7 @@ CONFIG *= qt opengl warn_on shared thread
 DEFINES        += HAS_LIB_ASSIMP
 DEFINES        += BOOST_BIND_GLOBAL_PLACEHOLDERS
 
-QMAKE_CXXFLAGS += -Wno-attributes -Wno-deprecated -Wno-deprecated-copy -Wno-deprecated-declarations -Wno-reorder -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-local-typedefs -Wno-terminate
+# QMAKE_CXXFLAGS += -Wno-attributes -Wno-deprecated -Wno-deprecated-copy -Wno-deprecated-declarations -Wno-reorder -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-local-typedefs -Wno-terminate
 
 win32 {
 

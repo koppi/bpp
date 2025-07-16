@@ -8,9 +8,9 @@
 
 trans = require "module/trans"
 
-v.timeStep      = 1/5
-v.maxSubSteps   = 6
-v.fixedTimeStep = 1/80
+v.timeStep      = 1/10
+v.maxSubSteps   = 10
+v.fixedTimeStep = 1/100
 
 --v.gravity = btVector3(0,-9.81*.15,0)
 --v.gravity = btVector3(0,0,0)

@@ -1,16 +1,17 @@
---
--- 00-hello-cmdline.lua - A red sphere drops on a plane
---
+--[==[
 
--- You can run this LUA script from the command-line:
---
--- $ bpp -n 200 -f demo/basic/00-hello-cmdline.lua
---
--- Or plot the result with gnuplot:
---
--- $ bpp -n 200 -f demo/basic/00-hello-cmdline.lua | \
---   gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
---
+ 00-hello-cmdline.lua - A red sphere drops on a plane
+
+ * You can run this LUA script from the command-line:
+
+$ bpp -n 200 -f demo/basic/00-hello-cmdline.lua
+
+ * Or plot the result with gnuplot:
+
+$ bpp -n 200 -f demo/basic/00-hello-cmdline.lua | \
+  gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
+
+]==]
 
 debug_pov = 1 -- debug pov sdl generation
 

@@ -159,9 +159,9 @@ v:onCommand(function(N, cmd)
 end)
 
 v.cam:setUpVector(btVector3(0,1,0), false)
-v.cam:setHorizontalFieldOfView(0.15)
-v.cam.pos  = btVector3(500,400,700)
-v.cam.look = btVector3(20,0,0) 
+v.cam:setHorizontalFieldOfView(0.3)
+v.cam.pos  = btVector3(15,10,200)
+v.cam.look = btVector3(15,10,40) 
 
 v.cam.focal_blur      = 0
 v.cam.focal_aperture  = 5

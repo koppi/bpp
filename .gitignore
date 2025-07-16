@@ -65,3 +65,6 @@ debian/bpp.substvars
 object_script.bpp.Debug
 object_script.bpp.Release
 ui_prefs.h
+
+build_log.txt
+build_warnings.txt
