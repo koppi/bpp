@@ -5,7 +5,6 @@
 -- Notice: POV-Ray export requires the user_defined cam feature
 
 color = require "module/color"
-colors = require "module/colors"
 metal = require "module/metal"
 
 -- print(v.glAmbient) --btVector3(1,0,0))
@@ -127,7 +126,7 @@ else
   s.ang_vel = btVector3(math.random()*vel_ang-vel_ang/2,
                     math.random()*vel_ang-vel_ang/2,
                     math.random()*vel_ang-vel_ang/2)
-  s.post_sdl = "pigment { " .. colors.random() .. " } }"
+  s.post_sdl = "pigment { " .. color.random() .. " } }"
 
 end
 
