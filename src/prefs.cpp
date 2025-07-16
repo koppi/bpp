@@ -87,7 +87,7 @@ void Prefs::setupPages() {
   defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache).arg(pwd);
 #else
   defaultPovrayExe = QString("/usr/bin/povray");
-  includesDefault  = QString("+L%1 +L%2/includes").arg(cache).arg(pwd);
+  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache).arg(pwd);
 #endif
 
   QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA").arg(defaultIncludes);
