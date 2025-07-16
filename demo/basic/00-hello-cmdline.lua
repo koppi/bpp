@@ -13,7 +13,7 @@ $ bpp -n 200 -f demo/basic/00-hello-cmdline.lua | \
 
 ]==]
 
-debug_pov = 1 -- debug pov sdl generation
+debug_pov = 0 -- debug pov sdl generation
 
 --
 -- SCENE SETUP
