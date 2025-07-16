@@ -43,10 +43,12 @@ void Prefs::setupPages() {
   }
 
   QString fontfamily;
+
 #ifdef Q_WS_X11
   fontfamily = "Mono";
 #elif defined(Q_WS_WIN)
   fontfamily = "Console";
+  luaPath = Q
 #elif defined(Q_WS_MAC)
   fontfamily = "Monaco";
 #endif
@@ -54,38 +56,44 @@ void Prefs::setupPages() {
   QFont font;
   font.setStyleHint(QFont::TypeWriter);
   font.setFamily(fontfamily);
-  QString found_family(QFontInfo(font).family());
 
   this->defaultmap["editor/fontfamily"] =
       _settings->value("editor/fontfamily", "Courier").toString();
   this->defaultmap["editor/fontsize"] =
       _settings->value("editor/fontsize", 12).toInt();
+
+  // LUA paths always have slashes and never backslashes as directory separators
+  QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath()).arg("/").arg("demo").arg("/").arg("?.lua;");
+
   this->defaultmap["lua/path"] =
-      _settings->value("lua/path", "/usr/share/bpp/demo/?.lua;demo/?.lua")
+      _settings->value("lua/path", defaultLuaPath)
           .toString();
+
+  QString defaultExportPath = QString("%1%2%3%4").arg(QDir::currentPath()).arg(QDir::separator()).arg("export").arg(QDir::separator());
+
   this->defaultmap["povray/export"] =
-      _settings->value("povray/export", "export").toString();
+      _settings->value("povray/export", defaultExportPath).toString();
 
   QString cache =
       QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 
-  QString povrayExeDefault;
-  QString includesDefault;
+  QString defaultPovrayExe;
+  QString defaultIncludes;
 
-  QString pwd = qgetenv("PWD");
+  QString pwd = QDir::currentPath();
 
 #ifdef Q_OS_WIN
-  povrayExeDefault = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
-  includesDefault  = QString("+L%1\\bpp\\includes").arg(pwd);
+  defaultPovrayExe = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
+  defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache).arg(pwd);
 #else
-  povrayExeDefault = QString("/usr/bin/povray");
-  includesDefault  = QString("+L%1/bpp/includes").arg(pwd);
+  defaultPovrayExe = QString("/usr/bin/povray");
+  includesDefault  = QString("+L%1 +L%2/includes").arg(cache).arg(pwd);
 #endif
 
-  QString previewDefault = QString("%1 -c +d -A +p +Q11 +GA").arg(includesDefault);
+  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA").arg(defaultIncludes);
 
-  QString povray = _settings->value("povray/executable", povrayExeDefault).toString();
-  QString opts =   _settings->value("povray/preview", previewDefault).toString();
+  QString povray = _settings->value("povray/executable", defaultPovrayExe).toString();
+  QString opts =   _settings->value("povray/preview", defaultPreview).toString();
 
   this->defaultmap["povray/executable"] =
       _settings
