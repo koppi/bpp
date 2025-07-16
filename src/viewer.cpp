@@ -1725,7 +1725,9 @@ void Viewer::onQuickRender(QString povargs) {
 
   args << sceneName + ".pov";
 
-  // XXX args << povargs;
+  if(!povargs.isEmpty()) {
+    args << povargs;
+  }
 
   qDebug() << "executing " << povray << args;
 
