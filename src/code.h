@@ -26,13 +26,13 @@ public:
   void lineNumberAreaPaintEvent(QPaintEvent *event);
   int lineNumberAreaWidth();
 
-  QString script_filename;
+  QString scriptFile() const;
+
 public slots:
   void clear();
   bool save();
   bool load(QString filename = QString());
   bool saveAs(QString filename = QString());
-  QString scriptFile() const;
 
   void setFont(QString family, uint size);
 
@@ -66,6 +66,8 @@ private:
   QWidget *lineNumberArea;
 
   LuaHighlighter *highlighter;
+
+  QString script_filename;
 };
 
 class LineNumberArea : public QWidget {

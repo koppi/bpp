@@ -260,15 +260,17 @@ void Gui::updateRecentFileActions() {
 
 void Gui::setCurrentFile(const QString &fileName) {
 
-  ui.viewer->setScriptName(strippedNameNoExt(editor->script_filename));
+  QString scriptFile = editor->scriptFile();
 
-  if (editor->script_filename.isEmpty())
+  ui.viewer->setScriptName(strippedNameNoExt(scriptFile));
+
+  if (scriptFile.isEmpty())
     setWindowTitle(tr("Recent Files"));
   else
     setWindowTitle(tr("%1 %2 - %3")
                        .arg(QCoreApplication::applicationName())
                        .arg(QCoreApplication::applicationVersion())
-                       .arg(strippedName(editor->script_filename)));
+                       .arg(strippedName(scriptFile)));
 
   if (fileName == "no_name") {
     return;
@@ -398,7 +400,7 @@ void Gui::clearDebug() { debugText->clear(); }
 
 void Gui::fileNew() {
   editor->clear();
-  setCurrentFile(editor->script_filename);
+  setCurrentFile(editor->scriptFile());
   ui.actionSave->setEnabled(true);
   _fileSaved = true;
 }
@@ -413,7 +415,7 @@ void Gui::fileOpen(const QString &path) {
       msgBox = new QMessageBox(this);
       msgBox->setWindowTitle(tr("Unsaved changes"));
       msgBox->setText(tr("File '%1'\n\nnot saved: continue anyhow?\n")
-                          .arg(editor->script_filename));
+                          .arg(editor->scriptFile()));
       // msgBox->setIcon(QMessageBox::Icon::Question);
       msgBox->addButton(QMessageBox::No);
       msgBox->addButton(QMessageBox::Yes);
@@ -437,15 +439,15 @@ void Gui::fileOpen(const QString &path) {
   }
 
   editor->load(path);
-  setCurrentFile(editor->script_filename);
+  setCurrentFile(editor->scriptFile());
   ui.actionSave->setEnabled(false);
 
   _fileSaved = true;
 }
 
 void Gui::fileReload() {
-  editor->load(editor->script_filename);
-  setCurrentFile(editor->script_filename);
+  editor->load(editor->scriptFile());
+  setCurrentFile(editor->scriptFile());
   ui.actionSave->setEnabled(false);
 
   _fileSaved = true;
@@ -453,7 +455,7 @@ void Gui::fileReload() {
 
 void Gui::fileSave() {
   if (editor->save()) {
-    setCurrentFile(editor->script_filename);
+    setCurrentFile(editor->scriptFile());
     ui.actionSave->setEnabled(false);
     _fileSaved = true;
   } else {
@@ -464,7 +466,7 @@ void Gui::fileSave() {
 
 void Gui::fileSaveAs() {
   if (editor->saveAs()) {
-    setCurrentFile(editor->script_filename);
+    setCurrentFile(editor->scriptFile());
     ui.actionSave->setEnabled(false);
     _fileSaved = true;
   } else {
@@ -475,7 +477,7 @@ void Gui::fileSaveAs() {
 
 void Gui::fileSave(const QString &path) {
   if (editor->saveAs(path)) {
-    setCurrentFile(editor->script_filename);
+    setCurrentFile(editor->scriptFile());
     ui.actionSave->setEnabled(false);
     _fileSaved = true;
   } else {
@@ -580,7 +582,7 @@ void Gui::closeEvent(QCloseEvent *event) {
       msgBox = new QMessageBox(this);
       msgBox->setWindowTitle(tr("Unsaved changes"));
       msgBox->setText(tr("File '%1'\n\nnot saved: exit anyhow?\n")
-                          .arg(editor->script_filename));
+                          .arg(editor->scriptFile()));
       // msgBox->setIcon(QMessageBox::Icon::Question);
       msgBox->addButton(QMessageBox::No);
       msgBox->addButton(QMessageBox::Yes);
