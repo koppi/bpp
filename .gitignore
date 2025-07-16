@@ -60,3 +60,8 @@ export
 
 debian/bpp.debhelper.log
 debian/bpp.substvars
+
+.qtc_clangd/
+object_script.bpp.Debug
+object_script.bpp.Release
+ui_prefs.h

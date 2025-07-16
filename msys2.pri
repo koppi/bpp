@@ -2,6 +2,9 @@ build_with_msys2 {
   CONFIG-= windows
   QMAKE_LFLAGS += $$QMAKE_LFLAGS_WINDOWS
 
+  HOME = $$PWD/..
+  message($$HOME)
+
   DEFINES += WIN32_LINK_QGLVIEWER
   DEFINES += WIN32_LINK_BULLET
   DEFINES += WIN32_LINK_LUABIND
@@ -18,10 +21,10 @@ build_with_msys2 {
   PKGCONFIG += bullet
   PKGCONFIG += lua5.1
 
-  WIN32_DIR_LUABIND   = C:\msys64\home\koppi\luabind
-  WIN32_DIR_QGLVIEWER = C:\msys64\home\koppi\libQGLViewer
+  WIN32_DIR_LUABIND   = $$HOME\luabind
+  WIN32_DIR_QGLVIEWER = $$HOME\libQGLViewer
 
-  WIN32_DIR_BOOST     = C:\msys64\mingw64
+#  WIN32_DIR_BOOST     = C:\msys64\mingw64
 }
 
 contains(DEFINES, WIN32_LINK_AUTOIMPORT) {
