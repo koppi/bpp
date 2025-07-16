@@ -1,17 +1,25 @@
 # The Bullet Physics Playground
 
-A very simple physics simulation software.
+A simple physics simulation software for prototyping and experimenting with the
+[Bullet Physics](http://bulletphysics.org) library. It provides a graphical user
+interface (GUI) for real-time interaction and a command-line interface (CLI) for
+batch processing and scripting.
 
 ## Features
 
-* [Lua](https://www.lua.org/) scripting   (experimental, sometimes segfaults)
-* [OpenGL](https://www.opengl.org/)-2 GUI      (experimental, no OpenCL features)
-* [OpenSCAD](http://www.openscad.org/) import (experimental, sometimes crashes)
-* [POV-Ray](http://www.povray.org/) / [Lightsys](http://www.ignorancia.org/index.php?page=lightsys) export (stable)
-
-## Screenshot
-
-![Screenshot as of b9331bf2.png](https://raw.githubusercontent.com/bullet-physics-playground/bpp/master/meta/Screenshot%20as%20of%20b9331bf2.png)
+*   **Physics Simulation:** Powered by the robust and widely-used Bullet
+    Physics library.
+*   **Cross-Platform:** Builds and runs on Linux, Windows, and macOS.
+*   **GUI:** An OpenGL-based GUI for visualizing and interacting with the
+    simulations in real-time.
+*   **Scripting:** Extend and control simulations using Lua scripting.
+*   **Import/Export:**
+    *   Import models from [OpenSCAD](http://www.openscad.org/).
+    *   Export scenes to [POV-Ray](http://www.povray.org/) for high-quality
+        rendering.
+*   **Command-Line Interface:** A powerful CLI for running simulations, rendering
+    animations, and piping data to other tools like
+    [gnuplot](http://www.gnuplot.info/).
 
 ## Videos on YouTube
 
@@ -25,102 +33,82 @@ Select your operating system:
  * [Build on Windows](https://github.com/bullet-physics-playground/bpp/wiki/Build-on-Windows)
  * [Build on Mac OS-X](https://github.com/bullet-physics-playground/bpp/wiki/Build-on-Mac-OS-X)
 
-## Run
+### Running
 
-Start with GUI:
+Once the build is complete, you can run the application from the `release`
+directory.
+
+*   **With GUI:**
+
+    ```bash
+bpp
+    ```
+
+*   **Without GUI (Command-Line):**
+
+    ```bash
+echo "render = 1" | bpp -f demo/basic/00-hello-pov.lua -n 400 -i
+    ```
+
+## Usage
+
+### GUI
+
+*   **S:** Start/stop the physics simulation.
+*   **P:** Toggle POV-Ray export mode.
+*   **G:** Toggle PNG screenshot saving mode.
+*   **A:** Toggle display of the world axis.
+*   **F:** Toggle FPS display.
+*   **Enter:** Start/stop the animation.
+*   **Space:** Toggle between fly and revolve camera modes.
+*   **Arrow Keys:** Move the camera.
+*   **H:** Show the QGLViewer help window.
+
+### Command-Line
+
+The command-line interface allows you to run simulations without the GUI. For
+example, you can pipe the simulation data to `gnuplot` to visualize the results:
+
 ```bash
-release/bpp
+bpp -n 200 -f demo/basic/00-hello-cmdline.lua | \
+    gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' \
+    using 1:col title columnheader(col) with lines"
 ```
 
-Start without GUI and render a 400 frames animation with POV-Ray from the command-line:
+### Scripting
+
+The Bullet Physics Playground can be scripted with Lua. You can find several
+example scripts in the `demo` directory. To see a list of Lua-accessible
+classes, functions, and properties, run:
+
 ```bash
-echo "render = 1" | release/bpp -f demo/basic/00-hello-pov.lua -n 400 -i
+bpp -f demo/basic/00-luabind.lua
 ```
 
-Pipe bpp simulation data into [gnuplot](https://en.wikipedia.org/wiki/Gnuplot):
+## Documentation
+
+The project uses [Doxygen](http://www.doxygen.nl/) to generate documentation from
+the source code comments. To generate the documentation, run:
+
 ```bash
-release/bpp -n 200 -f demo/basic/00-hello-cmdline.lua | gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
+doxygen Doxyfile
 ```
 
-to see a bouncing sphere:
-```bash
-  10 +---------------------------------------------------------------------+   
-     | AA   +      +      +      +      +      +      +      +      +      |   
-   9 |-+AA                                                       Y    A  +-|   
-     |   AA               AAAA                                             |   
-   8 |-+  AA            AA   AAA                                         +-|   
-     |     A           AA      AA                                          |   
-   7 |-+   AA          A        A                                        +-|   
-     |      A         A          A                                         |   
-   6 |-+    AA       A           AA                                      +-|   
-     |       A      AA            A                                        |   
-   5 |-+     A      A             AA                                     +-|   
-     |        A    AA              A        AAA                            |   
-   4 |-+      A    A               AA     AAA  AA                        +-|   
-     |         A   A                A    AA     AA                         |   
-   3 |-+       A  A                  A  AA        A                      +-|   
-     |          A A                  A  A          A   AAAAAA              |   
-   2 |-+        AA                   A A           AA AA    AA           +-|   
-     |          AA                    AA            AAA      AAAAAAAA      |   
-   1 |-+         A                    A              A        AA     AAAAAA|   
-     |      +      +      +      +      +      +      +      +      +      |   
-   0 +---------------------------------------------------------------------+   
-     0      20     40     60     80    100    120    140    160    180    200  
-```
+The generated HTML documentation will be in the `html` directory.
 
-For more demos, see [demo/](https://github.com/bullet-physics-playground/bpp/tree/master/demo).
+## Contributing
 
-For a list of Lua-accessible classes, functions and properties, run:
-```bash
-release/bpp -f demo/basic/00-luabind.lua
-```
-
-## Basic Usage HOWTO
-
-### Viewer
-
-#### Keyboard shortcuts
-
-* <kbd>S</kbd> starts/stops the physics simulation
-* <kbd>P</kbd> toggles the POV-Ray export mode
-* <kbd>G</kbd> toggles the PNG screenshot saving mode
-* <kbd>A</kbd> toggles display of world axis
-* <kbd>F</kbd> toggles FPS display 
-* <kbd>⏎ Enter</kbd> starts/stops the animation
-* <kbd>Space</kbd> toggles between fly/revolve camera modes
-* Use arrow keys to move the camera 
-*  <kbd>H</kbd>s hows QGLViewer help window: note the above shortcuts overwrite the QGLViewer ones under the "Keyboard" tab.
-
-#### Mouse usage
-
-* Press <kbd>H</kbd> to show QGLViewer help window, and click on the "Mouse" tab to see all the possible mouse actions.
-
-### Editor
-
-The editor has a few known problems:
- 
-* It will crash if you try to use a non-existent file for a Mesh object. It will crash too if you try to edit the file name. The workaround is to comment out the Mesh and v:add() lines before editing them.
-
-* With scripts which load many objects, or big meshes, the typing can be very slow.
-
-## Wiki
-
-* [Basic Usage HOWTO](https://github.com/bullet-physics-playground/bpp/wiki/Basic-Usage-HOWTO)
-* [LUA-Bindings-Reference](https://github.com/bullet-physics-playground/bpp/wiki/LUA-Bindings-Reference)
-* [POV-Ray on Amazon EC2](https://github.com/bullet-physics-playground/bpp/wiki/POV%E2%80%93Ray-on-Amazon-EC2)
-
-## Chat
-
-[![Gitter](https://badges.gitter.im/bullet-physics-playground/bpp.svg)](https://gitter.im/bullet-physics-playground/bpp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-## Author
-
-* **Jakob Flierl** – [koppi](https://github.com/koppi) – Initial release.
-
-## Contributors
-
-* **Jaime Vives Piqueres** – [jaimevives](https://github.com/jaimevives) – POV-Ray export and his [latest computer generated images](http://www.ignorancia.org/index.php?page=latest-images).
+Contributions are welcome! Please feel free to submit a pull request or open an
+issue on the [GitHub repository](https://github.com/bullet-physics-playground/bpp).
 
 ## License
 
-The Bullet Physics Playground is licensed under the GNU Lesser General Public License.
+The Bullet Physics Playground is licensed under the
+[GNU Lesser General Public License](LICENSE).
+
+## Acknowledgments
+
+*   **Jakob Flierl** – [koppi](https://github.com/koppi) – Initial release.
+*   **Jaime Vives Piqueres** – [jaimevives](https://github.com/jaimevives) –
+    POV-Ray export and his
+    [latest computer generated images](http://www.ignorancia.org/index.php?page=latest-images).
