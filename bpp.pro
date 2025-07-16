@@ -243,7 +243,8 @@ OTHER_FILES += README.md \
                icons/bpp.ico \
                bpp.nsi \
                License \
-               debian/changelog
+               debian/changelog \
+               demo/*
 
 DIRS_DC = object_script.* .ui .moc .rcc .obj *.pro.user $$TARGET
 
