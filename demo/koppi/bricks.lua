@@ -2,9 +2,9 @@
 -- House collapse
 --
 
-v.timeStep      = 1/5
-v.maxSubSteps   = 10
-v.fixedTimeStep = 1/70
+v.timeStep      = 1/25
+--v.maxSubSteps   = 10
+--v.fixedTimeStep = 1/70
 
 v.pre_sdl = [[
 
