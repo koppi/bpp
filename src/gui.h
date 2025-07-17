@@ -152,6 +152,7 @@ private:
   // main app components //////////////////////////////////////////////////////
   CodeEditor *editor;
   CodeEditor *debugText;
+  CodeEditor *camText;
   CommandLine *commandLine;
 
   QMessageBox *msgBox;

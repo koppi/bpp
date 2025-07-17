@@ -84,7 +84,7 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent) {
   loadSettings();
 
   connect(ui.viewer, SIGNAL(postDrawShot(int)), this, SLOT(postDraw(int)));
-  // commandLine->setFocus();
+  commandLine->setFocus();
 
   fileNew();
 
@@ -152,6 +152,23 @@ if (savePNG) {
   p.save(file, "png");
 }
 */
+  Camera *c = ui.viewer->camera();
+
+  QString txt;
+  QTextStream s(&txt);
+
+  Vec up = c->upVector();
+  s << "v.cam:setUpVector(btVector3(" << up.x << ", " << up.y << ", " << up.z << "), true)" << "\n";
+  s << "v.cam.up   = btVector3(" << up.x << ", " << up.y << ", " << up.z << ")" << "\n";
+
+  Vec pos = c->position();
+  s << "v.cam.pos  = btVector3(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << "\n";
+
+  Vec look =
+      ((Cam *)c)->viewDirection() * 1000000 + c->position();
+  s << "v.cam.look = btVector3(" << look.x << ", " << look.y << ", " << look.z << ")" << "\n";
+
+  camText->setPlainText(txt);
 }
 
 void Gui::dragEnterEvent(QDragEnterEvent *event) {
@@ -318,10 +335,16 @@ void Gui::createDock() {
   commandLine = new CommandLine(this);
   dw3->setWidget(commandLine);
 
-  // hide cmdline by default - the last state is restored via prefs or
-  // gui:showCommandLine() Lua function
   addDockWidget(Qt::RightDockWidgetArea, dw3);
-  dw3->setVisible(false);
+
+  QDockWidget *dw4 = new QDockWidget(this);
+  dw4->setObjectName("CamText");
+  dw4->setWindowTitle(tr("Camera Info"));
+  camText = new CodeEditor(settings, this);
+  dw4->setWidget(camText);
+  camText->setReadOnly(true);
+
+  addDockWidget(Qt::RightDockWidgetArea, dw4);
 }
 
 void Gui::helpAbout() {
