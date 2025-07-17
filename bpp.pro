@@ -148,7 +148,7 @@ unix:link_pkgconfig {
      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 13) : {
-     PKGCONFIG += lua5.2
+     PKGCONFIG += lua5.1
      PKGCONFIG -= luabind
      PKGCONFIG += bullet
      PKGCONFIG += sdl2
