@@ -82,3 +82,8 @@ oranges_row(4,65)
 oranges_row(4,75)
 oranges_row(4,85)
 oranges_row(4,95)
+
+v.cam:setUpVector(btVector3(-0.238615, 0.950738, -0.197887), true)
+v.cam.up   = btVector3(-0.238615, 0.950738, -0.197887)
+v.cam.pos  = btVector3(280.435, 135.555, 265.615)
+v.cam.look = btVector3(-687390, -309170, -656575)
