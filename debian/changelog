@@ -1,3 +1,9 @@
+bpp (0.1.6~noble1+travis1+travis1+travis1) UNRELEASED; urgency=medium
+
+  * Automatic build.
+
+ -- travis.debian.net <nobody@nobody.example>  Thu, 17 Jul 2025 18:17:24 +0000
+
 bpp (0.1.6~noble1+travis1+travis1) UNRELEASED; urgency=medium
 
   * Automatic build.
