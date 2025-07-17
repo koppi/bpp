@@ -5,6 +5,9 @@
 --
 -- https://www.thingiverse.com/thing:16627
 --
+-- https://creativecommons.org/licenses/by-sa/3.0/
+--
+
 local M = {}
 
 function M.new(params)

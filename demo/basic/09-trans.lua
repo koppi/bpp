@@ -2,26 +2,8 @@
 -- util/trans.lua library demo
 --
 
-color = require "module/color"
-trans = require "module/trans"
-
-v.pre_sdl = [[
-#include "textures.inc"
-
-#declare t_sphere = texture {
-    pigment {
-      radial
-      frequency 2
-      color_map {
-        [0.00 color ReferenceRGB(Red)]    [0.25 color ReferenceRGB(Red)]
-        [0.25 color ReferenceRGB(Green)]  [0.50 color ReferenceRGB(Green)]
-        [0.50 color ReferenceRGB(Blue)]   [0.75 color ReferenceRGB(Blue)]
-        [0.75 color ReferenceRGB(Yellow)] [1.00 color ReferenceRGB(Yellow)]
-      }
-    }
-    finish { specular 0.6 }
-  }
-]]
+local color = require "module/color"
+local trans = require "module/scad/trans"
 
 plane = Plane(0,1,0,0,1000)
 plane.pos = btVector3(0,-100,0)
@@ -49,10 +31,7 @@ for i=1,X do
   for j=1,Y do
   c = Sphere(0.25,0)
   --c = Cube(0.5,0.5,0.5,0)
-  c.col= "#909090"
-  c.sdl = [[
-  texture{ Polished_Chrome }
-]]
+  c.col= color.random_google()
   trans.rotate(c, btQuaternion(1,0,1,1), btVector3(i/X,0,0))
   trans.move  (c, btVector3(i-X/2,0,j-Y/2))
 
@@ -84,24 +63,14 @@ update(0)
 v:preSim(function(N)
 
 if (math.fmod(N, 5) == 0 and N < 1000) then
-if (math.random() > 0.01) then
+if (math.random() > 0.5) then
   s=Sphere(1,1)
-  s.col = color.red
-  s.sdl = [[
-  texture { t_sphere }
-]]
 else
   s=Cube(2,2,2,1)
-  s.col = color.random_pastel()
-  s.sdl = [[
-  texture {
-    pigment { color ReferenceRGB(Red) }
-    finish  { specular 0.6 }
-  }
-]]
 end
+  s.col = color.random_pastel()
   trans.move(s, btVector3(1,0,0))
-  trans.move(s, btVector3(0,15,0))
+  trans.move(s, btVector3(0,20,0))
   v:add(s)
 end
 
@@ -110,19 +79,14 @@ update(N)
 end)
 
 function setcam()
-  v.cam:setFieldOfView(0.022)
-  v.cam.pos  = btVector3(600, 600, 1000)
-  v.cam:setUpVector(btVector3(0,1,0), true)
-  v.cam.look = btVector3(1,10,0)
+v.cam:setUpVector(btVector3(-0.00402076, 0.964909, -0.262553), true)
+v.cam.up   = btVector3(-0.00402076, 0.964909, -0.262553)
+v.cam.pos  = btVector3(3.63213, 357.46, 1261.87)
+v.cam.look = btVector3(-2807.88, -262207, -963648)
 
-  --v.cam.focal_blur     = 10
+  v.cam.focal_blur     = 1
   v.cam.focal_aperture = 50
   v.cam.focal_point    = btVector3(1,10,0)
 end
 
 setcam()
-
-v:postSim(function(N)
-  --print(N)
-  setcam()
-end)

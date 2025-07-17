@@ -1,5 +1,5 @@
 --
--- http://alzinger.de/cms5/robert/raytracing/marble-machine-in-povray.html
+-- https://www.alzinger.de/wp1/robert/raytracing/marble-machine-in-povray/
 --
 
 local M = {}

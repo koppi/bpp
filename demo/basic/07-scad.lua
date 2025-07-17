@@ -1,5 +1,5 @@
 --
--- OpenSCAD template (WIP)
+-- OpenSCAD template
 --
 
 v.gravity = btVector3(0,-9.81,0)
@@ -8,11 +8,11 @@ v.timeStep      = 1/10
 v.maxSubSteps   = 10
 v.fixedTimeStep = 1/100
 
-p = Plane(0,1,0,0,100)
+local p = Plane(0,1,0,0,100)
 p.col = "#7f7f7f"
 v:add(p)
 
-N=1
+local N=1
 
 for i = 1,N do
   for j = 1,N do
@@ -97,10 +97,10 @@ texture {
   end
 end
 
-v.cam:setFieldOfView(0.025)
-v.cam:setUpVector(btVector3(0,1,0), true)
-v.cam.pos  = btVector3(600, 600, 2000)
-v.cam.look = btVector3(1,10,0)
+v.cam:setUpVector(btVector3(-0.0780239, 0.962312, -0.260514), true)
+v.cam.up   = btVector3(-0.0780239, 0.962312, -0.260514)
+v.cam.pos  = btVector3(600.407, 610.439, 1996.8)
+v.cam.look = btVector3(-275495, -271337, -919858)
 
 --v.cam.focal_blur     = 10
 v.cam.focal_aperture = 5

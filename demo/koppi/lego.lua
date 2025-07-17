@@ -7,8 +7,8 @@
 -- http://www.thingiverse.com/thing:191146
 --
 
-local lego  = require "module/lego"
-local trans = require "module/trans"
+local lego  = require "module/scad/lego"
+local trans = require "module/scad/trans"
 
 local l00 = lego.new({ fun  = "KLOTZ(3, 4, 1, Tile=false, Technic=false);", mass = 0 })
 

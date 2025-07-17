@@ -3,7 +3,7 @@
 --
 
 color = require "module/color"
-brio  = require "module/brio"
+brio  = require "module/scad/brio"
 
 v.timeStep      = 1/2
 v.maxSubSteps   = 100
@@ -87,11 +87,10 @@ s.pos = btVector3(260,65,-35)
 s.col = "#ff0000"
 v:add(s)
 
-v.cam:setFieldOfView(0.25)
-v.cam:setUpVector(btVector3(0,1,0), true)
-v.cam:setHorizontalFieldOfView(0.02)
-v.cam.pos  = btVector3(-10000,10000,35000)
-v.cam.look = btVector3(0,0,0) 
+v.cam:setUpVector(btVector3(0.252607, 0.868592, -0.426306), true)
+v.cam.up   = btVector3(0.252607, 0.868592, -0.426306)
+v.cam.pos  = btVector3(-11988.6, 18557, 30609.3)
+v.cam.look = btVector3(309154, -472328, -779267)
 
 v.cam.focal_blur      = 0
 v.cam.focal_aperture  = 5

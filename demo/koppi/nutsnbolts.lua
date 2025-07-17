@@ -8,9 +8,9 @@
 -- http://www.thingiverse.com/thing:965737
 --
 
-nutsnbolts  = require "module/nutsnbolts"
-color       = require "module/color"
-trans       = require "module/trans"
+local nutsnbolts  = require "module/scad/nutsnbolts"
+local color       = require "module/color"
+local trans       = require "module/scad/trans"
 
 v.pre_sdl = [==[
 
@@ -211,11 +211,10 @@ end
 
 bolts();
 
-v.cam:setFieldOfView(0.25)
-v.cam:setUpVector(btVector3(0,1,0), true)
-v.cam:setHorizontalFieldOfView(0.003)
-v.cam.pos  = btVector3(0,10000,0)
-v.cam.look = btVector3(0,0,10) 
+v.cam:setUpVector(btVector3(-0.0660439, 0.962428, -0.263383), true)
+v.cam.up   = btVector3(-0.0660439, 0.962428, -0.263383)
+v.cam.pos  = btVector3(250, 300, 1000)
+v.cam.look = btVector3(-233834, -271237, -932527)
 
 v.cam.focal_blur      = 1
 v.cam.focal_aperture  = 5

@@ -3,8 +3,8 @@
 --
 
 local color = require "module/color"
-local dice  = require "module/dice"
-local text  = require "module/text"
+local dice  = require "module/povray/dice"
+local text  = require "module/scad/text"
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 20

@@ -9,8 +9,8 @@
 -- http://www.ignorancia.org/index.php/technical/lightsys/
 --
 
-color      = require "module/color"
-pulley2012 = require "module/pulley2012"
+local color      = require "module/color"
+local pulley2012 = require "module/scad/pulley2012"
 
 v.timeStep      = 1/3
 v.maxSubSteps   = 200

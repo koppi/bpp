@@ -12,22 +12,15 @@ plane = Plane(0,1,0,0,100)
 plane.col = "#333333"
 plane.friction = 2
 
--- v.gravity = btVector3(0,0,0)
-
 v.timeStep      = 1/5
 v.fixedTimeStep = v.timeStep / 4
 v.maxSubSteps   = 10
 
 if (use_lightsys == 1) then
-  plane.sdl = [[
-  pigment { rgb ReferenceRGB(Gray20) }
-]]
+  plane.sdl = [[ pigment { rgb ReferenceRGB(Gray20) } ]]
 else
-  plane.sdl = [[
-  pigment { rgb <0.2,0.2,0.2> }
-]]
+  plane.sdl = [[ pigment { rgb <0.2,0.2,0.2> } ]]
 end
-
 
 v:add(plane)
 
@@ -39,7 +32,6 @@ function line(N,zpos,damp_lin,damp_ang,fri,res)
   s.sdl = [[
   texture { Polished_Chrome }
 ]]
-
 
   v:add(s)
 

@@ -5,8 +5,8 @@
 -- Please disable deactivation state
 
 local color = require "module/color"
-local marble = require "module/marble"
-local path_extrude = require "module/path_extrude"
+local marble = require "module/povray/marble"
+local path_extrude = require "module/scad/path_extrude"
 
 v.timeStep      = 1/6
 v.maxSubSteps   = 200

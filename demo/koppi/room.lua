@@ -2,7 +2,7 @@
 -- A room (with random objects)
 --
 
-color = require "module/color"
+local color = require "module/color"
 
 v.pre_sdl = [[
 
@@ -306,3 +306,4 @@ end
 
 setcam()
 
+-- EOF

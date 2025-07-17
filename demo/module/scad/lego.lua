@@ -6,6 +6,7 @@
 --
 -- http://www.thingiverse.com/thing:191146
 --
+
 local M = {}
 
 function M.new(params)
@@ -14,7 +15,7 @@ function M.new(params)
    options = {
       fn   = 50,
       fun  = "KLOTZ(1, 2, 3, Tile=false, Technic=false);",
-      mass = 1,
+      mass = 0.1,
    }
 
    for k,v in pairs(params) do options[k] = v end

@@ -104,3 +104,10 @@ c.pos = btVector3(0,120,0)
 c.col = "#333"
 c.friction = 1
 v:add(c)
+
+v.cam:setUpVector(btVector3(-0.237514, 0.930032, -0.280407), true)
+v.cam.up   = btVector3(-0.237514, 0.930032, -0.280407)
+v.cam.pos  = btVector3(8553.4, 4529.81, 7400.78)
+v.cam.look = btVector3(-695807, -359148, -602201)
+
+-- EOF

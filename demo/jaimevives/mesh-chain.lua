@@ -40,3 +40,8 @@ function chain(N,pos)
 end
 
 chain(40,btVector3(0,60,0))
+
+v.cam:setUpVector(btVector3(-0.0076577, 0.99053, -0.137086), true)
+v.cam.up   = btVector3(-0.0076577, 0.99053, -0.137086)
+v.cam.pos  = btVector3(1.38623, 375.857, 2638.52)
+v.cam.look = btVector3(163.488, -136713, -987920)

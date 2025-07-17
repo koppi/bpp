@@ -1,4 +1,4 @@
-hcw = require "module/hcw"
+local hcw = require "module/scad/hcw"
 
 v:add(hcw.new({fn = 25, mass = 0}))
 

@@ -54,3 +54,10 @@ end
 
 --tower(80,8,0) -- floors,blocks_per_floor,balls
 tower(80,8,4) -- floors,blocks_per_floor,balls
+
+v.cam:setUpVector(btVector3(0.0864474, 0.961462, -0.260995), true)
+v.cam.up   = btVector3(0.0864474, 0.961462, -0.260995)
+v.cam.pos  = btVector3(-961.57, 1515.31, 5132.83)
+v.cam.look = btVector3(181640, -271314, -939441)
+
+-- EOF

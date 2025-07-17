@@ -5,7 +5,7 @@
 -- Notice: POV-Ray export requires the user_defined cam feature
 
 local color = require "module/color"
-local metal = require "module/metal"
+local metal = require "module/povray/metal"
 
 v.timeStep      = 1/25 -- fps
 -- v.fixedTimeStep = v.timeStep / 2
@@ -106,14 +106,14 @@ for i = 0,x do
 
 if (i > x/2) then
   s = Mesh("demo/mesh/torus.stl",1)
-  s.col = color.random_pastel()
+  s.col = color.random_google()
   s.vel = btVector3(math.random()*vel-vel/2,
                     math.random()*vel-vel/2,
                     math.random()*vel-vel/2)
   s.post_sdl = "texture { " .. metal.random() .. " } }"
 else
   s = Cube(od*2,od*2,od*2,1)
-  s.col = color.random_pastel()
+  s.col = color.random_google()
   s.ang_vel = btVector3(math.random()*vel_ang-vel_ang/2,
                     math.random()*vel_ang-vel_ang/2,
                     math.random()*vel_ang-vel_ang/2)

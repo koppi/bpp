@@ -2,12 +2,14 @@
 -- Piles of coins
 --
 
+local color = require "module/color"
+
 v.timeStep      = 1/5
 v.maxSubSteps   = 200
 v.fixedTimeStep = 1/300
 
-plane = Plane(0,1,0,0,1000)
-plane.col = "#111111"
+plane = Plane(0,1,0,0,100)
+plane.col = color.darkgray
 plane.friction=5
 v:add(plane)
 
@@ -41,7 +43,7 @@ function coins_pile(coin_type,N,xp,zp)
                   zp-.5+math.random(0,10)*.1) 
     d = Cylinder(coin_width,coin_height,1)
     d.mass=coin_width*coin_height*.1
-    d.col = "#00ff00"
+    d.col = color.darkgoldenrod
     d.trans=btTransform(q,o)
     d.friction=0.5
     d.restitution=.1
@@ -60,3 +62,10 @@ coins_pile(1,45,15,15)
 coins_pile(2,41,15,-15)
 coins_pile(3,43,-15,15)
 coins_pile(4,48,-15,-15)
+
+v.cam:setUpVector(btVector3(-0.0123214, 0.795762, -0.605484), true)
+v.cam.up   = btVector3(-0.0123214, 0.795762, -0.605484)
+v.cam.pos  = btVector3(76.6849, 2008.08, 2609.51)
+v.cam.look = btVector3(-23345.7, -603585, -792820)
+
+-- EOF

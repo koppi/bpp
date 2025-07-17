@@ -4,7 +4,7 @@
 -- http://thingiverse.com/thing:159219
 --
 
-duplo = require "module/duplo"
+local duplo = require "module/scad/duplo"
 
 v.timeStep      = 1/3
 v.maxSubSteps   = 50

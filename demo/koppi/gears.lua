@@ -4,8 +4,8 @@
 -- http://www.thingiverse.com/thing:3575
 --
 
-color = require "module/color"
-gearsv50 = require "module/gearsv50"
+local color = require "module/color"
+local gearsv50 = require "module/scad/gearsv50"
 
 v.timeStep      = 1/25
 v.maxSubSteps   = 60
@@ -111,7 +111,7 @@ function gs(teeth, x, y, z)
   g2 = gear2(pitch, teeth, mass)
   g2.friction = 0.1
   g2.pos = btVector3(x,y,z)
-  g2.col = color.random_pastel()
+  g2.col = color.random_google()
   g2.sdl = [[
   texture{ t_metal_copper }
 ]]
