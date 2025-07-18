@@ -104,7 +104,14 @@ Mesh::Mesh() : Object() {
   setMass(0);
 }
 
-Mesh::~Mesh() { aiReleaseImport(m_scene); }
+Mesh::~Mesh() {
+  aiReleaseImport(m_scene);
+  delete m_mesh;
+  delete m_shape;
+  if (body && body->getMotionState()) {
+    delete body->getMotionState();
+  }
+}
 
 void Mesh::loadFile(QString filename, btScalar mass) {
   m_scene =

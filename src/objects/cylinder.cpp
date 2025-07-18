@@ -48,6 +48,11 @@ void Cylinder::init(btScalar radius, btScalar depth, btScalar mass) {
   body = new btRigidBody(mass, motionState, shape, inertia);
 }
 
+Cylinder::~Cylinder() {
+  delete shape;
+  delete body->getMotionState();
+}
+
 void Cylinder::luaBind(lua_State *s) {
   using namespace luabind;
 

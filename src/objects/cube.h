@@ -11,6 +11,7 @@ public:
   Cube(const btVector3 &dim, btScalar mass = 1.0);
   Cube(btScalar width = 1.0, btScalar height = 1.0, btScalar depth = 1.0,
        btScalar mass = 1.0);
+  ~Cube(); // Add destructor declaration
 
   btScalar lengths[3];
 

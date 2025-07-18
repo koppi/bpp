@@ -8,6 +8,7 @@
 class Sphere : public Object {
 public:
   Sphere(btScalar radius = 0.5, btScalar mass = 1.0);
+  ~Sphere(); // Add destructor declaration
 
   void setRadius(btScalar radius);
   btScalar getRadius() const;

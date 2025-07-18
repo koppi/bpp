@@ -11,6 +11,10 @@ CommandLine::CommandLine(QWidget *parent) : QLineEdit(parent) {
   history = new QList<QString>();
 }
 
+CommandLine::~CommandLine() {
+  delete history;
+}
+
 QList<QString> *CommandLine::getHistory() { return history; }
 
 void CommandLine::executed() {

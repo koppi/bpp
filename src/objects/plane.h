@@ -10,6 +10,7 @@ public:
   Plane(const btVector3 &dim, btScalar nConst, btScalar size);
   Plane(btScalar nx = 0.0, btScalar ny = 0.0, btScalar nz = 0.0,
         btScalar nConst = 0.0, btScalar size = 10.0);
+  ~Plane(); // Add destructor declaration
 
   void setPigment(QString pigment);
 

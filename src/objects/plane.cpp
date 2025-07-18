@@ -46,6 +46,11 @@ void Plane::init(btScalar nx, btScalar ny, btScalar nz, btScalar nConst,
   body = new btRigidBody(0.0, motionState, shape, btVector3(.0, .0, .0));
 }
 
+Plane::~Plane() {
+  delete shape;
+  delete body->getMotionState();
+}
+
 void Plane::setPigment(QString pigment) { mPigment = pigment; }
 
 void Plane::luaBind(lua_State *s) {

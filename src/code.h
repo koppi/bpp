@@ -22,6 +22,7 @@ class CodeEditor : public QPlainTextEdit {
 
 public:
   CodeEditor(QSettings *settings, QWidget *parent = 0);
+  ~CodeEditor(); // Add destructor declaration
 
   void lineNumberAreaPaintEvent(QPaintEvent *event);
   int lineNumberAreaWidth();

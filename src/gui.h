@@ -17,6 +17,7 @@ class Gui : public QMainWindow {
 
 public:
   Gui(QSettings *settings, QWidget *parent = 0);
+  ~Gui(); // Add destructor declaration
 
   QString toString() const;
 

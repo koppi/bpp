@@ -58,7 +58,7 @@ Object::~Object() {
   }
 
   if (body != NULL) {
-    // delete body;
+    delete body;
     // FIXME body = NULL;
   }
 }

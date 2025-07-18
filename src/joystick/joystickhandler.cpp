@@ -25,6 +25,7 @@ JoystickHandler::JoystickHandler(QObject* parent)
 
 JoystickHandler::~JoystickHandler()
 {
+   delete mUpdateTimer;
 }
 
 void JoystickHandler::initialize(int id)

@@ -45,6 +45,10 @@ CodeEditor::CodeEditor(QSettings *s, QWidget *parent) : QPlainTextEdit(parent) {
   connect(a, SIGNAL(triggered()), this, SLOT(saveAs()));
 }
 
+CodeEditor::~CodeEditor() {
+  delete highlighter;
+}
+
 void CodeEditor::clear() {
 
   setPlainText("");

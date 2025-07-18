@@ -10,6 +10,7 @@ class CommandLine : public QLineEdit {
 
 public:
   CommandLine(QWidget *parent = 0);
+  ~CommandLine(); // Add destructor declaration
   QList<QString> *getHistory();
 
 public slots:

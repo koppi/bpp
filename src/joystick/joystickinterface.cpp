@@ -19,6 +19,9 @@ void JoystickInterface::setButtonMapping(
    JoystickConstants::ControllerButton *mapping
 )
 {
+   if (mButtonMapping) {
+      delete[] mButtonMapping;
+   }
    mButtonMapping = mapping;
 }
 

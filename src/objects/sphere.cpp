@@ -37,6 +37,11 @@ Sphere::Sphere(btScalar pradius, btScalar mass) : Object() {
   body = new btRigidBody(mass, motionState, shape, inertia);
 }
 
+Sphere::~Sphere() {
+  delete shape;
+  delete body->getMotionState();
+}
+
 void Sphere::setRadius(btScalar pradius) {
   delete shape;
 

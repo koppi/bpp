@@ -53,6 +53,11 @@ void Cube::init(btScalar width, btScalar height, btScalar depth,
   body = new btRigidBody(bodyCI);
 }
 
+Cube::~Cube() {
+  delete shape;
+  delete body->getMotionState();
+}
+
 void Cube::luaBind(lua_State *s) {
   using namespace luabind;
 

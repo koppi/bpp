@@ -9,6 +9,7 @@ class Cylinder : public Object {
 public:
   Cylinder(const btVector3 &dim, btScalar mass = 1.0);
   Cylinder(btScalar radius = 1.0, btScalar depth = 1.0, btScalar mass = 1.0);
+  ~Cylinder(); // Add destructor declaration
 
   btScalar lengths[3];
 

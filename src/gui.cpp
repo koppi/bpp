@@ -95,6 +95,14 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent) {
   }
 }
 
+Gui::~Gui() {
+  delete renderSettings;
+  delete msgBox;
+  for (int i = 0; i < MAX_RECENT_FILES; ++i) {
+    delete recentFileActions[i];
+  }
+}
+
 void Gui::setFullscreenActionState() {
   ui.action_Full_screen->setChecked(isFullScreen());
 }

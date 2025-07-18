@@ -660,6 +660,7 @@ bool Viewer::parse(QString txt) {
     }
 
     lua_close(L);
+    L = NULL;
   }
 
   {
@@ -1084,10 +1085,6 @@ void Viewer::closePovFile() {
 
 Viewer::~Viewer() {
   // qDebug() << "Viewer::~Viewer()";
-  if (L != NULL) {
-    lua_close(L);
-    L = NULL;
-  }
 
   // Delete objects managed by QSet/QHash
   qDeleteAll(*_objects);
@@ -1099,7 +1096,29 @@ Viewer::~Viewer() {
   qDeleteAll(*_raycast_vehicles);
   delete _raycast_vehicles;
 
-  delete _cb_shortcuts;
+  // Reset luabind::object members before closing Lua state
+  _cb_preStart = luabind::object();
+  _cb_preDraw = luabind::object();
+  _cb_postDraw = luabind::object();
+  _cb_preSim = luabind::object();
+  _cb_postSim = luabind::object();
+  _cb_preStop = luabind::object();
+  _cb_onCommand = luabind::object();
+  _cb_onJoystick = luabind::object();
+
+  if (_cb_shortcuts) {
+    for (auto it = _cb_shortcuts->begin(); it != _cb_shortcuts->end(); ++it) {
+      *it = luabind::object(); // Reset each luabind::object in the hash
+    }
+    delete _cb_shortcuts;
+    _cb_shortcuts = nullptr; // Set to nullptr after deletion
+  }
+
+  // Close Lua state if it's still open
+  if (L != NULL) {
+    lua_close(L);
+    L = NULL;
+  }
 
   // Delete Bullet Physics objects
   delete dynamicsWorld;
@@ -1113,18 +1132,22 @@ Viewer::~Viewer() {
   if (_fileINI) {
     _fileINI->close();
     delete _fileINI;
+    _fileINI = nullptr; // Set to nullptr after deletion
   }
   if (_fileMain) {
     _fileMain->close();
     delete _fileMain;
+    _fileMain = nullptr; // Set to nullptr after deletion
   }
   if (_file) {
     _file->close();
     delete _file;
+    _file = nullptr; // Set to nullptr after deletion
   }
   if (_fileMakefile) {
     _fileMakefile->close();
     delete _fileMakefile;
+    _fileMakefile = nullptr; // Set to nullptr after deletion
   }
   // QTextStream objects are owned by QFile, so they will be deleted when QFile is deleted.
 }
