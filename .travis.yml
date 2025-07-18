@@ -1,11 +1,15 @@
-sudo: required
-language: generic
+language: cpp
+dist: bionic
 
-services:
-  - docker
+addons:
+  apt:
+    sources:
+      - ppa:beineri/opt-qt-5.15.2-bionic
+    packages:
+      - qt515base
+      - qt515tools
 
 script:
-  - wget -O- http://travis.debian.net/script.sh | sh -
-
-if:
-  tag IS blank
+  - /opt/qt515/bin/qt515-env.sh
+  - qmake
+  - make
