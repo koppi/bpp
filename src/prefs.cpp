@@ -90,7 +90,7 @@ void Prefs::setupPages() {
   defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache).arg(pwd);
 #endif
 
-  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA").arg(defaultIncludes);
+  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA +UA Bits_Per_Color=16").arg(defaultIncludes);
 
   QString povray = _settings->value("povray/executable", defaultPovrayExe).toString();
   QString opts =   _settings->value("povray/preview", defaultPreview).toString();
