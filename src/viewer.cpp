@@ -1450,7 +1450,7 @@ void Viewer::startAnimation() {
     }
   }
 
-  _time.start();
+  _timer.start();
   QGLViewer::startAnimation();
 }
 
@@ -1495,7 +1495,7 @@ void Viewer::animate() {
     // Find the time elapsed between last time
     // float nbSecsElapsed = 0.08f; // 25 pics/sec
     // float nbSecsElapsed = 1.0 / 24.0;
-    // float nbSecsElapsed = _time.elapsed()/10.0f;
+    // float nbSecsElapsed = _timer.elapsed()/10.0f;
 
     // old: dynamicsWorld->stepSimulation(nbSecsElapsed, 10);
 
@@ -1521,7 +1521,7 @@ void Viewer::animate() {
   }
 
   // Restart the elapsed time counter
-  _time.restart();
+  _timer.restart();
 
   // emitScriptOutput("Viewer::animate() end");
 }

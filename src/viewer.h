@@ -257,7 +257,7 @@ private:
   btDefaultCollisionConfiguration *collisionCfg;
   btDiscreteDynamicsWorld *dynamicsWorld;
 
-  QTime _time;
+  QElapsedTimer _timer;
 
   QTextStream *_stream;
 
