@@ -267,6 +267,7 @@ private:
   QFile *_file;
   QFile *_fileMain;
   QFile *_fileINI;
+  QFile *_fileMakefile;
 
   bool _savePOV;
   bool _deactivation;
