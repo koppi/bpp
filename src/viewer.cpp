@@ -1084,6 +1084,10 @@ void Viewer::closePovFile() {
 
 Viewer::~Viewer() {
   // qDebug() << "Viewer::~Viewer()";
+  if (L != NULL) {
+    lua_close(L);
+    L = NULL;
+  }
 
   // Delete objects managed by QSet/QHash
   qDeleteAll(*_objects);
