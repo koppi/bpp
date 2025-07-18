@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QFont>
 #include <QFontDialog>
+#include <QStandardPaths>
 
 #include "prefs.h"
 
