@@ -206,6 +206,7 @@ OTHER_FILES += README.md \
 OTHER_FILES += $$files("icons/*.*", true)
 OTHER_FILES += $$files("demo/*.*", true)
 OTHER_FILES += $$files("includes/*.*", true)
+OTHER_FILES += $$files("export/*.*", true)
 
 win32:DISTFILES += \
     msys2.pri
