@@ -1,6 +1,16 @@
 Studio Lighting Kit
 ===================
 
+-----------------------------------------------------------------------------
+Feb. 2013 update: adapted for 3.7 RC6
+
++ changed ambient to emission on finishes 
++ changed two-pass-radiosity code to use external use_radiosity, i.e.:
+povray +I studio-light-demo.pov +w600 +h800 +RFsaved.rad +RFO Declare=use_radiosity=2
+povray +I studio-light-demo.pov +w600 +h800 +RFsaved.rad +RFI Declare=use_radiosity=1
+-----------------------------------------------------------------------------
+   
+
   Jaime Vives Piqueres, Jun-2006.
 
   This is a tool to get quick studio-like lighting as seen on commercial 

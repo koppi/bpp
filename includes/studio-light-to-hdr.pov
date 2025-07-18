@@ -1,40 +1,27 @@
 // ************************************************************
 // Persistence Of Vision Ray Tracer Scene Description File
 // File name  : studio-light-to-hdr.pov
-// Version    : MegaPOV 1.x
+// Version    : POV-Ray 3.7
 // Description: Tool to generate HDRI probes from SLK setups.
-// Date       : Jun-2006
+// Date       : Feb-2013
 // Author     : Jaime Vives Piqueres
-// Note       : Use +fh for HDRI output!
+// Note       : remember to switch on HDR/EXR output!
 // ************************************************************
 #include "colors.inc"
 
 
 // *** control center ***
 #declare use_blur    =7*0;  // blur samples (0=off)
-#declare use_radiosity =0;  // 0=off, 1=load pass , 2=save pass
+#ifndef(use_radiosity) // pass this variable on the command line with the apropiate value depending on +RFO/+RFI
+  #declare use_radiosity =1;  // 0=off, 1=load pass , 2=save pass
+#end
 #declare rad_brightness=1;  
 global_settings{
+ assumed_gamma 1.0
  #if (use_radiosity)
- radiosity{
-  #if (use_radiosity=2)
-  // save settigns
-  pretrace_start .1 pretrace_end .01
-  count 1500 nearest_count 20 error_bound 1
-  recursion_limit 1
-  normal off
-  brightness rad_brightness
-  save_file "studio-light-to-hdr.rad"
-  #else
-  // load settings
-  pretrace_start 1 pretrace_end 1
-  always_sample off
-  error_bound 1
-  recursion_limit 1
-  brightness rad_brightness
-  load_file "studio-light-to-hdr.rad"
-  #end
- }
+   #include "rad_def.inc"
+   radiosity{Rad_Settings(Radiosity_IndoorHQ, off, off)}
+   //radiosity{Rad_Settings(Radiosity_OutdoorHQ, off, off)}
  #end
 }
 #default{texture{finish{ambient 0}}}

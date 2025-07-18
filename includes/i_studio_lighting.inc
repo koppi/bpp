@@ -32,7 +32,7 @@
   pigment{p_color}
   finish{
    diffuse 0
-   ambient 1
+   emission 1
   }
  }
 #else
@@ -57,7 +57,7 @@ texture{
  pigment{rgb Light_Color(sp_color,sp_lumens)} 
  finish{
    diffuse 0
-   ambient 1
+   emission 1
  }
 }
 #else

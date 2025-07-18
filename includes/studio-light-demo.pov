@@ -1,46 +1,31 @@
 // ************************************************************
 // Persistence Of Vision Ray Tracer Scene Description File
 // File name  : studio-light-demo.pov
-// Version    : POV-Ray 3.6 / MegaPOV 1.x
+// Version    : POV-Ray 3.7
 // Description: Demo showing usages of the Studio Lighting Kit.
-// Date       : Jun-2006
+// Date       : Feb-2013
 // Author     : Jaime Vives Piqueres
 // ************************************************************
 // Rendering notes : aspect ratio 3/4 !!!
+#version 3.7;
 
 // *** standard includes ***
 #include "colors.inc"
 
 // *** control center ***
-#declare demo_mode     =2;  // 1=direct, 2=HDRI
+#declare demo_mode     =1;  // 1=direct, 2=HDRI
 #declare use_blur    =7*0;  // blur samples (0=off)
-#declare use_radiosity =2;  // 0=off, 1=load pass , 2=save pass
-#declare rad_brightness=1;  // adjust to balance lighting/reflections
+#ifndef(use_radiosity) // pass this variable on the command line with the apropiate value depending on +RFO/+RFI
+  #declare use_radiosity =1;  // 0=off, 1=load pass , 2=save pass
+#end
 
 // *** global ***
 global_settings{
- assumed_gamma 1.5 
+ assumed_gamma 1.0
  #if (use_radiosity)
- radiosity{
-  // some layouts would benefit from 2 bounces, but most look OK with 1
-  #if (use_radiosity=2)
-  // save settigns
-  pretrace_start .1 pretrace_end .01
-//  count 500 nearest_count 20 error_bound .25 recursion_limit 1
-  count 250 nearest_count 10 error_bound .5 recursion_limit 2
-  normal off
-  brightness rad_brightness
-  save_file "studio-light-direct.rad"
-  #else
-  // load settings
-  pretrace_start 1 pretrace_end 1
-  always_sample off
-//  error_bound .25 recursion_limit 1
-  error_bound .5 recursion_limit 2
-  brightness rad_brightness
-  load_file "studio-light-direct.rad"
-  #end
- }
+   #include "rad_def.inc"
+   radiosity{Rad_Settings(Radiosity_IndoorHQ, off, off)}
+   //radiosity{Rad_Settings(Radiosity_OutdoorHQ, off, off)}
  #end
 }
 #default{texture{finish{ambient 0}}}
@@ -76,8 +61,6 @@ CIE_ColorSystemWhitepoint(sRGB_ColSys, Illuminant_D65)
 // uses .hdr generated with studio-light-to-hdr.pov
 #if (demo_mode=2)
 
-// needs megapov 1.x:
-#version unofficial MegaPov 1.2;
 sphere {
   0,1
   pigment { 
@@ -85,7 +68,7 @@ sphere {
     hdr "studio-light-to-hdr" once interpolate 2 map_type 1
    } 
   }
-  finish { ambient .5 diffuse 0} // adjust ambient for each .hdr
+  finish { emission .5 diffuse 0} // adjust emission for each .hdr
   scale <-1,1,1>*300 rotate -90*y
   hollow
 }
