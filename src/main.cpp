@@ -106,7 +106,10 @@ int main(int argc, char **argv) {
     g = new Gui(settings);
     g->show();
 
-    return app->exec();
+    int ret = app->exec();
+    delete g; // Qt will delete children, but explicit delete for top-level widget is good practice
+    delete settings;
+    return ret;
   } else {
     QStringList lua = parser.values(luaOption);
     QStringList luaExpression = parser.values(luaExpressionOption);
@@ -186,6 +189,9 @@ int main(int argc, char **argv) {
 
     QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
 
-    return app->exec();
+    int ret = app->exec();
+    delete v;
+    delete settings;
+    return ret;
   }
 }

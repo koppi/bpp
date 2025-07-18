@@ -24,8 +24,6 @@ Prefs::Prefs(QSettings *settings, QWidget *parent) : QDialog(parent) {
 
 Prefs::~Prefs() {
   removeDefaultSettings();
-
-  delete _settings;
 }
 
 void Prefs::setupPages() {
