@@ -145,7 +145,7 @@ if (savePNG) {
   QPixmap p = QPixmap::grabWindow(this->winId());
 
   QString file;
-  file.snprintf(buf, sizeof(buf), "screenshots/w-%05d.png", frame);
+  file.asprintf("screenshots/w-%05d.png", frame);
 
   qDebug() << "saving screenshot " << file;
 
@@ -359,8 +359,7 @@ void Gui::helpAbout() {
           .arg((char *)glGetString(GL_VERSION))
           .arg((char *)glGetString(GL_RENDERER))
           .arg((char *)glGetString(GL_VENDOR)) +
-      tr("<p>&copy; 2008-2026 <a href=\"http://github.com/koppi\">Jakob "
-         "Flierl</a></p>") +
+      tr("<p>&copy; 2008-%1 <a href=\"http://github.com/koppi\">Jakob "         "Flierl</a></p>")          .arg(QDate::currentDate().year()) +
       tr("<p>&copy; 2012-2016 <a href=\"http://ignorancia.org/\">Jaime Vives "
          "Piqueres</a></p>");
 
