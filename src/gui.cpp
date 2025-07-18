@@ -145,7 +145,7 @@ if (savePNG) {
   QPixmap p = QPixmap::grabWindow(this->winId());
 
   QString file;
-  file.sprintf("screenshots/w-%05d.png", frame);
+  file.snprintf(buf, sizeof(buf), "screenshots/w-%05d.png", frame);
 
   qDebug() << "saving screenshot " << file;
 
