@@ -886,10 +886,10 @@ void Viewer::openPovFile() {
     }
   }
 
-  file.sprintf("%s/%s-%05d.inc", qPrintable(sceneDir), qPrintable(sceneName),
+  file.snprintf(buf, sizeof(buf), "%s/%s-%05d.inc", qPrintable(sceneDir), qPrintable(sceneName),
                _frameNum);
-  fileMain.sprintf("%s/%s.pov", qPrintable(sceneDir), qPrintable(sceneName));
-  fileINI.sprintf("%s/%s.ini", qPrintable(sceneDir), qPrintable(sceneName));
+  fileMain.snprintf(buf, sizeof(buf), "%s/%s.pov", qPrintable(sceneDir), qPrintable(sceneName));
+  fileINI.snprintf(buf, sizeof(buf), "%s/%s.ini", qPrintable(sceneDir), qPrintable(sceneName));
 
   // qDebug() << "saving POV-Ray file: " << file;
 
