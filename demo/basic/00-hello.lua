@@ -19,22 +19,22 @@ p.col = color.gray
 v:add(p)
 
 cu = Cube(1,1,1,1)
-cu.col = color.beige
+cu.col = color.red
 cu.pos = btVector3(-2, 0.5, 0);
 v:add(cu)
 
 cy = Cylinder(0.5,1,1)
-cy.col = color.bisque
+cy.col = color.green
 cy.pos = btVector3(-1, 0.5, 0)
 v:add(cy)
 
 sp = Sphere(.5,1)
-sp.col = color.blanchedalmond
+sp.col = color.purple
 sp.pos = btVector3(1, 0.5, 0)
 v:add(sp)
 
 s1 = gs.new({ fun  = "geodesic_sphere(r = 0.5, $fn=6);", mass = 1})
-s1.col = color.aliceblue
+s1.col = color.blue
 s1.pos = btVector3(2,0.5,0)
 v:add(s1)
 
