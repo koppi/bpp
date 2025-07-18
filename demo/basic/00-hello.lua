@@ -15,26 +15,26 @@ v.fixedTimeStep = 1/60
 
 p = Plane(0,1,0,0,5)
 p.pos = btVector3(0,0,0)
-p.col = color.gray
+p.col = color.pov_forestgreen
 v:add(p)
 
 cu = Cube(1,1,1,1)
-cu.col = color.red
+cu.col = color.pov_aquamarine
 cu.pos = btVector3(-2, 0.5, 0);
 v:add(cu)
 
 cy = Cylinder(0.5,1,1)
-cy.col = color.green
+cy.col = color.pov_brown
 cy.pos = btVector3(-1, 0.5, 0)
 v:add(cy)
 
 sp = Sphere(.5,1)
-sp.col = color.purple
+sp.col = color.pov_coral
 sp.pos = btVector3(1, 0.5, 0)
 v:add(sp)
 
 s1 = gs.new({ fun  = "geodesic_sphere(r = 0.5, $fn=6);", mass = 1})
-s1.col = color.blue
+s1.col = color.pov_gold
 s1.pos = btVector3(2,0.5,0)
 v:add(s1)
 
@@ -44,10 +44,10 @@ v:preStart(function(N)
   -- pseudo orthogonal view
   v.cam:setFieldOfView(.02)
 
-  v.cam:setUpVector(btVector3(-0.0076577, 0.99053, -0.137086), true)
-  v.cam.up   = btVector3(-0.0076577, 0.99053, -0.137086)
-  v.cam.pos  = btVector3(-0.0991845, 25.7874, 174.496)
-  v.cam.look = btVector3(162.003, -137063, -990384)
+v.cam:setUpVector(btVector3(0.259637, 0.929523, -0.261871), true)
+v.cam.up   = btVector3(0.259637, 0.929523, -0.261871)
+v.cam.pos  = btVector3(-121.023, 69.3107, 123.504)
+v.cam.look = btVector3(649931, -368689, -664294)
 end)
 
 v:preStop(function(N)
@@ -60,7 +60,7 @@ end)
 
 v:postSim(function(N)
   print("postSim("..tostring(N)..")")
-  v.cam.focal_blur      = 0
+  v.cam.focal_blur      = 7
   v.cam.focal_aperture  = 5
   -- set blur point to sphere shape position
   v.cam.focal_point = sp.pos
