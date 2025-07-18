@@ -7,18 +7,18 @@ SetCompressor lzma
 
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)" ;
-!define VERSION 0.0.2
+!define VERSION 0.1.7
 !define COMPANY "Jakob Flierl"
-!define URL https://github.com/koppi/bullet-physics-playground
+!define URL https://github.com/bullet-physics-playground
 
-!define QTDIR C:\Qt\4.8.4
+!define DLL C:\msys64\mingw64\bin
 
 Caption "Bullet Physics Playground ${VERSION} Setup"
 
 BrandingText " © Jakob Flierl "
 
 ; The file to write
-OutFile "setup-bpp-${VERSION}-win32.exe"
+OutFile "bpp-${VERSION}-x64.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\bpp
@@ -48,9 +48,9 @@ RequestExecutionLevel admin
 
   !insertmacro MUI_LANGUAGE "English"
 
-!include "FileAssociation.nsh"
+; !include "FileAssociation.nsh"
 
-Section "physics (required)" ;
+Section "BPP (required)" ;
   
   SetShellVarContext all
   SetOverwrite on
@@ -58,21 +58,42 @@ Section "physics (required)" ;
   SectionIn RO
 
   SetOutPath $INSTDIR
-  File "release\physics.exe"
-  File "release\*.dll"
-  File "${QTDIR}\bin\QtCore4.dll"
-  File "${QTDIR}\bin\QtOpenGL4.dll"
-  File "${QTDIR}\bin\QtGui4.dll"
-  File "${QTDIR}\bin\QtNetwork4.dll"
-  File "${QTDIR}\bin\QtSvg4.dll"
-  File "${QTDIR}\bin\QtXml4.dll"
+  File "release\bpp.exe"
+  File "QGLViewer2.dll"
+  File "${DLL}\libdouble-conversion.dll"
+  File "${DLL}\libgcc_s_seh-1.dll"
+  File "${DLL}\libicuuc77.dll"
+  File "${DLL}\libicuin77.dll"
+  File "${DLL}\libpcre2*.dll"
+  File "${DLL}\libstdc++-6.dll"
+  File "${DLL}\Qt5Core.dll"
+  File "${DLL}\Qt5OpenGL.dll"
+  File "${DLL}\Qt5Gui.dll"
+  File "${DLL}\Qt5Network.dll"
+  File "${DLL}\Qt5Svg.dll"
+  File "${DLL}\Qt5Widgets.dll"
+  File "${DLL}\Qt5Xml.dll"
+  File "${DLL}\lua51.dll"
+  File "${DLL}\libassimp-*.dll"
+  File "${DLL}\libbz2-*.dll"
+  File "${DLL}\libiconv-*.dll"
+  File "${DLL}\libBullet*.dll"
+  File "${DLL}\libLinearMath.dll"
+  File "${DLL}\libfreeglut.dll"
+  File "${DLL}\libwinpthread-1.dll"
+  File "${DLL}\SDL2.dll"
+  File "${DLL}\libzstd.dll"
+  File "${DLL}\libharfbuzz-*.dll"
+  File "${DLL}\libmd4c.dll"
+  File "${DLL}\libminizip-*.dll"
+  File "${DLL}\libpng16-*.dll"
 
-  WriteRegStr HKLM SOFTWARE\physics "Install_Dir" "$INSTDIR"
+  WriteRegStr HKLM SOFTWARE\bpp "Install_Dir" "$INSTDIR"
   
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\physics" "DisplayName" "physics"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\physics" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\physics" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\physics" "NoRepair" 1
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bpp" "DisplayName" "bpp"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bpp" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bpp" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bpp" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
 
 SectionEnd
@@ -82,9 +103,9 @@ Section "Start Menu Shortcuts"
   SetShellVarContext all
   SetOverwrite on
 
-  CreateDirectory "$SMPROGRAMS\physics"
-  CreateShortCut "$SMPROGRAMS\physics\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\physics\physics.lnk" "$INSTDIR\physics.exe" "" "$INSTDIR\physics.exe" 0
+  CreateDirectory "$SMPROGRAMS\bpp"
+  CreateShortCut "$SMPROGRAMS\bpp\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
+  CreateShortCut "$SMPROGRAMS\bpp\bpp.lnk" "$INSTDIR\bpp.exe" "" "$INSTDIR\bpp.exe" 0
   
 SectionEnd
 
@@ -98,18 +119,18 @@ Section "Uninstall"
   SetOverwrite on
 
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\physics"
-  DeleteRegKey HKLM SOFTWARE\physics
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bpp"
+  DeleteRegKey HKLM SOFTWARE\bpp
 
   ; Remove files and uninstaller
-  Delete $INSTDIR\physics.exe
+  Delete $INSTDIR\bpp.exe
   Delete $INSTDIR\uninstall.exe
 
   ; Remove shortcuts, if any
-  Delete "$SMPROGRAMS\physics\*.*"
+  Delete "$SMPROGRAMS\bpp\*.*"
 
   ; Remove directories used
-  RMDir "$SMPROGRAMS\physics"
+  RMDir "$SMPROGRAMS\bpp"
   RMDir "$INSTDIR"
 
 SectionEnd
