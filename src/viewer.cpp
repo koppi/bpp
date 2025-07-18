@@ -848,10 +848,6 @@ void Viewer::savePrefs() {
 }
 
 void Viewer::openPovFile() {
-  QString file;
-  QString fileMain;
-  QString fileINI;
-
   // qDebug() << "openPovFile() " << _scriptName;
 
   QString sceneName;
@@ -886,10 +882,10 @@ void Viewer::openPovFile() {
     }
   }
 
-  file.snprintf(buf, sizeof(buf), "%s/%s-%05d.inc", qPrintable(sceneDir), qPrintable(sceneName),
-               _frameNum);
-  fileMain.snprintf(buf, sizeof(buf), "%s/%s.pov", qPrintable(sceneDir), qPrintable(sceneName));
-  fileINI.snprintf(buf, sizeof(buf), "%s/%s.ini", qPrintable(sceneDir), qPrintable(sceneName));
+  QString fn = QString("%1").arg(_frameNum, 5, 10, QChar('0'));
+  QString file = QString("%1%2%3-%4.inc").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(qPrintable(sceneName)).arg(fn);
+  QString fileMain = QString("%1%2%3.pov").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(qPrintable(sceneName));
+  QString fileINI = QString("%1%2%3.ini").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(qPrintable(sceneName));
 
   // qDebug() << "saving POV-Ray file: " << file;
 
