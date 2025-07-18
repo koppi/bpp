@@ -862,28 +862,6 @@ void Viewer::savePrefs() {
 void Viewer::openPovFile() {
   // qDebug() << "openPovFile() " << _scriptName;
 
-  // Delete existing QFile objects if they are still open
-  if (_fileINI) {
-    _fileINI->close();
-    delete _fileINI;
-    _fileINI = NULL;
-  }
-  if (_fileMain) {
-    _fileMain->close();
-    delete _fileMain;
-    _fileMain = NULL;
-  }
-  if (_file) {
-    _file->close();
-    delete _file;
-    _file = NULL;
-  }
-  if (_fileMakefile) {
-    _fileMakefile->close();
-    delete _fileMakefile;
-    _fileMakefile = NULL;
-  }
-
   QString sceneName;
   if (!_scriptName.isEmpty()) {
     QFileInfo fi(_scriptName);
@@ -1237,7 +1215,7 @@ void Viewer::draw() {
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
 
-  glClearColor(btScalar(0), btScalar(0), btScalar(0), btScalar(0));
+  glClearColor(btScalar(0), btScalar(0), btScalar(0), btScalar(1.0));
 
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, _gl_model_ambient);
 
