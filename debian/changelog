@@ -1,5 +1,24 @@
+bpp (0.1.6~noble1+travis1+travis1+travis1) UNRELEASED; urgency=medium
+
+  * Automatic build.
+
+ -- travis.debian.net <nobody@nobody.example>  Thu, 17 Jul 2025 18:17:24 +0000
+
+bpp (0.1.6~noble1+travis1+travis1) UNRELEASED; urgency=medium
+
+  * Automatic build.
+
+ -- travis.debian.net <nobody@nobody.example>  Thu, 17 Jul 2025 18:16:36 +0000
+
+bpp (0.1.6~noble1+travis1) UNRELEASED; urgency=medium
+
+  * Automatic build.
+
+ -- travis.debian.net <nobody@nobody.example>  Thu, 17 Jul 2025 17:00:11 +0000
+
 bpp (0.1.6~noble1) noble; urgency=medium
 
+  * Automatic build from Github
   * Automatic build from Github
 
  -- Jakob Flierl <jakob.flierl@gmail.com>  Thu, 17 Jul 2025 17:15:06 +0200
