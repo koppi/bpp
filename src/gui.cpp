@@ -35,8 +35,8 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent) {
   settings << "1080x1920 TikTok (9:16)";
   settings << "3840x2160 YouTube 4K";
   settings << "7680x4320 YouTube 8K";
-  settings << "3508x2480 DIN A4 300dpi (1∶√2)";
-  settings << "7016x4961 DIN A4 600dpi (1∶√2)";
+  settings << "3470x2442 DIN A4 landscape 300dpi 5mm margin";
+  settings << "6780x4725 DIN A4 landscape 600dpi 5mm margin";
 
   renderSettings->addItems(settings);
   renderSettings->setEditable(true);

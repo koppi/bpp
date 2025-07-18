@@ -1,3 +1,1 @@
-![oranges-box.png](oranges-box.jpg)
-
-See http://www.ignorancia.org/en/index.php?page=a-box-of-oranges for more details.
+See http://www.ignorancia.org/index.php?page=a-box-of-oranges 
