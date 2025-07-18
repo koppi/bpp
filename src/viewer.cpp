@@ -916,15 +916,16 @@ void Viewer::openPovFile() {
   *ini << "Width=1280" << "\n";
   *ini << "Height=720" << "\n";
   *ini << "+FN" << "\n";
+  *ini << "+UA" << "\n";
+  *ini << "Bits_Per_Color=16" << "\n";
   *ini << "+a +j0" << "\n";
 
   *ini << "+L" << QStandardPaths::writableLocation(QStandardPaths::CacheLocation) << "\n";
-  *ini << "+L" << "/usr/share/bpp/includes" << "\n";
-  *ini << "+L../../includes" << "\n"
-       << "\n";
+  *ini << "+L../../includes" << "\n" << "\n";
+
   *ini << "Initial_Clock=" << _firstFrame << "\n";
-  *ini << "Final_Clock=" << _frameNum << "\n";
-  *ini << "Final_Frame=" << _frameNum << "\n";
+  *ini << "Final_Clock="   << _frameNum << "\n";
+  *ini << "Final_Frame="   << _frameNum << "\n";
 
   *ini << "[240p]" << "\n"
        << "Width=426" << "\n"
@@ -944,12 +945,12 @@ void Viewer::openPovFile() {
   *ini << "[8K]" << "\n"
        << "Width=7680" << "\n"
        << "Height=4320" << "\n";
-  *ini << "[DIN-A4-300dpi]" << "\n"
-       << "Width=3508" << "\n"
-       << "Height=2480" << "\n";
-  *ini << "[DIN-A4-600dpi]" << "\n"
-       << "Width=7016" << "\n"
-       << "Height=4961" << "\n";
+  *ini << "[DIN-A4-landscape-300dpi-5mm-margin]" << "\n"
+       << "Width=3470" << "\n"
+       << "Height=2442" << "\n";
+  *ini << "[DIN-A4-landscape-600dpi-5mm-margin]" << "\n"
+       << "Width=6780" << "\n"
+       << "Height=4725" << "\n";
 
   if (_fileINI != NULL) {
     _fileINI->close();
