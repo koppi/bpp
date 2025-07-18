@@ -58,8 +58,6 @@ moc_*.cpp
 
 .qmake.stash
 
-export
-
 debian/bpp.debhelper.log
 debian/bpp.substvars
 
@@ -70,3 +68,5 @@ ui_prefs.h
 
 build_log.txt
 build_warnings.txt
+
+export/*/GNUmakefile
