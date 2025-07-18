@@ -1,7 +1,11 @@
 #ifndef PREFS_H
 #define PREFS_H
 
-#include <QtCore>
+#include <QDialog>
+#include <QHash>
+#include <QListWidget>
+#include <QString>
+#include <QVariant>
 
 #include <QKeyEvent>
 #include <QSettings>
