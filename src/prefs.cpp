@@ -48,7 +48,6 @@ void Prefs::setupPages() {
   fontfamily = "Mono";
 #elif defined(Q_OS_WIN)
   fontfamily = "Console";
-  luaPath = Q
 #elif defined(Q_OS_MAC)
   fontfamily = "Monaco";
 #endif
@@ -63,7 +62,7 @@ void Prefs::setupPages() {
       _settings->value("editor/fontsize", 12).toInt();
 
   // LUA paths always have slashes and never backslashes as directory separators
-  QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath()).arg("/").arg("demo").arg("/").arg("?.lua;");
+  QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath(), "/", "demo", "/", "?.lua;");
 
   this->defaultmap["lua/path"] =
       _settings->value("lua/path", defaultLuaPath)
@@ -84,10 +83,10 @@ void Prefs::setupPages() {
 
 #ifdef Q_OS_WIN
   defaultPovrayExe = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
-  defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache).arg(pwd);
+  defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache, pwd);
 #else
   defaultPovrayExe = QString("/usr/bin/povray");
-  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache).arg(pwd);
+  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
 #endif
 
   QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA +UA Bits_Per_Color=16").arg(defaultIncludes);

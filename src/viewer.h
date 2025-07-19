@@ -220,8 +220,6 @@ protected:
 
   void computeBoundingBox();
 
-  void openPovFile();
-  void closePovFile();
   void savePOV(bool force = false);
 
   void loadPrefs();
