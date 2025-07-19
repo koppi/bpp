@@ -57,7 +57,7 @@ win32 {
   QMAKE_EXTRA_TARGETS += bpp-man
 
   gdb.depends  = debug
-  gdb.commands = gdb -quiet -x gdb_commands.txt ./bpp
+  gdb.commands = gdb -quiet -x gdb_commands.txt debug/bpp
   QMAKE_EXTRA_TARGETS += gdb
 
   export.commands = make -C export
