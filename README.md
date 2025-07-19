@@ -53,9 +53,8 @@ The command-line interface allows you to run simulations without the GUI. For
 example, you can pipe the simulation data to `gnuplot` to visualize the results:
 
 ```bash
-bpp -n 200 -f demo/basic/00-hello-cmdline.lua | \
-    gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' \
-    using 1:col title columnheader(col) with lines"
+bpp -n 200 -f demo/basic/01-hello-cmdline.lua | \
+    gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
 ```
 
 ### Scripting
