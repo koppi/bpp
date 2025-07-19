@@ -8,11 +8,10 @@
 * [jaimevives/](https://github.com/bullet-physics-playground/bpp/tree/master/demo/jaimevives) by [@jaimevives](https://github.com/jaimevives)
 * [koppi/](https://github.com/bullet-physics-playground/bpp/tree/master/demo/koppi) by [@koppi](https://github.com/koppi)
 
-### Lua modules
-
-* [module/](https://github.com/bullet-physics-playground/bpp/tree/master/demo/module)
-
 ### Meshes
 
 * [mesh/](https://github.com/bullet-physics-playground/bpp/tree/master/demo/mesh) - 3ds/STL/OpenSCAD meshes
 
+### Lua modules
+
+* [module/](https://github.com/bullet-physics-playground/bpp/tree/master/demo/module)
