@@ -1,15 +1,37 @@
 --[==[
 
- 00-hello-cmdline.lua - A red sphere drops on a plane
+ A red sphere drops on a plane
 
  * You can run this LUA script from the command-line:
 
-$ bpp -n 200 -f demo/basic/00-hello-cmdline.lua
+   $ bpp -n 200 -f demo/basic/01-hello-cmdline.lua
 
  * Or plot the result with gnuplot:
 
-$ bpp -n 200 -f demo/basic/00-hello-cmdline.lua | \
-  gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
+   $ bpp -n 200 -f demo/basic/01-hello-cmdline.lua | gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
+
+10 +---------------------------------------------------------------------+
+   | **   +      +      +      +      +      +      +      +      +      |
+ 9 |-+**                                                       Y *******-|
+   |   **                                                                |
+ 8 |-+  **                                                             +-|
+   |     *                                                               |
+ 7 |-+   **           *****                                            +-|
+   |      *          **   ***                                            |
+ 6 |-+    **        **      **                                         +-|
+   |       *       *         *                                           |
+ 5 |-+     *      **          *         *****                          +-|
+   |        *     *           **      **     *                           |
+ 4 |-+      *    *             *      *       *                        +-|
+   |         *   *              *    *         *                         |
+ 3 |-+       *  *               *   **         **                      +-|
+   |          * *                *  *           **                       |
+ 2 |-+        ***                * *             *  *****    **        +-|
+   |          **                 * *              ***    * *** **        |
+ 1 |-+         *                  *               *       **     ********|
+   |      +      +      +      +      +      +      +      +      +      |
+ 0 +---------------------------------------------------------------------+
+   0      20     40     60     80    100    120    140    160    180    200
 
 ]==]
 
