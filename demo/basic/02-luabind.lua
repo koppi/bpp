@@ -2,8 +2,6 @@
 -- Print all registered classes
 --
 
-printf("Hello from %s!\n", _VERSION)
-
 info = function(c)
   --printf("Type %s", type(c))
 
