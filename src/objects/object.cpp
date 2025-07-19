@@ -216,7 +216,7 @@ void Object::renderInLocalFramePre(btVector3 &oaabbmin, btVector3 &oaabbmax) {
   btTransform trans;
 
   if (isfinite(oaabbmin[0]) && isfinite(oaabbmin[1]) && isfinite(oaabbmin[2]) &&
-      isfinite(oaabbmax[3]) && isfinite(oaabbmax[4]) && isfinite(oaabbmax[5])) {
+      isfinite(oaabbmax[0]) && isfinite(oaabbmax[1]) && isfinite(oaabbmax[2])) {
     // qDebug() << toString() << (body->getMotionState());
 
     if (body != NULL && body->getMotionState() != NULL
@@ -239,7 +239,7 @@ void Object::renderInLocalFramePre(btVector3 &oaabbmin, btVector3 &oaabbmax) {
 
 void Object::renderInLocalFramePost(btVector3 &oaabbmin, btVector3 &oaabbmax) {
   if (isfinite(oaabbmin[0]) && isfinite(oaabbmin[1]) && isfinite(oaabbmin[2]) &&
-      isfinite(oaabbmax[3]) && isfinite(oaabbmax[4]) && isfinite(oaabbmax[5])) {
+      isfinite(oaabbmax[0]) && isfinite(oaabbmax[1]) && isfinite(oaabbmax[2])) {
     if (body)
       glPopMatrix();
   }
