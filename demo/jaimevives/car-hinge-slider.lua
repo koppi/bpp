@@ -12,7 +12,7 @@ v.gravity = btVector3(0,-9.81,0)
 
 angular_motor_speed=3
 
-drive_type=3 -- 0=NONE, 1=FWD, 2=RWD, 3=AWD
+drive_type=1 -- 0=NONE, 1=FWD, 2=RWD, 3=AWD
 
 car_previous_velocity =
   btVector3(angular_motor_speed,0,0)
@@ -341,5 +341,5 @@ v:preDraw(function(N)
   v.cam.pos  = pos
   v.cam.look = look
 
-  --print("pos = "..tostring(pos).." look = "..tostring(look))
+  -- printf("pos = %s look = %s", tostring(pos), tostring(look))
 end)
