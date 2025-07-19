@@ -14,6 +14,18 @@ DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
 # QMAKE_CXXFLAGS_RELEASE += -O3
 # QMAKE_CXXFLAGS_DEBUG   += -O0
 
+CONFIG(debug, debug|release) {
+    DESTDIR = debug
+}
+CONFIG(release, debug|release) {
+    DESTDIR = release
+}
+
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.u
+
 win32 {
 
   CONFIG += build_with_msys2
@@ -51,7 +63,8 @@ win32 {
   export.commands = make -C export
   QMAKE_EXTRA_TARGETS += export
 
-  tests.commands = make -C tests
+  tests.depends  = debug release
+  tests.commands = make -C tests debug release
   QMAKE_EXTRA_TARGETS += tests
 }
 
