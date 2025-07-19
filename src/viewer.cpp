@@ -372,7 +372,7 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
 
   if (_cb_shortcuts->contains(seq)) {
     try {
-      luabind::call_function<void>(_cb_shortcuts->value(seq), _frameNum);
+      luabind::call_function<void>(*_cb_shortcuts->value(seq), _frameNum);
     } catch (const std::exception &e) {
       showLuaException(e, "onShortcut()");
     }
@@ -459,6 +459,11 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
 
   L = NULL;
 
+  _file = nullptr;
+  _fileMain = nullptr;
+  _fileINI = nullptr;
+  _fileMakefile = nullptr;
+
   _savePOV = savePOV;
 
   setSnapshotFormat("png");
@@ -478,7 +483,7 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
   _frameNum = 0;
   _firstFrame = 0;
 
-  _cb_shortcuts = new QHash<QString, luabind::object>();
+  _cb_shortcuts = new QHash<QString, std::shared_ptr<luabind::object>>();
 
   loadPrefs();
 
@@ -647,6 +652,14 @@ bool Viewer::parse(QString txt) {
     _cb_onJoystick = luabind::object();
 
     // luabind::set_error_callback(&Viewer::luabind_error);
+
+    // Clear shortcuts before closing Lua state
+    if (_cb_shortcuts) {
+      for (auto it = _cb_shortcuts->begin(); it != _cb_shortcuts->end(); ++it) {
+        it->reset(); // Explicitly reset shared_ptr, which destructs luabind::object
+      }
+      _cb_shortcuts->clear();
+    }
 
     lua_getglobal(L, "exit_function");
     int exists_exit_function = !lua_isnil(L, -1);
@@ -1107,9 +1120,6 @@ Viewer::~Viewer() {
   _cb_onJoystick = luabind::object();
 
   if (_cb_shortcuts) {
-    for (auto it = _cb_shortcuts->begin(); it != _cb_shortcuts->end(); ++it) {
-      *it = luabind::object(); // Reset each luabind::object in the hash
-    }
     delete _cb_shortcuts;
     _cb_shortcuts = nullptr; // Set to nullptr after deletion
   }
@@ -1125,7 +1135,7 @@ Viewer::~Viewer() {
   delete collisionCfg; // broadphase and solver are deleted by dynamicsWorld
 
   // Delete other dynamically allocated members
-  delete _cam;
+  
   delete _joystickInterface;
 
   // Delete QFile and QTextStream objects if they are still open
@@ -1429,7 +1439,7 @@ void Viewer::setCBOnJoystick(const luabind::object &fn) {
 
 void Viewer::addShortcut(const QString &keys, const luabind::object &fn) {
   if (luabind::type(fn) == LUA_TFUNCTION) {
-    _cb_shortcuts->insert(keys, fn);
+    _cb_shortcuts->insert(keys, std::make_shared<luabind::object>(fn));
   }
 }
 

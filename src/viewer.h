@@ -285,7 +285,9 @@ private:
   luabind::object _cb_onCommand;
   luabind::object _cb_onJoystick;
 
-  QHash<QString, luabind::object> *_cb_shortcuts;
+  #include <memory>
+
+  QHash<QString, std::shared_ptr<luabind::object>> *_cb_shortcuts;
 
   bool _parsing;
   bool _has_exception;
