@@ -45,6 +45,10 @@ win32 {
   gdb.commands = gdb -quiet -x gdb_commands.txt ./bpp
 
   QMAKE_EXTRA_TARGETS += gdb
+
+  export.commands = make -C export
+
+  QMAKE_EXTRA_TARGETS += export
 }
 
 mac {
