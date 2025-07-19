@@ -10,16 +10,15 @@ info = function(c)
     printf("    * %s %s", f, class_info(c[f]).name)
   end
 
-  printf("   * functions:")
+  printf(" * functions:")
   for k, f in pairs(class_info(c).methods) do
-    printf("    * %s", k)
+    printf("  * %s", k)
   end
 end
 
 classes = function()
-  printf("Registered classes:")
   for i, f in ipairs(class_names()) do
-    printf("  * %s", f)
+    printf("%s", f)
   end
 end
 
@@ -49,4 +48,4 @@ function dump(t,i)
   end
 end
 
-dump(_G,"")
+-- dump(_G,"")
