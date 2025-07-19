@@ -1,6 +1,6 @@
 # BPP export top-level Makefile-------------------------------------------------
 
--include tools/common.mk
+-include scripts/common.mk
 
 MAKEFLAGS += --no-print-directory
 
