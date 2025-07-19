@@ -48,50 +48,44 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   ui.toolBarView->addWidget(renderSettings);
   ui.toolBarView->addAction(ui.actionQuickRender);
 
-  connect(editor, SIGNAL(textChanged()), this, SLOT(scriptChanged()));
+  connect(editor, &CodeEditor::textChanged, this, &Gui::scriptChanged);
 
-  connect(ui.actionQuickRender, SIGNAL(triggered()), ui.viewer,
-          SLOT(onQuickRender()));
+  connect(ui.actionQuickRender, &QAction::triggered, ui.viewer, [this]() { ui.viewer->onQuickRender(); });
 
-  // map user defined shortcuts to the viewer sub-window
-  connect(editor, SIGNAL(keyPressed(QKeyEvent *)), ui.viewer,
-          SLOT(keyPressEvent(QKeyEvent *)));
-  connect(commandLine, SIGNAL(keyPressed(QKeyEvent *)), ui.viewer,
-          SLOT(keyPressEvent(QKeyEvent *)));
-  connect(debugText, SIGNAL(keyPressed(QKeyEvent *)), ui.viewer,
-          SLOT(keyPressEvent(QKeyEvent *)));
+  connect(editor, &CodeEditor::keyPressed, ui.viewer,
+          &Viewer::keyPressEvent);
+  connect(commandLine, &CommandLine::keyPressed, ui.viewer,
+          &Viewer::keyPressEvent);
+  connect(debugText, &CodeEditor::keyPressed, ui.viewer,
+          &Viewer::keyPressEvent);
 
-  connect(ui.viewer, SIGNAL(scriptHasOutput(QString)), this,
-          SLOT(debug(QString)));
-  connect(ui.viewer, SIGNAL(scriptStarts()), this, SLOT(clearDebug()));
-  connect(ui.viewer, SIGNAL(simulationStateChanged(bool)), this,
-          SLOT(toggleSimButton(bool)));
-  connect(ui.viewer, SIGNAL(POVStateChanged(bool)), this,
-          SLOT(togglePOVExport(bool)));
-  connect(ui.viewer, SIGNAL(deactivationStateChanged(bool)), this,
-          SLOT(toggleDeactivation(bool)));
+  connect(ui.viewer, &Viewer::scriptHasOutput, this, &Gui::debug);
+  connect(ui.viewer, &Viewer::scriptStarts, this, &Gui::clearDebug);
+  connect(ui.viewer, &Viewer::simulationStateChanged, this,
+          &Gui::toggleSimButton);
+  connect(ui.viewer, &Viewer::POVStateChanged, this, &Gui::togglePOVExport);
+  connect(ui.viewer, &Viewer::deactivationStateChanged, this,
+          &Gui::toggleDeactivation);
 
-  connect(ui.viewer, SIGNAL(statusEvent(QString)), this,
-          SLOT(setStatusBarText(QString)));
+  connect(ui.viewer, &Viewer::statusEvent, this, &Gui::setStatusBarText);
 
-  connect(ui.viewer, SIGNAL(clearDebugText()), debugText, SLOT(clear()));
+  connect(ui.viewer, &Viewer::clearDebugText, debugText, &CodeEditor::clear);
 
-  connect(commandLine, SIGNAL(execute(QString)), this, SLOT(command(QString)));
+  connect(commandLine, &CommandLine::execute, this, &Gui::command);
 
-  connect(renderSettings, SIGNAL(currentTextChanged(QString)), this,
-          SLOT(saveSettings()));
+  connect(renderSettings, &QComboBox::currentTextChanged, this, &Gui::saveSettings);
 
   loadSettings();
 
-  connect(ui.viewer, SIGNAL(postDrawShot(int)), this, SLOT(postDraw(int)));
+  connect(ui.viewer, &Viewer::postDrawShot, this, &Gui::postDraw);
   commandLine->setFocus();
 
   fileNew();
 
-  QTimer::singleShot(500, this, SLOT(setFullscreenActionState()));
+  QTimer::singleShot(500, this, &Gui::setFullscreenActionState);
 
   if (this->settings->value("gui/openlastfile", false).toBool()) {
-    QTimer::singleShot(0, this, SLOT(loadLastFile()));
+    QTimer::singleShot(0, this, &Gui::loadLastFile);
   }
 }
 

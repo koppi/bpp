@@ -493,8 +493,8 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
 
   // joystick integration
   _joystickInterface = new JoystickInterfaceSDL();
-  connect(&_joystickHandler, SIGNAL(data(JoystickInfo)), this,
-          SLOT(onJoystickData(JoystickInfo)));
+  connect(&_joystickHandler, &JoystickHandler::data, this,
+          &Viewer::onJoystickData);
   _joystickHandler.setInterface(_joystickInterface);
   _joystickHandler.initialize();
   _joystickHandler.setUpdateInterval(40); // 25 fps

@@ -6,7 +6,7 @@
 
 CommandLine::CommandLine(QWidget *parent) : QLineEdit(parent) {
   historyPos = -1;
-  connect(this, SIGNAL(returnPressed()), this, SLOT(executed()));
+  connect(this, &QLineEdit::returnPressed, this, &CommandLine::executed);
 
   history = new QList<QString>();
 }

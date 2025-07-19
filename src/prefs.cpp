@@ -4,6 +4,7 @@
 #include <QFont>
 #include <QFontDialog>
 #include <QStandardPaths>
+#include <QPlainTextEdit>
 
 #include "prefs.h"
 
@@ -14,8 +15,8 @@ Prefs::Prefs(QSettings *settings, QWidget *parent) : QDialog(parent) {
   this->setupUi(this);
 
   connect(listBox,
-          SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
-          this, SLOT(changeGroup(QListWidgetItem *, QListWidgetItem *)));
+          &QListWidget::currentItemChanged,
+          this, &Prefs::changeGroup);
 
   setupPages();
 
@@ -113,41 +114,41 @@ void Prefs::setupPages() {
       _settings->value("openscad/executable", "/usr/bin/openscad").toString();
 #endif
 
-  connect(this->checkOpenLast, SIGNAL(toggled(bool)), this,
-          SLOT(guiOpenLastFileChanged(bool)));
+  connect(this->checkOpenLast, &QCheckBox::toggled, this,
+          &Prefs::guiOpenLastFileChanged);
 
-  connect(this->checkWindowSave, SIGNAL(toggled(bool)), this,
-          SLOT(guiWindowStateChanged(bool)));
+  connect(this->checkWindowSave, &QCheckBox::toggled, this,
+          &Prefs::guiWindowStateChanged);
 
-  connect(this->fontChooser, SIGNAL(activated(const QString &)), this,
-          SLOT(fontFamilyChanged(const QString &)));
+  connect(this->fontChooser, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::textActivated), this,
+          &Prefs::fontFamilyChanged);
 
-  connect(this->fontSize, SIGNAL(editTextChanged(const QString &)), this,
-          SLOT(fontSizeChanged(const QString &)));
+  connect(this->fontSize, &QComboBox::editTextChanged, this,
+          &Prefs::fontSizeChanged);
 
-  connect(this->luaPath, SIGNAL(textChanged()), this,
-          SLOT(on_luaPathChanged()));
+  connect(this->luaPath, &QTextEdit::textChanged, this,
+          &Prefs::on_luaPathChanged);
 
-  connect(this->povExecutable, SIGNAL(textChanged(QString)), this,
-          SLOT(on_povExportDirChanged()));
+    connect(this->povExecutable, &QLineEdit::textChanged, this,
+          &Prefs::on_povExecutableChanged);
 
-  connect(this->povExecutableBrowse, SIGNAL(clicked(bool)), this,
-          SLOT(on_povExecutableBrowse()));
+  connect(this->povExecutableBrowse, &QPushButton::clicked, this,
+          &Prefs::on_povExecutableBrowse);
 
-  connect(this->povExportDir, SIGNAL(textChanged(QString)), this,
-          SLOT(on_povExportDirChanged()));
+  connect(this->povExportDir, &QLineEdit::textChanged, this,
+          &Prefs::on_povExportDirChanged);
 
-  connect(this->povExportDirBrowse, SIGNAL(clicked(bool)), this,
-          SLOT(on_povExportDirBrowse()));
+  connect(this->povExportDirBrowse, &QPushButton::clicked, this,
+          &Prefs::on_povExportDirBrowse);
 
-  connect(this->povPreview, SIGNAL(textChanged(QString)), this,
-          SLOT(on_povPreviewChanged()));
+  connect(this->povPreview, &QLineEdit::textChanged, this,
+          &Prefs::on_povPreviewChanged);
 
-  connect(this->scadExecutable, SIGNAL(textChanged(QString)), this,
-          SLOT(on_scadExecutableChanged()));
+  connect(this->scadExecutable, &QLineEdit::textChanged, this,
+          &Prefs::on_scadExecutableChanged);
 
-  connect(this->scadExecutableBrowse, SIGNAL(clicked(bool)), this,
-          SLOT(on_scadExecutableBrowse()));
+  connect(this->scadExecutableBrowse, &QPushButton::clicked, this,
+          &Prefs::on_scadExecutableBrowse);
 }
 
 void Prefs::guiOpenLastFileChanged(const bool checked) {

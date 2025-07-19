@@ -16,12 +16,12 @@ CodeEditor::CodeEditor(QSettings *s, QWidget *parent) : QPlainTextEdit(parent) {
 
   lineNumberArea = new LineNumberArea(this);
 
-  connect(this, SIGNAL(blockCountChanged(int)), this,
-          SLOT(updateLineNumberAreaWidth(int)));
-  connect(this, SIGNAL(updateRequest(QRect, int)), this,
-          SLOT(updateLineNumberArea(QRect, int)));
-  connect(this, SIGNAL(cursorPositionChanged()), this,
-          SLOT(highlightCurrentLine()));
+  connect(this, &CodeEditor::blockCountChanged, this,
+          &CodeEditor::updateLineNumberAreaWidth);
+  connect(this, &CodeEditor::updateRequest, this,
+          &CodeEditor::updateLineNumberArea);
+  connect(this, &CodeEditor::cursorPositionChanged, this,
+          &CodeEditor::highlightCurrentLine);
 
   updateLineNumberAreaWidth(0);
   highlightCurrentLine();
@@ -30,19 +30,19 @@ CodeEditor::CodeEditor(QSettings *s, QWidget *parent) : QPlainTextEdit(parent) {
   a->setShortcut(tr("Ctrl+1"));
   a->setShortcutContext(Qt::WidgetShortcut);
   addAction(a);
-  connect(a, SIGNAL(triggered()), this, SLOT(load()));
+  connect(a, &QAction::triggered, this, [this]() { load(""); });
 
   a = new QAction(tr("Save file"), this);
   a->setShortcut(tr("Ctrl+2"));
   a->setShortcutContext(Qt::WidgetShortcut);
   addAction(a);
-  connect(a, SIGNAL(triggered()), this, SLOT(save()));
+  connect(a, &QAction::triggered, this, [this]() { save(); });
 
   a = new QAction(tr("Save to file"), this);
   a->setShortcut(tr("Ctrl+3"));
   a->setShortcutContext(Qt::WidgetShortcut);
   addAction(a);
-  connect(a, SIGNAL(triggered()), this, SLOT(saveAs()));
+  connect(a, &QAction::triggered, this, [this]() { saveAs(""); });
 }
 
 CodeEditor::~CodeEditor() {
