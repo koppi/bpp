@@ -907,14 +907,12 @@ Viewer::~Viewer() {
   }
 
   // Delete Bullet Physics objects
-  delete dynamicsWorld;
-  delete collisionCfg; // broadphase and solver are deleted by dynamicsWorld
+  // delete dynamicsWorld;
+  // delete collisionCfg; // broadphase and solver are deleted by dynamicsWorld
 
   // Delete other dynamically allocated members
   
   delete _joystickInterface;
-
-  // QTextStream objects are owned by QFile, so they will be deleted when QFile is deleted.
 }
 
 void Viewer::computeBoundingBox() {
