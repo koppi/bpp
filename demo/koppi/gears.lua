@@ -102,7 +102,7 @@ con0:enableAngularMotor(true, 4, 50000)
 
 v:addConstraint(con0)
 
-function gs(teeth, x, y, z)
+function gs(teeth, x, y, z, col)
   c2 = Cylinder(2.25,17,0)
   c2.pos = btVector3(x, y, z);
   c2.col = "#ccc"
@@ -111,7 +111,7 @@ function gs(teeth, x, y, z)
   g2 = gear2(pitch, teeth, mass)
   g2.friction = 0.1
   g2.pos = btVector3(x,y,z)
-  g2.col = color.random_google()
+  g2.col = col
   g2.sdl = [[
   texture{ t_metal_copper }
 ]]
@@ -130,13 +130,13 @@ function gs(teeth, x, y, z)
   v:addConstraint(con1)
 end
 
-gs(10, 21.5, 17, 0)
-gs(26, 56.5, 53, 0)
-gs(14, 0, 53, 0)
-gs(8, 0, 84, 0)
-gs(6, 0, 103, 0)
-gs(26, -56.5, 53, 0)
-gs(26, 0, 147, 0)
+gs(10, 21.5, 17, 0, color.orange)
+gs(26, 56.5, 53, 0, color.darkred)
+gs(14, 0, 53, 0, color.gray)
+gs(8, 0, 84, 0, color.maroon)
+gs(6, 0, 103, 0, color.goldenrod)
+gs(26, -56.5, 53, 0, color.darkblue)
+gs(26, 0, 147, 0, color.darkgreen)
 
 v.cam:setUpVector(btVector3(0,1,0), false)
 v.cam:setHorizontalFieldOfView(0.0075)
