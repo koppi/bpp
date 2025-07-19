@@ -1,8 +1,7 @@
 --
--- Print all registered Lua classes
+-- Print all registered classes
 --
 
-printf = function(s,...) print(s:format(...)) end 
 printf("Hello from %s!\n", _VERSION)
 
 info = function(c)

@@ -682,6 +682,7 @@ bool Viewer::parse(QString txt) {
     luaL_openlibs(L);
 
     luaL_dostring(L, "os.setlocale('C')");
+    luaL_dostring(L, "printf = function(s,...) print(s:format(...)) end");
 
     QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath()).arg(QDir::separator()).arg("demo").arg(QDir::separator()).arg("?.lua;");
 
