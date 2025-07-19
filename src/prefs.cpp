@@ -44,12 +44,12 @@ void Prefs::setupPages() {
 
   QString fontfamily;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   fontfamily = "Mono";
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
   fontfamily = "Console";
   luaPath = Q
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
   fontfamily = "Monaco";
 #endif
 
@@ -245,7 +245,7 @@ void Prefs::on_scadExecutableBrowse() {
 }
 
 void Prefs::keyPressEvent(QKeyEvent *e) {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   if (e->modifiers() == Qt::ControlModifier && e->key() == Qt::Key_Period) {
     close();
   } else
