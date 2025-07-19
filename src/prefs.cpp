@@ -1,5 +1,6 @@
 #include <QMessageBox>
 
+#include <QDebug>
 #include <QFileDialog>
 #include <QFont>
 #include <QFontDialog>
@@ -64,11 +65,15 @@ void Prefs::setupPages() {
   // LUA paths always have slashes and never backslashes as directory separators
   QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath(), "/", "demo", "/", "?.lua;");
 
+  qDebug() << "defaultLuaPath" << defaultLuaPath;
+
   this->defaultmap["lua/path"] =
       _settings->value("lua/path", defaultLuaPath)
           .toString();
 
-  QString defaultExportPath = QString("%1%2%3%4").arg(QDir::currentPath()).arg(QDir::separator()).arg("export").arg(QDir::separator());
+  QString defaultExportPath = QString("%1%2%3%4").arg(QDir::currentPath(), QDir::separator(), "export", QDir::separator());
+
+  qDebug() << "defaultExportPath" << defaultExportPath;
 
   this->defaultmap["povray/export"] =
       _settings->value("povray/export", defaultExportPath).toString();
@@ -89,7 +94,7 @@ void Prefs::setupPages() {
   defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
 #endif
 
-  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA +UA Bits_Per_Color=16").arg(defaultIncludes);
+  QString defaultPreview = QString("%1 -c +d -A +p +Q4 +GA").arg(defaultIncludes);
 
   QString povray = _settings->value("povray/executable", defaultPovrayExe).toString();
   QString opts =   _settings->value("povray/preview", defaultPreview).toString();
@@ -184,7 +189,7 @@ void Prefs::on_povPreviewChanged() {
 }
 
 void Prefs::on_povExecutableChanged() {
-  setValue("povray/export", povExecutable->text());
+  setValue("povray/executable", povExecutable->text());
   emit povExecutableChanged(povExecutable->text());
 }
 

@@ -55,10 +55,10 @@ int main(int argc, char **argv) {
 
   // end workaround
 
-  QSettings *settings = new QSettings(APP_ORGANIZATION, APP_NAME);
-
   app->setApplicationName(APP_NAME);
   app->setApplicationVersion(APP_VERSION);
+
+  QSettings *settings = new QSettings(APP_ORGANIZATION, APP_NAME);
 
   QCommandLineParser parser;
 
@@ -119,6 +119,9 @@ int main(int argc, char **argv) {
       qStdErr() << QObject::tr("Error: Option '--lua' requires a Lua script "
                                "file as an argument. Exiting.")
                 << "\n";
+
+      delete settings;
+
       return EXIT_FAILURE;
     }
 

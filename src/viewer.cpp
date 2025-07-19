@@ -630,7 +630,7 @@ bool Viewer::parse(QString txt) {
 
   if (L != NULL) {
 
-    lua_gc(L, LUA_GCCOLLECT, 0); // collect garbage
+    // XXX lua_gc(L, LUA_GCCOLLECT, 0); // collect garbage
     int lsize = lua_gc(L, LUA_GCCOUNT, -1);
     emit statusEvent(QString("LUA_GCCOUNT = %1").arg(lsize));
     // lua_gc(L, LUA_GCSTOP, -1);
@@ -670,8 +670,8 @@ bool Viewer::parse(QString txt) {
       }
     }
 
-    lua_close(L);
-    L = NULL;
+    //XXX lua_close(L);
+    //XXX L = NULL;
   }
 
   {
@@ -901,10 +901,10 @@ Viewer::~Viewer() {
   }
 
   // Close Lua state if it's still open
-  if (L != NULL) {
-    lua_close(L);
-    L = NULL;
-  }
+  //XXX if (L != NULL) {
+    //XXX lua_close(L);
+    //XXX L = NULL;
+  //XXX }
 
   // Delete Bullet Physics objects
   // delete dynamicsWorld;
@@ -931,7 +931,7 @@ void Viewer::init() {
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
 
-  // computeBoundingBox();
+  computeBoundingBox();
 
   if (!restoreStateFromFile()) {
     showEntireScene();
@@ -1717,7 +1717,7 @@ void Viewer::onQuickRender(QString povargs) {
   QString renderResolution =
       _settings->value("gui/renderResolution", "view size").toString();
 
-  // qDebug() << renderResolution;
+  qDebug() << "renderResolution" << renderResolution;
 
   int renderWidth, renderHeight;
 
@@ -1758,6 +1758,9 @@ void Viewer::onQuickRender(QString povargs) {
     sceneName = "no_name";
   }
 
+  QString cache =
+      QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+
   QString defaultPovrayExe;
   QString defaultIncludes;
 
@@ -1765,13 +1768,13 @@ void Viewer::onQuickRender(QString povargs) {
 
 #ifdef Q_OS_WIN
   defaultPovrayExe = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
-  defaultIncludes  = QString("+L%1\\\\bpp\\\\includes").arg(pwd);
+  defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache, pwd);
 #else
   defaultPovrayExe = QString("/usr/bin/povray");
-  defaultIncludes  = QString("+L%1/bpp/includes").arg(pwd);
+  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
 #endif
 
-  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA").arg(defaultIncludes);
+  QString defaultPreview = QString("%1 -c +d -A +p +Q4 +GA").arg(defaultIncludes);
 
   QString povray = _settings->value("povray/executable", defaultPovrayExe).toString();
   QString opts =   _settings->value("povray/preview", defaultPreview).toString();
@@ -1807,7 +1810,11 @@ void Viewer::onQuickRender(QString povargs) {
 
   QDir dir(".");
 
-  QString exportDir = _settings->value("povray/export", "export").toString();
+  QString defaultExportPath = QString("%1%2%3").arg(QDir::currentPath(), QDir::separator(), "export");
+
+  qDebug() << "defaultExportPath" << defaultExportPath;
+
+  QString exportDir = _settings->value("povray/export", defaultExportPath).toString();
   QString sceneDir =
       dir.absoluteFilePath(exportDir + QDir::separator() + sceneName);
   qDebug() << "exportDir: " << exportDir;
