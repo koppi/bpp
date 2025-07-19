@@ -3,28 +3,20 @@ build_with_msys2 {
   QMAKE_LFLAGS += $$QMAKE_LFLAGS_WINDOWS
 
   HOME = $$PWD/..
-  message($$HOME)
+  #message($$HOME)
 
   DEFINES += WIN32_LINK_QGLVIEWER
   DEFINES += WIN32_LINK_BULLET
   DEFINES += WIN32_LINK_LUABIND
   DEFINES += WIN32_LINK_BOOST
 
-  DEFINES += WIN32_LINK_AUTOIMPORT
+  #DEFINES += WIN32_LINK_AUTOIMPORT
 
   CONFIG += link_pkgconfig
-
-  PKGCONFIG += assimp
-  PKGCONFIG += glew
-  PKGCONFIG += freeglut
-  PKGCONFIG += sdl2
-  PKGCONFIG += bullet
-  PKGCONFIG += lua5.1
+  PKGCONFIG += assimp bullet freeglut glew sdl2 lua5.1
 
   WIN32_DIR_LUABIND   = $$HOME\luabind
   WIN32_DIR_QGLVIEWER = $$HOME\libQGLViewer
-
-#  WIN32_DIR_BOOST     = C:\msys64\mingw64
 }
 
 contains(DEFINES, WIN32_LINK_AUTOIMPORT) {
