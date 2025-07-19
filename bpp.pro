@@ -40,6 +40,11 @@ win32 {
   RESOURCES   += res.qrc humanity.qrc
 
   QMAKE_EXTRA_TARGETS += bpp-man
+
+  bpp-gdb.depends  = debug
+  bpp-gdb.commands = gdb -x gdb_commands.txt ./bpp
+
+  QMAKE_EXTRA_TARGETS += bpp-gdb
 }
 
 mac {
@@ -59,25 +64,6 @@ win32 {
 
 QMAKE_CXXFLAGS_RELEASE += -O3
 QMAKE_CXXFLAGS_DEBUG   += -O0
-
-#CONFIG(debug, debug|release){
-#  DESTDIR = ./debug
-#  OBJECTS_DIR = debug/.obj
-#  MOC_DIR = debug/.moc
-#  RCC_DIR = debug/.rcc
-#  UI_DIR = debug/.ui
-#}
-
-#CONFIG(release, debug|release){
-#  DESTDIR = ./release
-#  OBJECTS_DIR = release/.obj
-#  MOC_DIR = release/.moc
-#  RCC_DIR = release/.rcc
-#  UI_DIR = release/.ui
-#}
-
-#INCLUDEPATH += /usr/include/bullet
-#INCLUDEPATH += /usr/local/include/bullet
 
 unix:link_pkgconfig {
 #  message("Using pkg-config "$$system(pkg-config --version)".")
@@ -180,15 +166,12 @@ CONFIG  *= qt opengl
 CONFIG  += warn_on
 CONFIG  += thread
 
-QT      *= opengl xml network gui core
-
-INCLUDEPATH += src/wrapper
-DEPENDPATH  += src/wrapper
+QT      *= opengl xml gui core
 
 # Main BPP source files
 
-INCLUDEPATH += src
-DEPENDPATH  += src
+INCLUDEPATH += src src/wrapper
+DEPENDPATH  += src src/wrapper
 
 SOURCES += $$files("src/*.cpp", true)
 HEADERS += $$files("src/*.h", true)
