@@ -9,7 +9,7 @@ std::ostream &operator<<(std::ostream &ostream, const Gui &gui) {
   return ostream;
 }
 
-Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent) {
+Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
 
   _fileSaved = true;
   _simulationRunning = false;
@@ -97,7 +97,7 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent) {
 
 Gui::~Gui() {
   delete renderSettings;
-  delete msgBox;
+  
   for (int i = 0; i < MAX_RECENT_FILES; ++i) {
     delete recentFileActions[i];
   }
