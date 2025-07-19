@@ -5,6 +5,7 @@
 --
 
 local duplo = require "module/scad/duplo"
+local color = require "module/color"
 
 v.timeStep      = 1/3
 v.maxSubSteps   = 50
@@ -26,7 +27,7 @@ object {
 
 p = Plane(0,1,0,0,1000)
 p.pos = btVector3(0,-134.5,0)
-p.col = "#00ff00"
+p.col = color.HuntersGreen
 p.sdl = [[
   pigment { HuntersGreen }
   normal  { quilted scale 2.5 }
@@ -112,7 +113,7 @@ setcam()
 function run()
   s = Sphere(12,3)
   s.pos = btVector3(-0.8,60,0)
-  s.col = "#202020"
+  s.col = "#333333"
   s.sdl = [[
   texture { Polished_Chrome }
 ]]
