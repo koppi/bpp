@@ -46,12 +46,13 @@ win32 {
 
   gdb.depends  = debug
   gdb.commands = gdb -quiet -x gdb_commands.txt ./bpp
-
   QMAKE_EXTRA_TARGETS += gdb
 
   export.commands = make -C export
-
   QMAKE_EXTRA_TARGETS += export
+
+  tests.commands = make -C tests
+  QMAKE_EXTRA_TARGETS += tests
 }
 
 mac {
