@@ -451,8 +451,6 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
 
   _settings = settings;
 
-  setAttribute(Qt::WA_DeleteOnClose);
-
   _objects = new QSet<Object *>();
   _constraints = new QSet<btTypedConstraint *>();
   _raycast_vehicles = new QSet<btRaycastVehicle *>();
@@ -1228,7 +1226,7 @@ void Viewer::draw() {
   GLfloat light_specular[] = {_gl_specular.x(), _gl_specular.y(),
                               _gl_specular.z()};
 
-  //	light_position is NOT default value
+  // light_position is NOT default value
   GLfloat light_position0[] = {_light0.x(), _light0.y(), _light0.z(),
                                _light0.w()};
   GLfloat light_position1[] = {_light1.x(), _light1.y(), _light1.z(),
