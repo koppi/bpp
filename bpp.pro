@@ -2,14 +2,17 @@ TARGET   = bpp
 
 TEMPLATE = app
 
-CONFIG += c++11
+CONFIG  += c++11
 
-CONFIG *= qt opengl warn_on shared thread
+CONFIG  *= qt opengl warn_on shared thread debug_and_release
+QT      *= opengl xml gui core
 
-DEFINES        += HAS_LIB_ASSIMP
-DEFINES        += BOOST_BIND_GLOBAL_PLACEHOLDERS
+DEFINES += HAS_LIB_ASSIMP
+DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 # QMAKE_CXXFLAGS += -Wno-attributes -Wno-deprecated -Wno-deprecated-copy -Wno-deprecated-declarations -Wno-reorder -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-local-typedefs -Wno-terminate
+# QMAKE_CXXFLAGS_RELEASE += -O3
+# QMAKE_CXXFLAGS_DEBUG   += -O0
 
 win32 {
 
@@ -24,15 +27,15 @@ win32 {
 
   CONFIG      += link_pkgconfig
 
-  bpp-binary.path = /usr/bin
+  bpp-binary.path  = /usr/bin
   bpp-binary.files = release/bpp
-  bpp-deskop.path = /usr/share/applications
+  bpp-deskop.path  = /usr/share/applications
   bpp-deskop.files = bpp.desktop
-  bpp-icons.path = /usr/share/icons/hicolor/scalable/apps
-  bpp-icons.files = icons/bpp.svg
-  bpp-man.path = /usr/share/man/man1
-  bpp-man.files = bpp.1
-  bpp-man.depends = $(SOURCES)
+  bpp-icons.path   = /usr/share/icons/hicolor/scalable/apps
+  bpp-icons.files  = icons/bpp.svg
+  bpp-man.path     = /usr/share/man/man1
+  bpp-man.files    = bpp.1
+  bpp-man.depends  = $(SOURCES)
   bpp-man.commands = help2man --no-discard-stderr -N -n \"Bullet Physics Playground\" -o bpp.1 ./bpp
 
   INSTALLS    += bpp-binary bpp-deskop bpp-icons bpp-man
@@ -65,9 +68,6 @@ win32 {
   DEFINES += BUILDDATE=\\\"$$system(date '+%Y-%m-%d')\\\"
   DEFINES += BULLET_VERSION=\\\"$$system(pkg-config bullet --modversion)\\\"
 }
-
-QMAKE_CXXFLAGS_RELEASE += -O3
-QMAKE_CXXFLAGS_DEBUG   += -O0
 
 unix:link_pkgconfig {
 #  message("Using pkg-config "$$system(pkg-config --version)".")
@@ -165,35 +165,23 @@ unix:link_pkgconfig {
   }
 }
 
-CONFIG  *= debug_and_release
-CONFIG  *= qt opengl
-CONFIG  += warn_on
-CONFIG  += thread
+SOURCES     += $$files("src/*.cpp", true)
+HEADERS     += $$files("src/*.h", true)
+FORMS       += $$files("src/*.ui", true)
 
-QT      *= opengl xml gui core
+INCLUDEPATH += src
+DEPENDPATH  += src
+           
+ICON         = icons/bpp.svg
 
-# Main BPP source files
-
-INCLUDEPATH += src src/wrapper
-DEPENDPATH  += src src/wrapper
-
-SOURCES += $$files("src/*.cpp", true)
-HEADERS += $$files("src/*.h", true)
-
-FORMS   += src/gui.ui \
-           src/prefs.ui
-
-ICON    = icons/bpp.svg
-
-OTHER_FILES += README.md \
-               bpp.nsi \
-               License \
-               debian/changelog
+OTHER_FILES += README.md LICENSE
 
 OTHER_FILES += $$files("icons/*.*", true)
 OTHER_FILES += $$files("demo/*.*", true)
 OTHER_FILES += $$files("includes/*.*", true)
 OTHER_FILES += $$files("export/*.*", true)
 
-win32:DISTFILES += \
-    msys2.pri
+win32:DISTFILES += msys2.pri
+win32:OTHER_FILES += bpp.nsi
+
+unix:OTHER_FILES += debian/changelog
