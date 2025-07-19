@@ -1,3 +1,5 @@
-r -f demo/basic/02-luabind.lua
+r -f hello.lua
+#r -f demo/basic/01-hello-cmdline.lua
+#r -f demo/basic/02-luabind.lua
 bt
 quit

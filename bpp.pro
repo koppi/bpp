@@ -41,10 +41,10 @@ win32 {
 
   QMAKE_EXTRA_TARGETS += bpp-man
 
-  bpp-gdb.depends  = debug
-  bpp-gdb.commands = gdb -x gdb_commands.txt ./bpp
+  gdb.depends  = debug
+  gdb.commands = gdb -quiet -x gdb_commands.txt ./bpp
 
-  QMAKE_EXTRA_TARGETS += bpp-gdb
+  QMAKE_EXTRA_TARGETS += gdb
 }
 
 mac {
