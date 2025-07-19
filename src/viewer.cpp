@@ -914,7 +914,7 @@ void Viewer::openPovFile() {
 
   // qDebug() << "saving POV-Ray file: " << file;
 
-  _fileINI = new QFile(fileINI);
+  _fileINI = new QFile(fileINI, this);
   _fileINI->open(QFile::WriteOnly | QFile::Truncate);
 
   QString name = qgetenv("USER");
@@ -975,7 +975,7 @@ void Viewer::openPovFile() {
 
   _fileINI->close();
 
-  _fileMain = new QFile(fileMain);
+  _fileMain = new QFile(fileMain, this);
   _fileMain->open(QFile::WriteOnly | QFile::Truncate);
 
   QTextStream smain(_fileMain);
@@ -997,7 +997,7 @@ void Viewer::openPovFile() {
 
   _fileMain->close();
 
-  _file = new QFile(file);
+  _file = new QFile(file, this);
   _file->open(QFile::WriteOnly | QFile::Truncate);
 
   _stream = new QTextStream(_file);
@@ -1066,7 +1066,7 @@ void Viewer::openPovFile() {
 
   // qDebug() << "GNUmakefile: " << fileMakefile;
 
-  _fileMakefile = new QFile(fileMakefile);
+  _fileMakefile = new QFile(fileMakefile, this);
   if (!_fileMakefile->exists()) {
     _fileMakefile->open(QFile::WriteOnly | QFile::Truncate);
 
@@ -1137,27 +1137,6 @@ Viewer::~Viewer() {
   
   delete _joystickInterface;
 
-  // Delete QFile and QTextStream objects if they are still open
-  if (_fileINI) {
-    _fileINI->close();
-    delete _fileINI;
-    _fileINI = nullptr; // Set to nullptr after deletion
-  }
-  if (_fileMain) {
-    _fileMain->close();
-    delete _fileMain;
-    _fileMain = nullptr; // Set to nullptr after deletion
-  }
-  if (_file) {
-    _file->close();
-    delete _file;
-    _file = nullptr; // Set to nullptr after deletion
-  }
-  if (_fileMakefile) {
-    _fileMakefile->close();
-    delete _fileMakefile;
-    _fileMakefile = nullptr; // Set to nullptr after deletion
-  }
   // QTextStream objects are owned by QFile, so they will be deleted when QFile is deleted.
 }
 

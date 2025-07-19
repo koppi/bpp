@@ -90,11 +90,6 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
 }
 
 Gui::~Gui() {
-  delete renderSettings;
-  
-  for (int i = 0; i < MAX_RECENT_FILES; ++i) {
-    delete recentFileActions[i];
-  }
 }
 
 void Gui::setFullscreenActionState() {

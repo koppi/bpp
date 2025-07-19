@@ -46,7 +46,6 @@ CodeEditor::CodeEditor(QSettings *s, QWidget *parent) : QPlainTextEdit(parent) {
 }
 
 CodeEditor::~CodeEditor() {
-  delete highlighter;
 }
 
 void CodeEditor::clear() {
