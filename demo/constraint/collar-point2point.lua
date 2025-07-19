@@ -105,9 +105,18 @@ c.col = "#333"
 c.friction = 1
 v:add(c)
 
-v.cam:setUpVector(btVector3(-0.237514, 0.930032, -0.280407), true)
-v.cam.up   = btVector3(-0.237514, 0.930032, -0.280407)
-v.cam.pos  = btVector3(8553.4, 4529.81, 7400.78)
-v.cam.look = btVector3(-695807, -359148, -602201)
+function setcam()
+  h = 100
+  v.cam:setFieldOfView(0.75)
+  v.cam:setUpVector(btVector3(0,1,0), true)
+  v.cam.pos  = btVector3(250, h, 0)
+  v.cam.look = btVector3(-10000000, h, 0)
+
+  v.cam.focal_blur     = 7*1
+  v.cam.focal_aperture = 5
+  v.cam.focal_point    = c.pos
+end
+
+setcam()
 
 -- EOF
