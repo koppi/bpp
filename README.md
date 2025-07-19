@@ -65,7 +65,7 @@ example scripts in the `demo` directory. To see a list of Lua-accessible
 classes, functions, and properties, run:
 
 ```bash
-bpp -f demo/basic/00-luabind.lua
+bpp -f demo/basic/02-luabind.lua
 ```
 
 ## Documentation
