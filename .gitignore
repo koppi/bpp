@@ -70,3 +70,6 @@ build_log.txt
 build_warnings.txt
 
 export/*/GNUmakefile
+
+.gdb_history
+
