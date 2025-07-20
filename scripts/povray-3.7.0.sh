@@ -2,7 +2,7 @@
 
 sudo apt-get -y install build-essential devscripts automake
 
-sudo apt-get -y install libboost-dev libboost-thread-dev zlib1g-dev libpng12-dev libjpeg-dev libtiff5-dev libopenexr-dev libsdl1.2-dev
+sudo apt-get -y install libboost-dev libboost-thread-dev zlib1g-dev libpng-dev libjpeg-dev libtiff5-dev libopenexr-dev libsdl1.2-dev
 
 # Note: if using Ubuntu 12.04, get libtiff4-dev instead of libtiff5-dev
 
