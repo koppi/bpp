@@ -319,7 +319,16 @@ void LuaBullet::luaBind(lua_State *s) {
            .def("getHalfExtentsWithoutMargin",
                 &btBoxShape::getHalfExtentsWithoutMargin)
            .def("localGetSupportingVertexWithoutMargin",
-                &btBoxShape::localGetSupportingVertexWithoutMargin)];
+                &btBoxShape::localGetSupportingVertexWithoutMargin)
+           .def("setImplicitShapeDimensions",
+                &btBoxShape::setImplicitShapeDimensions)
+           .def("getImplicitShapeDimensions",
+                &btBoxShape::getImplicitShapeDimensions)
+           .def("setMargin", &btBoxShape::setMargin)
+           .def("getMargin", &btBoxShape::getMargin)
+           .def("calculateLocalInertia", &btBoxShape::calculateLocalInertia)
+           .def("setLocalScaling", &btBoxShape::setLocalScaling)
+           .def("getLocalScaling", &btBoxShape::getLocalScaling)];
 
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtPolyhedralConvexAabbCachingShape.html
       [class_<btPolyhedralConvexAabbCachingShape, btPolyhedralConvexShape>(
