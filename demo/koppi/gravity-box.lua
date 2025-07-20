@@ -117,7 +117,6 @@ else
   s.ang_vel = btVector3(math.random()*vel_ang-vel_ang/2,
                     math.random()*vel_ang-vel_ang/2,
                     math.random()*vel_ang-vel_ang/2)
-  s.post_sdl = "pigment { " .. color.random() .. " } }"
 
 end
 
