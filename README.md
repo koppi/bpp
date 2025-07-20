@@ -57,27 +57,6 @@ bpp -n 200 -f demo/basic/01-hello-cmdline.lua | \
     gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
 ```
 
-### Scripting
-
-The Bullet Physics Playground can be scripted with Lua. You can find several
-example scripts in the `demo` directory. To see a list of Lua-accessible
-classes, functions, and properties, run:
-
-```bash
-bpp -f demo/basic/02-luabind.lua
-```
-
-## Documentation
-
-The project uses [Doxygen](http://www.doxygen.nl/) to generate documentation from
-the source code comments. To generate the documentation, run:
-
-```bash
-doxygen Doxyfile
-```
-
-The generated HTML documentation will be in the `html` directory.
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a pull request or open an
