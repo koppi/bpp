@@ -66,6 +66,7 @@ win32 {
 
   tests.depends  = debug release
   tests.commands = make -C tests debug release
+  tests.CONFIG   = phony
   QMAKE_EXTRA_TARGETS += tests
 }
 
