@@ -11,8 +11,9 @@ DEFINES += HAS_LIB_ASSIMP
 DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 # QMAKE_CXXFLAGS += -Wno-attributes -Wno-deprecated -Wno-deprecated-copy -Wno-deprecated-declarations -Wno-reorder -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-local-typedefs -Wno-terminate
-# QMAKE_CXXFLAGS_RELEASE += -O3
-# QMAKE_CXXFLAGS_DEBUG   += -O0
+QMAKE_CXXFLAGS += -Wno-deprecated-copy
+QMAKE_CXXFLAGS_RELEASE += -O3
+QMAKE_CXXFLAGS_DEBUG   += -O0
 
 CONFIG(debug, debug|release) {
     DESTDIR = debug
