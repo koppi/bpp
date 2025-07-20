@@ -298,10 +298,6 @@ M = {
     Very_Light_Purple = "#EFFFCF",
 }
 
-function M.random()
-  return M.colors[ math.random( #M.colors ) ]
-end
-
 function M.num2hex(num)
     local hexstr = '0123456789abcdef'
     local s = ''
