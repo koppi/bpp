@@ -1,8 +1,9 @@
 --
--- A room (with random objects)
+-- A room with random objects (WIP)
 --
 
 local color = require "module/color"
+local path_extrude = require "module/scad/path_extrude"
 
 v.pre_sdl = [[
 
@@ -91,15 +92,11 @@ light_source{ <0,55,0>
 }
 ]]
 
-use_openscad = 1 -- http://www.openscad.org
+v.timeStep      = 1/25
+--v.maxSubSteps   = 10
+--v.fixedTimeStep = 1/100
 
-v.gravity = btVector3(0,-9.81,0)
-
-v.timeStep      = 1/10
-v.maxSubSteps   = 10
-v.fixedTimeStep = 1/100
-
-p = Plane(0,1,0,0,1000)
+p = Plane(0,1,0,0,100)
 p.pos = btVector3(0,13,0)
 p.col = "green"
 v:add(p)
@@ -132,8 +129,8 @@ cy.sdl = [[
 v:add(cy)
 end
 
-for i = 1,4 do
-sp = Sphere(1,4)
+for i = 1,5 do
+sp = Sphere(1,1)
 sp.col = "#ffff00"
 sp.pos = btVector3(4.5-i*1.99, 30, 11)
 sp.sdl = [[
@@ -154,7 +151,6 @@ sp.sdl = [[
 v:add(sp)
 end
 
-if (use_openscad == 1) then
   sc = OpenSCAD([[
     difference() {
       translate([0,-12,0])
@@ -177,23 +173,6 @@ texture {
 ]]
   sc.pos = btVector3(0,50,0)
   v:add(sc)
-
-  oloid = require "module/oloid"
-
-for i = 1,6 do
-  o = oloid.new({fun="$fn=50; oloid(4);", mass = 1})
-  o.pos = btVector3(40,30,40)
-  o.sdl = [[
-  texture {
-    pigment { color ReferenceRGB(Blue) * use_contrast }
-    finish  { specular 0.6 roughness 0.01 }
-  }
-]]
-
-  v:add(o)
-end
-
-path_extrude = require "module/path_extrude"
 
 path = OpenSCAD(path_extrude.sdl .. [[
 
@@ -251,57 +230,44 @@ path.sdl = [[
 path.pos = btVector3(10,17,20)
 v:add(path)
 
-end
-
 v:preStart(function(N)
-  print("preStart("..tostring(N)..")")
+  printf("preStart(%i)", N)
 end)
 
 v:preStop(function(N)
-  print("preStop("..tostring(N)..")")
+  printf("preStop(%i)", N)
 end)
 
 v:preSim(function(N)
---  print("preSim("..tostring(N)..")")
+  --printf("preSim(%i)", N)
 end)
 
 v:postSim(function(N)
-
-  ---- render every 5th frame with POV-Ray
-  --if (N % 5 == 0) then povRender(N) end
+  --printf("postSim(%i)", N)
 end)
 
 v:preDraw(function(N)
---  print("preDraw("..tostring(N)..")")
+  --printf("preDraw(%i)", N)
 end)
 
 v:postDraw(function(N)
---  print("postDraw("..tostring(N)..")")
+  --printf("postDraw(%i)", N)
 end)
 
-function povRender(N)
-  v:quickRender("-p -d +W320 +H240 +O/tmp/00-hello-"..string.format("%05d", N)..".png")
-end
-
 v:onCommand(function(N, cmd)
-  --print("at frame "..tostring(N)..": '"..cmd)
-
+  printf("onCommand(%i)")
   local f = assert(loadstring(cmd))
   f(v)
 end)
 
 function setcam()
-  d = 60
-  -- pseudo orthogonal view
-  --v.cam:setFieldOfView(.1)
-
-  v.cam.focal_blur      = 0 -- > 0: enable focal blur
+  v.cam.focal_blur      = 0
   v.cam.focal_aperture  = 5
   --v.cam.focal_point = XXX.pos
   v.cam:setUpVector(btVector3(0,1,0), true)
-  v.cam:setHorizontalFieldOfView(0.7)
-  v.cam.pos  = btVector3(0,30,d*4)
-  v.cam.look = btVector3(0,50,0) 
+  v.cam:setHorizontalFieldOfView(1)
+  v.cam.pos  = btVector3(-40,40,40)
+  v.cam.look = btVector3(40,20,-20) 
 end
 
 setcam()
