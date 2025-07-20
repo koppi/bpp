@@ -257,9 +257,23 @@ void LuaBullet::luaBind(lua_State *s) {
       [class_<btConeShape, btConvexInternalShape>("btConeShape")
            .def(constructor<btScalar, btScalar>(), adopt(result))
            .def("getRadius", &btConeShape::getRadius)
+           .def("setRadius", &btConeShape::setRadius)
+           .property("radius", &btConeShape::getRadius, &btConeShape::setRadius)
            .def("getHeight", &btConeShape::getHeight)
+           .def("setHeight", &btConeShape::setHeight)
+           .property("height", &btConeShape::getHeight, &btConeShape::setHeight)
            .def("setConeUpIndex", &btConeShape::setConeUpIndex)
-           .def("getConeUpIndex", &btConeShape::getConeUpIndex)];
+           .def("getConeUpIndex", &btConeShape::getConeUpIndex)
+           .def("setLocalScaling", &btConeShape::setLocalScaling)
+           .def("getLocalScaling", &btConeShape::getLocalScaling)
+           .def("calculateLocalInertia", &btConeShape::calculateLocalInertia)
+           .def("setMargin", &btConeShape::setMargin)
+           .def("getMargin", &btConeShape::getMargin)
+           .def("setImplicitShapeDimensions", &btConeShape::setImplicitShapeDimensions)
+           .def("getImplicitShapeDimensions", &btConeShape::getImplicitShapeDimensions)
+           .def("getAabb", &btConeShape::getAabb)
+           .def("localGetSupportingVertexWithoutMargin", &btConeShape::localGetSupportingVertexWithoutMargin)
+           .def("localGetSupportingVertex", &btConeShape::localGetSupportingVertex)];
 
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtConeShapeX.html
       [class_<btConeShapeX, btConeShape>("btConeShapeX")
