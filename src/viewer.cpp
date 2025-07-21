@@ -1612,8 +1612,16 @@ void Viewer::showLuaException(const std::exception &e, const QString &context) {
   // the error message should be on top of the stack
   QString luaWhat = QString("%1").arg(lua_tostring(L, -1));
 
-  emitScriptOutput(
-      QString("%1 in %2: %3").arg(e.what()).arg(context).arg(luaWhat));
+  lua_Debug ar;
+  lua_getstack(L, 1, &ar);
+  lua_getinfo(L, "nSl", &ar);
+  int line = ar.currentline;
+
+  emitScriptOutput(QString("%1 in %2: %3 (line %4)")
+                       .arg(e.what())
+                       .arg(context)
+                       .arg(luaWhat)
+                       .arg(line));
 }
 
 void Viewer::setGLShininess(const btScalar &s) { _gl_shininess = s; }
