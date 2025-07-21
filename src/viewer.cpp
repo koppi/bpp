@@ -1782,9 +1782,12 @@ void Viewer::onQuickRender(QString povargs) {
   defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
 #endif
 
+  QString systemPovExe = QStandardPaths::findExecutable(defaultPovrayExe);
+  if (systemPovExe.isEmpty()) systemPovExe = "POV-Ray not found!";
+
   QString defaultPreview = QString("%1 -c +d -A +p +Q4 +GA").arg(defaultIncludes);
 
-  QString povray = _settings->value("povray/executable", defaultPovrayExe).toString();
+  QString povray = _settings->value("povray/executable", systemPovExe).toString();
   QString opts =   _settings->value("povray/preview", defaultPreview).toString();
 
   args << opts.split(" ");
