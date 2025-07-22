@@ -1146,6 +1146,12 @@ void Viewer::savePOV(bool force) {
   ini << "[4K]" << "\n"
       << "Width=3840" << "\n"
       << "Height=2160" << "\n";
+  ini << "[Apple-M1]" << "\n"
+      << "Width=4480" << "\n"
+      << "Height=2520" << "\n";
+  ini << "[Apple-5K]" << "\n"
+      << "Width=5120" << "\n"
+      << "Height=2880" << "\n";
   ini << "[8K]" << "\n"
       << "Width=7680" << "\n"
       << "Height=4320" << "\n";

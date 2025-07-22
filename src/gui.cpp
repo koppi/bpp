@@ -34,6 +34,8 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   settings << "1920x1080 (1080p)";
   settings << "1080x1920 TikTok (9:16)";
   settings << "3840x2160 YouTube 4K";
+  settings << "4480x2520 Apple M1";
+  settings << "5120x2880 Apple 5K";
   settings << "7680x4320 YouTube 8K";
   settings << "3470x2442 DIN A4 landscape 300dpi 5mm margin";
   settings << "6780x4725 DIN A4 landscape 600dpi 5mm margin";
