@@ -5,6 +5,10 @@ A simple physics simulation software for prototyping and experimenting with the
 interface (GUI) for real-time interaction and a command-line interface (CLI) for
 batch processing and scripting.
 
+![GitHub last commit](https://img.shields.io/github/last-commit/bullet-physics-playground/bpp)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bullet-physics-playground/bpp)
+[![GitHub issues](https://img.shields.io/github/issues/bullet-physics-playground/bpp)](https://github.com/bullet-physics-playground/bpp/issues)
+
 ## Features
 
 *   **Physics Simulation:** Powered by the robust and widely-used Bullet
