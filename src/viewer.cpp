@@ -204,10 +204,10 @@ void Viewer::luaBind(lua_State *s) {
                 .property("b", &QColor::blue, &QColor::setBlue)
                 .def(tostring(self))];
 
-  module(s)[class_<QString>("QString")
-                .def(constructor<>())
-                .def(constructor<const char *>())
-                .def(tostring(self))];
+// QString is handled by the default_converter<QString> in lua_converters.h
+  // which converts Lua strings to QString automatically.
+  // Registering class_<QString> here would shadow that converter and
+  // break overload resolution for any function taking a QString argument.
 
   module(
       s)[class_<JoystickInfo>("JoystickInfo")
@@ -833,12 +833,12 @@ void Viewer::clear() {
 
   _pov_settings_inc = "settings.inc";
 
-  setPreSDL(NULL);
-  setPostSDL(NULL);
+  setPreSDL(QString());
+  setPostSDL(QString());
 
   if (_cam != NULL) {
-    _cam->setPreSDL(NULL);
-    _cam->setPostSDL(NULL);
+    _cam->setPreSDL(QString());
+    _cam->setPostSDL(QString());
     _cam->setUseFocalBlur(0);
     _cam->setUpVector(btVector3(0, 1, 0), true);
   }
@@ -1175,7 +1175,7 @@ void Viewer::savePOV(bool force) {
   smain << "#version 3.7;" << "\n"
         << "\n";
 
-  if (_pov_settings_inc != NULL && !_pov_settings_inc.isEmpty()) {
+  if (!_pov_settings_inc.isEmpty()) {
     smain << "#include \"" + _pov_settings_inc + "\"" << "\n"
           << "\n";
   }
@@ -1205,7 +1205,7 @@ void Viewer::savePOV(bool force) {
     << "; // 0=off 1=low quality 10=high quality" << "\n"
     << "\n";
 
-    if (_cam->getPreSDL() == NULL) {
+    if (_cam->getPreSDL().isNull()) {
       Vec pos = camera()->position();
 
       *_stream << "camera { " << "\n"
@@ -1305,7 +1305,7 @@ QString Viewer::toPOV() const {
        << "; // 0=off 1=low quality 10=high quality" << "\n"
        << "\n";
 
-    if (_cam->getPreSDL() == NULL) {
+    if (_cam->getPreSDL().isNull()) {
       Vec pos = camera()->position();
 
       *s << "camera { " << "\n"

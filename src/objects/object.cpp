@@ -85,13 +85,13 @@ void Object::toPOV(QTextStream *s) const {
   }
 
   if (s != NULL) {
-    if (mPreSDL == NULL) {
+    if (mPreSDL.isNull()) {
       *s << "sphere { <0,0,0>, 1" << "\n";
     } else {
       *s << mPreSDL << "\n";
     }
 
-    if (mSDL != NULL) {
+    if (!mSDL.isNull()) {
       *s << mSDL << "\n";
     } else {
       *s << "  pigment { rgb <" << color[0] / 255.0 << ", " << color[1] / 255.0
@@ -107,7 +107,7 @@ void Object::toPOV(QTextStream *s) const {
        << "          " << matrix[12] << "," << matrix[13] << "," << matrix[14]
        << ">" << "\n";
 
-    if (mPostSDL == NULL) {
+    if (mPostSDL.isNull()) {
       *s << "}" << "\n"
          << "\n";
     } else {

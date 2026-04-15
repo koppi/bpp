@@ -144,7 +144,7 @@ c = Cam() c.pos = btVector3(0,1,0)
 
 v.pre_sdl = v.pre_sdl .. string.format("\n#declare cam_pos = <%f, %f, %f>;\n", c.pos.x, c.pos.y, c.pos.z)
 
-c.pre_sdl = QString([[
+c.pre_sdl = [[
 
   #declare ods_x     = cam_pos.x;
   #declare ods_y     = cam_pos.y;
@@ -167,7 +167,7 @@ c.pre_sdl = QString([[
       function { -cos(((x+0.5+ods_angle/360)) * 2 * pi - pi) * cos(pi / 2 -select(y, 1-2*(y+0.5), 1-2*y) * pi) * ods_right }
     }
   }
-]])
+]]
 
 v:setCam(c)
 end

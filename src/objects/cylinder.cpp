@@ -76,14 +76,14 @@ void Cylinder::toPOV(QTextStream *s) const {
   }
 
   if (s != NULL) {
-    if (mPreSDL == NULL) {
+    if (mPreSDL.isNull()) {
       *s << "cylinder { " << -lengths[2] / 2.0 << "*z, " << lengths[2] / 2.0
          << "*z, " << lengths[0] << "\n";
     } else {
       *s << mPreSDL << "\n";
     }
 
-    if (mSDL != NULL) {
+    if (!mSDL.isNull()) {
       *s << mSDL << "\n";
     } else {
       *s << "  pigment { rgb <" << color[0] / 255.0 << ", " << color[1] / 255.0
@@ -99,7 +99,7 @@ void Cylinder::toPOV(QTextStream *s) const {
        << "          " << matrix[12] << "," << matrix[13] << "," << matrix[14]
        << ">" << "\n";
 
-    if (mPostSDL == NULL) {
+    if (mPostSDL.isNull()) {
       *s << "}" << "\n"
          << "\n";
     } else {

@@ -75,23 +75,23 @@ public:
 
 Mesh::Mesh(QString filename, btScalar mass) : Object() {
   m_mesh = new btTriangleMesh();
-  m_shape = new btGImpactMeshShape(m_mesh);
+  m_shape = NULL;
   m_scene = NULL;
 
   setColor(127, 127, 127);
 
-  if (filename != NULL)
+  if (!filename.isNull())
     loadFile(filename, mass);
 }
 
 Mesh::Mesh(QString filename) : Object() {
   m_mesh = new btTriangleMesh();
-  m_shape = new btGImpactMeshShape(m_mesh);
+  m_shape = NULL;
   m_scene = NULL;
 
   setColor(127, 127, 127);
 
-  if (filename != NULL)
+  if (!filename.isNull())
     loadFile(filename, 0);
 }
 
@@ -119,6 +119,9 @@ void Mesh::loadFile(QString filename, btScalar mass) {
 
   if (!m_scene) {
     // qDebug() << "Unable to load " << filename << ": using empty shape.";
+    m_shape = new btGImpactMeshShape(m_mesh);
+    m_shape->updateBound();
+
     btQuaternion qtn;
     btTransform trans;
     btDefaultMotionState *motionState;
@@ -174,6 +177,7 @@ void Mesh::loadFile(QString filename, btScalar mass) {
 
     // qDebug() << m_mesh->getNumTriangles();
 
+    m_shape = new btGImpactMeshShape(m_mesh);
     m_shape->updateBound();
 
     btQuaternion qtn;
@@ -275,7 +279,7 @@ void Mesh::toPOV(QTextStream *s) const {
 
   if (s != NULL && m_shape != NULL && body != NULL &&
       body->getMotionState() != NULL) {
-    if (mPreSDL == NULL) {
+    if (mPreSDL.isNull()) {
 
       QByteArray *data = new QByteArray();
       QTextStream *tmp = new QTextStream(data);
@@ -327,7 +331,7 @@ void Mesh::toPOV(QTextStream *s) const {
       *s << mPreSDL << "\n";
     }
 
-    if (mSDL != NULL) {
+    if (!mSDL.isNull()) {
       *s << mSDL << "\n";
     } else {
       *s << "  pigment { rgb <" << color[0] / 255.0 << ", " << color[1] / 255.0
@@ -343,7 +347,7 @@ void Mesh::toPOV(QTextStream *s) const {
        << "          " << matrix[12] << "," << matrix[13] << "," << matrix[14]
        << ">" << "\n";
 
-    if (mPostSDL == NULL) {
+    if (mPostSDL.isNull()) {
       *s << "}" << "\n"
          << "\n";
     } else {

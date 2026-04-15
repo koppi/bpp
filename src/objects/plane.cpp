@@ -82,7 +82,7 @@ void Plane::toPOV(QTextStream *s) const {
   }
 
   if (s != NULL) {
-    if (mPreSDL == NULL) {
+    if (mPreSDL.isNull()) {
       const btStaticPlaneShape *staticPlaneShape =
           static_cast<const btStaticPlaneShape *>(shape);
       const btVector3 &planeNormal = staticPlaneShape->getPlaneNormal();
@@ -94,7 +94,7 @@ void Plane::toPOV(QTextStream *s) const {
       *s << mPreSDL << "\n";
     }
 
-    if (mSDL != NULL) {
+    if (!mSDL.isNull()) {
       *s << mSDL << "\n";
     } else {
       *s << "  pigment { rgb <" << color[0] / 255.0 << ", " << color[1] / 255.0
@@ -110,7 +110,7 @@ void Plane::toPOV(QTextStream *s) const {
        << "          " << matrix[12] << "," << matrix[13] << "," << matrix[14]
        << ">" << "\n";
 
-    if (mPostSDL == NULL) {
+    if (mPostSDL.isNull()) {
       *s << "}" << "\n"
          << "\n";
     } else {

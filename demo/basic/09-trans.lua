@@ -2,12 +2,11 @@
 -- util/trans.lua library demo
 --
 
-local color = require "module/color"
 local trans = require "module/scad/trans"
 
 plane = Plane(0,1,0,0,1000)
 plane.pos = btVector3(0,-100,0)
-plane.col = color.gray
+plane.col = "gray"
 plane.sdl = [[
   texture {
     pigment { color rgb <0,0,0>*1.5 }
@@ -31,7 +30,7 @@ for i=1,X do
   for j=1,Y do
   c = Sphere(0.25,0)
   --c = Cube(0.5,0.5,0.5,0)
-  c.col= color.random_google()
+  --c.col= color.random_google()
   trans.rotate(c, btQuaternion(1,0,1,1), btVector3(i/X,0,0))
   trans.move  (c, btVector3(i-X/2,0,j-Y/2))
 

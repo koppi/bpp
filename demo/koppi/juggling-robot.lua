@@ -2,8 +2,6 @@
 -- Claude Shannon's juggling robot
 --
 
-local color = require "module/color"
-
 v.timeStep      = 1/25
 v.maxSubSteps   = 10
 v.fixedTimeStep = 1/200
@@ -11,12 +9,12 @@ v.fixedTimeStep = 1/200
 y = 2.5 di = 5 d = 0.35 l = 2.35 p = 120
 
 plane = Plane(0,1,0,0,10)
-plane.col = color.darkgreen
+plane.col = "green"
 plane.pos = btVector3(0,-2.5,0)
 v:add(plane)
 
 c = Cylinder(1.5,1,0)
-c.col = color.darkgray
+c.col = "darkgray"
 c.trans = btTransform(btQuaternion(1,0,0,1), btVector3(0,-2,0))
 c.friction = 0.1
 c.restitution = 0.85
@@ -35,7 +33,7 @@ v:add(s)
 h = 7.5
 
 cy = Cylinder(0.15,2,0)
-cy.col = color.darkgoldenrod
+cy.col = "darkgoldenrod"
 cy.trans = btTransform(btQuaternion(0,1,0,1), btVector3(-1.5,h/2+0.85,0))
 v:add(cy)
 
