@@ -165,7 +165,7 @@ M.pov_gray75 = "#bfcfcf"
 M.pov_dimgray = "#545454"
 
 -- POV-Ray colors.inc
-M = {
+for k, v in pairs({
     Red = "#FF0000",
     Green = "#00FF00",
     Blue = "#0000FF",
@@ -296,7 +296,7 @@ M = {
     Med_Purple = "#BA29F5",
     Light_Purple = "#DE94FA",
     Very_Light_Purple = "#EFFFCF",
-}
+}) do M[k] = v end
 
 function M.num2hex(num)
     local hexstr = '0123456789abcdef'
