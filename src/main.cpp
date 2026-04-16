@@ -92,8 +92,18 @@ int main(int argc, char **argv) {
 
   parser.process(*app);
 
+  QStringList positionalArgs = parser.positionalArguments();
+
+  QString positionalLuaFile;
+  for (int i = positionalArgs.size() - 1; i >= 0; --i) {
+    if (positionalArgs[i].endsWith(".lua", Qt::CaseInsensitive)) {
+      positionalLuaFile = positionalArgs[i];
+      break;
+    }
+  }
+
   if (!parser.isSet(luaOption) && !parser.isSet(luaStdinOption) &&
-      !parser.isSet(luaExpressionOption)) {
+      !parser.isSet(luaExpressionOption) && positionalLuaFile.isEmpty()) {
     Gui *g;
 
     glutInit(&argc, argv);
@@ -110,19 +120,42 @@ int main(int argc, char **argv) {
     delete g; // Qt will delete children, but explicit delete for top-level widget is good practice
     delete settings;
     return ret;
-  } else {
+} else {
     QStringList lua = parser.values(luaOption);
     QStringList luaExpression = parser.values(luaExpressionOption);
 
-    if (lua.isEmpty() && luaExpression.isEmpty() &&
-        !parser.isSet(luaStdinOption)) {
+    if (positionalLuaFile.isEmpty() && lua.isEmpty() &&
+        luaExpression.isEmpty() && !parser.isSet(luaStdinOption)) {
       qStdErr() << QObject::tr("Error: Option '--lua' requires a Lua script "
-                               "file as an argument. Exiting.")
+                                "file as an argument. Exiting.")
+                       .arg(lua[0])
                 << "\n";
 
       delete settings;
 
       return EXIT_FAILURE;
+    }
+
+    if (!positionalLuaFile.isEmpty() && lua.isEmpty() &&
+        !parser.isSet(luaStdinOption) && luaExpression.isEmpty()) {
+      // GUI mode with a .lua file argument: open in editor and start sim
+      glutInit(&argc, argv);
+      glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+
+      if (!QIcon::hasThemeIcon("document-new")) {
+        QIcon::setThemeName("humanity");
+      }
+
+      Gui *g = new Gui(settings);
+      g->show();
+
+      g->fileOpen(positionalLuaFile);
+      g->runProgram();
+
+      int ret = app->exec();
+      delete g;
+      delete settings;
+      return ret;
     }
 
     QString txt;
@@ -132,8 +165,21 @@ int main(int argc, char **argv) {
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString errMsg = file.errorString();
         qStdErr() << QObject::tr("Error: reading '%1': %2. Exiting.")
-                         .arg(lua[0], errMsg)
-                  << "\n";
+                          .arg(lua[0], errMsg)
+                   << "\n";
+        return EXIT_FAILURE;
+      }
+
+      QTextStream in(&file);
+      txt = in.readAll();
+      file.close();
+    } else if (!positionalLuaFile.isEmpty()) {
+      QFile file(positionalLuaFile);
+      if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString errMsg = file.errorString();
+        qStdErr() << QObject::tr("Error: reading '%1': %2. Exiting.")
+                          .arg(positionalLuaFile, errMsg)
+                   << "\n";
         return EXIT_FAILURE;
       }
 
@@ -175,6 +221,8 @@ int main(int argc, char **argv) {
 
     if (!lua.isEmpty()) {
       v->setScriptName(withoutExtension(lua[0]));
+    } else if (!positionalLuaFile.isEmpty()) {
+      v->setScriptName(withoutExtension(positionalLuaFile));
     } else {
       v->setScriptName("stdin");
     }
