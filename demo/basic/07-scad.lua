@@ -105,3 +105,19 @@ v.cam.look = btVector3(-275495, -271337, -919858)
 --v.cam.focal_blur     = 10
 v.cam.focal_aperture = 5
 v.cam.focal_point    = btVector3(1,10,0)
+
+v.sdl = [[
+light_source { <100, 200, 100> color rgb <1, 0.95, 0.8>
+  spotlight
+  point_at <0, 0, 0>
+  radius 30
+  falloff 35
+}
+
+light_source { <-100, 180, -80> color rgb <0.8, 0.85, 1>
+  spotlight
+  point_at <0, 0, 0>
+  radius 25
+  falloff 30
+}
+]]
