@@ -5,22 +5,27 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QMainWindow>
 #include <QProcess>
+#include <QProgressBar>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QStatusBar>
 #include <QTemporaryFile>
+#include <QApplication>
 
 using namespace std;
 
 #include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
+static int s_runningCount = 0;
+
 OpenSCAD::OpenSCAD(QString sdl, btScalar mass) : Mesh(NULL, mass) {
   this->sdl = sdl;
-
-  // calculate SHA1 hash of OpenSCAD sdl text and see,
-  // if OpenSCAD already has generated an STL file for the given OpenSCAD sdl
-  // text
+  m_process = nullptr;
+  m_pendingMass = mass;
+  m_stlReady = false;
 
   QCryptographicHash hashAlgo(QCryptographicHash::Sha1);
   hashAlgo.addData(sdl.toUtf8());
@@ -39,16 +44,13 @@ OpenSCAD::OpenSCAD(QString sdl, btScalar mass) : Mesh(NULL, mass) {
       QStandardPaths::writableLocation(QStandardPaths::CacheLocation) +
       QDir::separator() + hash + ".stl";
 
-  // check, if the STL file exists in the cache. If so, load it and return
   QFileInfo check_file(stlfile);
   if (check_file.exists() && check_file.isFile()) {
     loadFile(stlfile, mass);
+    m_stlReady = true;
     return;
   }
 
-  // else: the STL file needs to be generated with openscad:
-  //// echo "cube([2,3,4]);" > /tmp/bpp.scad && openscad -o /tmp/bpp.stl
-  ////tmp/bpp.scad
   QString scadFile =
       QStandardPaths::writableLocation(QStandardPaths::CacheLocation) +
       QDir::separator() + hash + ".scad";
@@ -72,40 +74,91 @@ OpenSCAD::OpenSCAD(QString sdl, btScalar mass) : Mesh(NULL, mass) {
     openscad = s.value("openscad/executable", "/usr/bin/openscad").toString();
 #endif
 
-    // args << openscad;
     args << "-o";
     args << stlfile;
     args << scad.fileName();
 
     qDebug() << "executing openscad " << args;
 
-    QProcess p;
-    p.start(openscad, args);
-    if (!p.waitForStarted()) {
-      qDebug() << "openscad !p.waitForStarted()";
-      return;
-    }
+    m_stlfile = stlfile;
 
-    if (!p.waitForFinished(-1)) { // wait forever
-      qDebug() << "openscad !p.waitForFinished()";
-      return;
-    }
+    m_process = new QProcess(this);
 
-    if (p.exitCode() != 0) {
-      qDebug() << tr("openscad exited with code: %1.").arg(p.exitCode());
-      QString err = p.readAllStandardError();
-      if (!err.isEmpty()) {
-        qDebug() << err;
+    showProgressBar();
+
+    m_process->start(openscad, args);
+    m_process->waitForFinished(-1);
+
+    hideProgressBar();
+
+    if (m_process->exitStatus() == QProcess::CrashExit ||
+        m_process->exitCode() != 0) {
+      if (m_process->exitStatus() == QProcess::CrashExit) {
+        qDebug() << "openscad process error";
+      } else {
+        qDebug() << tr("openscad exited with code: %1.").arg(m_process->exitCode());
+        QString err = m_process->readAllStandardError();
+        if (!err.isEmpty()) {
+          qDebug() << err;
+        }
       }
+      m_stlReady = true;
+      m_process->deleteLater();
+      m_process = nullptr;
       return;
     }
 
-    loadFile(stlfile, mass);
+    loadFile(m_stlfile, m_pendingMass);
+    m_stlReady = true;
+    m_process->deleteLater();
+    m_process = nullptr;
+    emit stlReady();
   } else {
     qDebug() << tr("Error writing to file '%1'.").arg(scad.fileName());
-    return;
+    m_stlReady = true;
   }
 }
+
+void OpenSCAD::showProgressBar() {
+  s_runningCount++;
+  QMainWindow *mainWindow = nullptr;
+  for (QWidget *widget : QApplication::topLevelWidgets()) {
+    mainWindow = qobject_cast<QMainWindow *>(widget);
+    if (mainWindow)
+      break;
+  }
+  if (mainWindow) {
+    QProgressBar *progressBar =
+        mainWindow->findChild<QProgressBar *>(QString::fromUtf8("bppProgressBar"));
+    if (progressBar) {
+      progressBar->show();
+      mainWindow->statusBar()->showMessage(tr("Running OpenSCAD..."));
+    }
+  }
+}
+
+void OpenSCAD::hideProgressBar() {
+  s_runningCount--;
+  if (s_runningCount > 0)
+    return;
+
+  QMainWindow *mainWindow = nullptr;
+  for (QWidget *widget : QApplication::topLevelWidgets()) {
+    mainWindow = qobject_cast<QMainWindow *>(widget);
+    if (mainWindow)
+      break;
+  }
+  if (mainWindow) {
+    QProgressBar *progressBar =
+        mainWindow->findChild<QProgressBar *>(QString::fromUtf8("bppProgressBar"));
+    if (progressBar) {
+      progressBar->hide();
+      mainWindow->statusBar()->clearMessage();
+    }
+  }
+}
+
+bool OpenSCAD::isReady() const { return m_stlReady; }
 
 void OpenSCAD::luaBind(lua_State *s) {
   using namespace luabind;

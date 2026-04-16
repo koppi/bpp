@@ -954,10 +954,13 @@ void Viewer::init() {
 }
 
 void Viewer::draw() {
-  QMutexLocker locker(&mutex);
-
-  if (_parsing || !isVisible())
+  if (!mutex.tryLock())
     return;
+
+  if (_parsing || !isVisible()) {
+    mutex.unlock();
+    return;
+  }
 
   if (L) {
     // lua_gc(L, LUA_GCCOLLECT, 0); // collect garbage
@@ -1028,6 +1031,8 @@ void Viewer::draw() {
   if (manipulatedFrame() != NULL) {
     glPopMatrix();
   }
+
+  mutex.unlock();
 }
 
 void Viewer::drawSceneInternal(int pass) {

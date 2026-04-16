@@ -2,6 +2,7 @@
 -- Demo of basic BPP objects and functions
 --
 
+local color = require "module/color"
 local gs    = require "module/scad/geodesic_sphere"
 
 v.timeStep      = 1/25 -- 25 frames per second
@@ -14,26 +15,26 @@ v.fixedTimeStep = 1/60
 
 p = Plane(0,1,0,0,5)
 p.pos = btVector3(0,0,0)
-p.col = "forestgreen"
+p.col = color.forestgreen
 v:add(p)
 
 cu = Cube(1,1,1,1)
-cu.col = "aquamarine"
+cu.col = color.aquamarine
 cu.pos = btVector3(-2, 0.5, 0);
 v:add(cu)
 
 cy = Cylinder(0.5,1,1)
-cy.col = "brown"
+cy.col = color.brown
 cy.pos = btVector3(-1, 0.5, 0)
 v:add(cy)
 
 sp = Sphere(.5,1)
-sp.col = "coral"
+sp.col = color.coral
 sp.pos = btVector3(1, 0.5, 0)
 v:add(sp)
 
 s1 = gs.new({ fun  = "geodesic_sphere(r = 0.5, $fn=6);", mass = 1})
-s1.col = "gold"
+s1.col = color.gold
 s1.pos = btVector3(2,0.5,0)
 v:add(s1)
 

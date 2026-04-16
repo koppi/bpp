@@ -6,6 +6,7 @@
 #include "mesh.h"
 
 #include <QObject>
+#include <QProcess>
 
 class OpenSCAD : public Mesh {
   Q_OBJECT
@@ -15,12 +16,20 @@ public:
   static void luaBind(lua_State *s);
   virtual QString toString() const;
 
-signals:
+  bool isReady() const;
 
-public slots:
+signals:
+  void stlReady();
 
 private:
+  void showProgressBar();
+  void hideProgressBar();
+
   QString sdl;
+  QProcess *m_process;
+  QString m_stlfile;
+  btScalar m_pendingMass;
+  bool m_stlReady;
 };
 
 #endif // HAS_LIB_ASSIMP

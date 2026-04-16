@@ -10,6 +10,8 @@
 #include "code.h"
 #include "viewer.h"
 
+class QProgressBar;
+
 class Gui;
 
 class Gui : public QMainWindow {
@@ -76,6 +78,9 @@ public slots:
   void statusMessage(const QString aMessage) {
     statusBar()->showMessage(aMessage);
   }
+
+  void showProgressBar(const QString &message = QString());
+  void hideProgressBar();
 
   void runProgram() {
     statusBar()->showMessage(tr("Running simulation..."));
@@ -159,6 +164,7 @@ private:
   QMessageBox *msgBox;
 
   QComboBox *renderSettings;
+  QProgressBar *progressBar;
 };
 
 #endif

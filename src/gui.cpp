@@ -4,6 +4,8 @@
 
 #include "gui.h"
 
+#include <QProgressBar>
+
 std::ostream &operator<<(std::ostream &ostream, const Gui &gui) {
   ostream << gui.toString().toUtf8().data();
   return ostream;
@@ -24,6 +26,14 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   createActions();
   createMenus();
   setStatusBar(new QStatusBar(this));
+
+  progressBar = new QProgressBar(statusBar());
+  progressBar->setObjectName("bppProgressBar");
+  progressBar->setRange(0, 0);
+  progressBar->setMaximumWidth(200);
+  progressBar->setMaximumHeight(16);
+  progressBar->hide();
+  statusBar()->addPermanentWidget(progressBar);
 
   renderSettings = new QComboBox(ui.toolBarView);
 
@@ -63,6 +73,10 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
 
   connect(ui.viewer, &Viewer::scriptHasOutput, this, &Gui::debug);
   connect(ui.viewer, &Viewer::scriptStarts, this, &Gui::clearDebug);
+  connect(ui.viewer, &Viewer::scriptStarts, this,
+          [this]() { showProgressBar(tr("Parsing script...")); });
+  connect(ui.viewer, &Viewer::scriptFinished, this,
+          [this]() { hideProgressBar(); });
   connect(ui.viewer, &Viewer::simulationStateChanged, this,
           &Gui::toggleSimButton);
   connect(ui.viewer, &Viewer::POVStateChanged, this, &Gui::togglePOVExport);
@@ -644,3 +658,14 @@ void Gui::log(QString text) { debugText->appendLine(text); }
 QString Gui::toString() const { return QString("Gui"); }
 
 void Gui::setStatusBarText(QString msg) { statusBar()->showMessage(msg); }
+
+void Gui::showProgressBar(const QString &message) {
+  if (!message.isEmpty())
+    statusBar()->showMessage(message);
+  progressBar->show();
+}
+
+void Gui::hideProgressBar() {
+  progressBar->hide();
+  statusBar()->clearMessage();
+}

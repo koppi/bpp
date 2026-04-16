@@ -357,20 +357,26 @@ QString Object::getColorString() const { return getColor().name(); }
 void Object::setPosition(const btVector3 &v) { setPosition(v[0], v[1], v[2]); }
 
 void Object::setPosition(btScalar x, btScalar y, btScalar z) {
-  btTransform trans;
-  if (body->getMotionState() == NULL) {
-    body->setMotionState(new btDefaultMotionState());
+  if (body != NULL) {
+    btTransform trans;
+    if (body->getMotionState() == NULL) {
+      body->setMotionState(new btDefaultMotionState());
+    }
+    body->getMotionState()->getWorldTransform(trans);
+    trans.setOrigin(btVector3(x, y, z));
+    delete body->getMotionState();
+    body->setMotionState(new btDefaultMotionState(trans));
   }
-  body->getMotionState()->getWorldTransform(trans);
-  trans.setOrigin(btVector3(x, y, z));
-  delete body->getMotionState();
-  body->setMotionState(new btDefaultMotionState(trans));
 }
 
 btVector3 Object::getPosition() const {
-  btTransform trans;
-  body->getMotionState()->getWorldTransform(trans);
-  return trans.getOrigin();
+  if (body != NULL) {
+    btTransform trans;
+    body->getMotionState()->getWorldTransform(trans);
+    return trans.getOrigin();
+  } else {
+    return btVector3();
+  }
 }
 
 void Object::setRotation(const btVector3 &axis, btScalar angle) {

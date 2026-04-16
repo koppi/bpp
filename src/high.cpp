@@ -1,23 +1,26 @@
 #include "high.h"
 
+#include <QApplication>
+#include <QPalette>
+#include <QWidget>
+
 LuaHighlighter::LuaHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent) {
   HighlightingRule rule;
 
-  keywordFormat.setForeground(Qt::darkBlue);
+  bool isDark = QApplication::palette().window().color().lightness() < 128;
+
+  keywordFormat.setForeground(isDark ? QColor(120, 160, 255) : Qt::darkBlue);
   keywordFormat.setFontWeight(QFont::Bold);
-  // rule.pattern =
-  // QRegExp("\\bchar|class|const|double|enum|explicit|friend|inline|int|long|namespace|operator|private|protected|public|short|signals|signed|slots|static|struct|template|typedef|typename|union|unsigned|virtual|void|volatile\\b");
   rule.pattern =
       QRegExp("\\b(and|break|do|else|elseif|end|false|for|function|if|in|local|"
               "nil|not|or|repeat|return|then|true|until|while)\\b");
-  // rule.pattern = QRegExp("\\b(and|break)\\b");
   rule.format = keywordFormat;
   rule.name = "keyword";
   rule.blockState = BS_Dummy;
   highlightingRules.append(rule);
 
-  multiLineCommentFormat.setForeground(Qt::darkGreen);
+  multiLineCommentFormat.setForeground(isDark ? QColor(100, 180, 100) : Qt::darkGreen);
   commentStartExpression = QRegExp("\\-\\-\\[\\[");
   commentEndExpression = QRegExp("\\]\\]");
   rule.pattern = commentStartExpression;
@@ -27,7 +30,7 @@ LuaHighlighter::LuaHighlighter(QTextDocument *parent)
   rule.format = multiLineCommentFormat;
   highlightingRules.append(rule);
 
-  quotationFormat.setForeground(Qt::darkRed);
+  quotationFormat.setForeground(isDark ? QColor(255, 140, 80) : Qt::darkRed);
 
   rule.format = quotationFormat;
   rule.pattern = QRegExp("\"\"|''");
@@ -62,22 +65,21 @@ LuaHighlighter::LuaHighlighter(QTextDocument *parent)
   }
 
   classFormat.setFontWeight(QFont::Bold);
-  classFormat.setForeground(Qt::darkMagenta);
+  classFormat.setForeground(isDark ? QColor(220, 140, 255) : Qt::darkMagenta);
   rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
   rule.format = classFormat;
   rule.name = "class";
   rule.blockState = BS_Dummy;
   highlightingRules.append(rule);
 
-  // functionFormat.setFontItalic(true);
-  functionFormat.setForeground(Qt::blue);
+  functionFormat.setForeground(isDark ? QColor(140, 200, 255) : Qt::blue);
   rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
   rule.format = functionFormat;
   rule.name = "function";
   rule.blockState = BS_Dummy;
   highlightingRules.append(rule);
 
-  singleLineCommentFormat.setForeground(Qt::darkGreen);
+  singleLineCommentFormat.setForeground(isDark ? QColor(100, 180, 100) : Qt::darkGreen);
   rule.pattern = QRegExp("\\-\\-[^\\[][^\n]*");
   rule.format = singleLineCommentFormat;
   rule.name = "line comment";
@@ -85,7 +87,7 @@ LuaHighlighter::LuaHighlighter(QTextDocument *parent)
   highlightingRules.append(rule);
 
   userKeyword.setFontWeight(QFont::Bold);
-  userKeyword.setForeground(Qt::darkMagenta);
+  userKeyword.setForeground(isDark ? QColor(220, 140, 255) : Qt::darkMagenta);
   rule.pattern = QRegExp("\\b(__USERKEYWORD__)\\b");
   rule.format = userKeyword;
   rule.name = "user keyword";

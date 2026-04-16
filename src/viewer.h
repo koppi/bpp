@@ -60,6 +60,7 @@ public:
 
   void addObject(Object *o);
   void removeObject(Object *o);
+  void addObjectBody(Object *o);
   void setCamera(Cam *cam);
   Cam *getCamera();
 
