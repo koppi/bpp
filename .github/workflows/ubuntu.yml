@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.target }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
         fetch-tags: true
@@ -55,7 +55,7 @@ jobs:
       run: lintian ../bpp*deb | lintian-info || true
 
     - name: upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: ${{ matrix.target }}
         if-no-files-found: error
