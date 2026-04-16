@@ -376,6 +376,7 @@ void LuaBullet::luaBind(lua_State *s) {
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtConvexHullShape.html
       [class_<btConvexHullShape, btPolyhedralConvexAabbCachingShape>(
            "btConvexHullShape")
+           .def(constructor<>(), adopt(result))
            .def(constructor<const btScalar *, int, int>(), adopt(result))
            .def("addPoint", &btConvexHullShape::addPoint)
            .def("getUnscaledPoints", (btVector3 * (btConvexHullShape::*)()) &
@@ -439,6 +440,9 @@ void LuaBullet::luaBind(lua_State *s) {
 
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtTriangleShape.html
       [class_<btTriangleShape, btPolyhedralConvexShape>("btTriangleShape")
+           .def(constructor<const btVector3 &, const btVector3 &,
+                             const btVector3 &>(),
+                adopt(result))
            .def("getVertexPtr", (btVector3 & (btTriangleShape::*)(int)) &
                                     btTriangleShape::getVertexPtr)
            .def("calcNormal", &btTriangleShape::calcNormal)];

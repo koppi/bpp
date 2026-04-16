@@ -22,6 +22,7 @@
 #include "objects/objects.h"
 #include "objects/plane.h"
 #include "objects/sphere.h"
+#include "objects/triangle.h"
 
 #ifdef HAS_LIB_ASSIMP
 #include "objects/mesh.h"
@@ -753,6 +754,7 @@ bool Viewer::parse(QString txt) {
     Palette::luaBind(L);
     Plane::luaBind(L);
     Sphere::luaBind(L);
+    Triangle::luaBind(L);
     Viewer::luaBind(L);
 
     luabind::bind_class_info(L);
