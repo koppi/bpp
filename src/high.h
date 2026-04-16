@@ -28,7 +28,7 @@ public:
 class LuaHighlighter : public QSyntaxHighlighter {
   Q_OBJECT
 public:
-  explicit LuaHighlighter(QTextDocument *parent = 0);
+  explicit LuaHighlighter(QTextDocument *parent = nullptr);
 
   void addUserKeyword(const QString &keyword);
 

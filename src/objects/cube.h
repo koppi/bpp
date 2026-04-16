@@ -16,10 +16,10 @@ public:
   btScalar lengths[3];
 
   static void luaBind(lua_State *s);
-  QString toString() const;
-  virtual void toPOV(QTextStream *s) const;
+  QString toString() const override;
+  void toPOV(QTextStream *s) const override;
 
-  virtual void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb);
+  void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) override;
 
 protected:
   void init(btScalar width, btScalar height, btScalar depth, btScalar mass);

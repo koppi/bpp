@@ -73,7 +73,7 @@ public:
   }
 };
 
-Mesh::Mesh(QString filename, btScalar mass) : Object() {
+Mesh::Mesh(const QString &filename, btScalar mass) {
   m_mesh = new btTriangleMesh();
   m_shape = nullptr;
   m_scene = nullptr;
@@ -84,7 +84,7 @@ Mesh::Mesh(QString filename, btScalar mass) : Object() {
     loadFile(filename, mass);
 }
 
-Mesh::Mesh(QString filename) : Object() {
+Mesh::Mesh(const QString &filename) {
   m_mesh = new btTriangleMesh();
   m_shape = nullptr;
   m_scene = nullptr;
@@ -95,7 +95,7 @@ Mesh::Mesh(QString filename) : Object() {
     loadFile(filename, 0);
 }
 
-Mesh::Mesh() : Object() {
+Mesh::Mesh() {
   m_mesh = new btTriangleMesh();
   m_shape = new btGImpactMeshShape(m_mesh);
   m_scene = nullptr;
@@ -106,20 +106,16 @@ Mesh::Mesh() : Object() {
 
 Mesh::~Mesh() {
   aiReleaseImport(m_scene);
-  if (m_shape != nullptr) {
-    delete m_shape;
-    m_shape = nullptr;
-  }
-  if (m_mesh != nullptr) {
-    delete m_mesh;
-    m_mesh = nullptr;
-  }
+  delete m_shape;
+  m_shape = nullptr;
+  delete m_mesh;
+  m_mesh = nullptr;
   if (body && body->getMotionState()) {
     delete body->getMotionState();
   }
 }
 
-void Mesh::loadFile(QString filename, btScalar mass) {
+void Mesh::loadFile(const QString &filename, btScalar mass) {
   m_scene =
       aiImportFile(filename.toUtf8(), aiProcessPreset_TargetRealtime_Fast);
 
@@ -130,7 +126,7 @@ void Mesh::loadFile(QString filename, btScalar mass) {
 
     btQuaternion qtn;
     btTransform trans;
-    btDefaultMotionState *motionState;
+    btDefaultMotionState *motionState = nullptr;
 
     trans.setIdentity();
     qtn.setEuler(0.0, 0.0, 0.0);
@@ -188,7 +184,7 @@ void Mesh::loadFile(QString filename, btScalar mass) {
 
     btQuaternion qtn;
     btTransform trans;
-    btDefaultMotionState *motionState;
+    btDefaultMotionState *motionState = nullptr;
 
     trans.setIdentity();
     qtn.setEuler(0.0, 0.0, 0.0);

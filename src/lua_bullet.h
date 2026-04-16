@@ -7,6 +7,7 @@
 
 #include <QObject>
 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #include <btBulletCollisionCommon.h>
@@ -17,7 +18,7 @@
 class LuaBullet : public QObject {
   Q_OBJECT
 public:
-  explicit LuaBullet(QObject *parent = 0);
+  explicit LuaBullet(QObject *parent = nullptr);
   static void luaBind(lua_State *);
 signals:
 

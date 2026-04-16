@@ -21,8 +21,8 @@ class CodeEditor : public QPlainTextEdit {
   Q_OBJECT;
 
 public:
-  CodeEditor(QSettings *settings, QWidget *parent = 0);
-  ~CodeEditor(); // Add destructor declaration
+  CodeEditor(QSettings *settings, QWidget *parent = nullptr);
+  ~CodeEditor() override; // Add destructor declaration
 
   void lineNumberAreaPaintEvent(QPaintEvent *event);
   int lineNumberAreaWidth();
@@ -55,8 +55,8 @@ signals:
   void keyPressed(QKeyEvent *e);
 
 protected:
-  void keyPressEvent(QKeyEvent *e);
-  void resizeEvent(QResizeEvent *event);
+  void keyPressEvent(QKeyEvent *e) override;
+  void resizeEvent(QResizeEvent *event) override;
 
 private slots:
   void updateLineNumberAreaWidth(int newBlockCount);

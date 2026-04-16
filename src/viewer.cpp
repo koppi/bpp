@@ -58,7 +58,7 @@
 #include <QStandardPaths>
 #include <QStringList>
 
-typedef boost::error_info<struct tag_stack_str, std::string> stack_info;
+using stack_info = boost::error_info<struct tag_stack_str, std::string>;
 
 using namespace std;
 
@@ -300,7 +300,7 @@ void report_errors(lua_State *L, int status) {
   }
 }
 
-#define G 9.81f
+constexpr btScalar G = 9.81f;
 
 using namespace qglviewer;
 

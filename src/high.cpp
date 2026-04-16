@@ -58,7 +58,7 @@ LuaHighlighter::LuaHighlighter(QTextDocument *parent)
 
     rule.pattern = quotationStart;
     rule.endPattern = quotationEnd;
-    rule.blockState = (BlockState)(BS_LongQuota + i);
+    rule.blockState = static_cast<BlockState>(BS_LongQuota + i);
     rule.name = QString("long quotation %1").arg(i);
     highlightingRules.append(rule);
     s += "=";

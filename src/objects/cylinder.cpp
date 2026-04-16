@@ -17,11 +17,11 @@ using namespace std;
 #include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
-Cylinder::Cylinder(const btVector3 &dim, btScalar mass) : Object() {
+Cylinder::Cylinder(const btVector3 &dim, btScalar mass) {
   init(dim.getX(), dim.getZ(), mass);
 }
 
-Cylinder::Cylinder(btScalar radius, btScalar depth, btScalar mass) : Object() {
+Cylinder::Cylinder(btScalar radius, btScalar depth, btScalar mass) {
 
   init(radius, depth, mass);
 }
@@ -36,7 +36,7 @@ void Cylinder::init(btScalar radius, btScalar depth, btScalar mass) {
 
   btQuaternion qtn;
   btTransform trans;
-  btDefaultMotionState *motionState;
+  btDefaultMotionState *motionState = nullptr;
 
   trans.setIdentity();
   qtn.setEuler(0.0, 0.0, 0.0);

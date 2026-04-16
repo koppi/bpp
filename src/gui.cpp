@@ -105,8 +105,7 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   }
 }
 
-Gui::~Gui() {
-}
+Gui::~Gui() = default;
 
 void Gui::setFullscreenActionState() {
   ui.action_Full_screen->setChecked(isFullScreen());
@@ -425,11 +424,11 @@ void Gui::parseEditor() { ui.viewer->parse(editor->toPlainText()); }
 
 void Gui::animStarted() {}
 
-void Gui::animProgress(QString, int) {}
+void Gui::animProgress(const QString &, int) {}
 
 void Gui::animFinished() {}
 
-void Gui::debug(QString txt) { debugText->appendLine(txt); }
+void Gui::debug(const QString &txt) { debugText->appendLine(txt); }
 
 void Gui::clearDebug() { debugText->clear(); }
 
@@ -651,13 +650,13 @@ void Gui::closeEvent(QCloseEvent *event) {
   }
 }
 
-void Gui::command(QString cmd) { ui.viewer->command(cmd); }
+void Gui::command(const QString &cmd) { ui.viewer->command(cmd); }
 
-void Gui::log(QString text) { debugText->appendLine(text); }
+void Gui::log(const QString &text) { debugText->appendLine(text); }
 
 QString Gui::toString() const { return QString("Gui"); }
 
-void Gui::setStatusBarText(QString msg) { statusBar()->showMessage(msg); }
+void Gui::setStatusBarText(const QString &msg) { statusBar()->showMessage(msg); }
 
 void Gui::showProgressBar(const QString &message) {
   if (!message.isEmpty())

@@ -34,12 +34,12 @@ class Object : public QObject {
   Q_OBJECT;
 
 public:
-  Object(QObject *parent = 0, btScalar pmass = 0);
+  Object(QObject *parent = nullptr, btScalar pmass = 0);
   virtual ~Object();
 
   void setColor(int r, int g, int b);
-  void setColor(QColor col);
-  void setColor(QString c);
+  void setColor(const QColor &col);
+  void setColor(const QString &c);
 
   QColor getColor() const;
   QString getColorString() const;
@@ -80,7 +80,7 @@ public:
   btRigidBody *getRigidBody() const;
 
   void setCollisionShape(btCollisionShape *s);
-  btCollisionShape *getCollisionShape();
+  btCollisionShape *getCollisionShape() const;
 
   // POV-Ray properties
 
@@ -91,15 +91,15 @@ public:
   virtual QString getPovPhotons() const;
 
   void setPOVExport(bool onoff);
-  bool getPOVExport();
+  bool getPOVExport() const;
 
-  void setPreSDL(QString pre_sdl);
+  void setPreSDL(const QString &pre_sdl);
   QString getPreSDL() const;
 
-  void setSDL(QString sdl);
+  void setSDL(const QString &sdl);
   QString getSDL() const;
 
-  void setPostSDL(QString post_sdl);
+  void setPostSDL(const QString &post_sdl);
   QString getPostSDL() const;
 
   btRigidBody *body;
@@ -121,7 +121,7 @@ public:
   virtual void renderInLocalFramePre(btVector3 &minaabb, btVector3 &maxaabb);
   virtual void renderInLocalFramePost(btVector3 &minaabb, btVector3 &maxaabb);
 
-  QList<btTypedConstraint *> getConstraints();
+  QList<btTypedConstraint *> getConstraints() const;
 
   void setCollisionTypes(collisiontypes col1, collisiontypes col2);
   collisiontypes getCol1() const;

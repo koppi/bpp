@@ -16,14 +16,14 @@ class Prefs : public QDialog, public Ui_Prefs {
   Q_OBJECT
 
 public:
-  Prefs(QSettings *settings, QWidget *parent = 0);
+  Prefs(QSettings *settings, QWidget *parent = nullptr);
   ~Prefs();
 
   void accept();
-  void activateGroupPage(QString group, int id);
+  void activateGroupPage(const QString &group, int id);
 
-  QVariant getValue(QString key) const;
-  void setValue(QString key, QVariant value);
+  QVariant getValue(const QString &key) const;
+  void setValue(const QString &key, QVariant value);
 
 protected:
   void changeEvent(QEvent *e);
@@ -35,8 +35,8 @@ protected slots:
   void guiOpenLastFileChanged(const bool);
   void guiWindowStateChanged(const bool);
 
-  void fontFamilyChanged(const QString);
-  void fontSizeChanged(const QString);
+  void fontFamilyChanged(const QString &);
+  void fontSizeChanged(const QString &);
 
   void on_luaPathChanged();
 
@@ -57,13 +57,13 @@ signals:
 
   void fontChanged(const QString &family, uint size) const;
 
-  void luaPathChanged(QString path) const;
+  void luaPathChanged(const QString &path) const;
 
-  void povPreviewChanged(QString cmd) const;
-  void povExecutableChanged(QString dir) const;
-  void povExportDirChanged(QString dir) const;
+  void povPreviewChanged(const QString &cmd) const;
+  void povExecutableChanged(const QString &dir) const;
+  void povExportDirChanged(const QString &dir) const;
 
-  void scadExecutableChanged(QString dir) const;
+  void scadExecutableChanged(const QString &dir) const;
 
 private:
   void keyPressEvent(QKeyEvent *e);

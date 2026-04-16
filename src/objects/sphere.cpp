@@ -17,14 +17,14 @@ using namespace std;
 #include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
-Sphere::Sphere(btScalar pradius, btScalar mass) : Object() {
+Sphere::Sphere(btScalar pradius, btScalar mass) {
   radius = pradius;
 
   shape = new btSphereShape(radius);
 
   btQuaternion qtn;
   btTransform trans;
-  btDefaultMotionState *motionState;
+  btDefaultMotionState *motionState = nullptr;
 
   trans.setIdentity();
   qtn.setEuler(0.0, 0.0, 0.0);

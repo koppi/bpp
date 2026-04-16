@@ -45,8 +45,7 @@ CodeEditor::CodeEditor(QSettings *s, QWidget *parent) : QPlainTextEdit(parent) {
   connect(a, &QAction::triggered, this, [this]() { saveAs(""); });
 }
 
-CodeEditor::~CodeEditor() {
-}
+CodeEditor::~CodeEditor() = default;
 
 void CodeEditor::clear() {
 

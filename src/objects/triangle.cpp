@@ -18,8 +18,7 @@ using namespace std;
 #include <luabind/operator.hpp>
 
 Triangle::Triangle(const btVector3 &p0, const btVector3 &p1,
-                   const btVector3 &p2, btScalar mass)
-    : Object() {
+                   const btVector3 &p2, btScalar mass) {
   init(p0, p1, p2, mass);
 }
 
@@ -37,7 +36,7 @@ void Triangle::init(const btVector3 &p0, const btVector3 &p1,
 
   btQuaternion qtn;
   btTransform trans;
-  btDefaultMotionState *motionState;
+  btDefaultMotionState *motionState = nullptr;
 
   trans.setIdentity();
   qtn.setEuler(0.0, 0.0, 0.0);

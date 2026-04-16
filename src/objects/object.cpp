@@ -34,8 +34,8 @@ Object::Object(QObject *parent, btScalar pmass) : QObject(parent) {
 
   mPOVExport = true;
 
-  shape = 0;
-  body = 0;
+  shape = nullptr;
+  body = nullptr;
   _ownsBody = true;
 
   setColor(127, 127, 127);
@@ -81,7 +81,7 @@ collisiontypes Object::getCol1() const { return col1; }
 
 collisiontypes Object::getCol2() const { return col2; }
 
-QList<btTypedConstraint *> Object::getConstraints() { return _constraints; }
+QList<btTypedConstraint *> Object::getConstraints() const { return _constraints; }
 
 QString Object::toString() const { return QString("Object"); }
 
@@ -133,15 +133,15 @@ void Object::luaBind(lua_State *s) {
            .def(constructor<>(), adopt(result))
            .def(constructor<QObject *>(), adopt(result))
            .def(constructor<QObject *, btScalar>(), adopt(result))
-           .def("setColor", (void(Object::*)(QColor)) & Object::setColor)
-           .def("setColor", (void(Object::*)(QString)) & Object::setColor)
+.def("setColor", (void(Object::*)(const QColor &)) & Object::setColor)
+            .def("setColor", (void(Object::*)(const QString &)) & Object::setColor)
            .def("setColor", (void(Object::*)(int, int, int)) & Object::setColor)
 
-           .property("color", (QColor(Object::*)(void)) & Object::getColor,
-                     (void(Object::*)(QColor)) & Object::setColor)
+.property("color", (QColor(Object::*)(void)) & Object::getColor,
+                      (void(Object::*)(const QColor &)) & Object::setColor)
 
-           .property("col", (QString(Object::*)(void)) & Object::getColorString,
-                     (void(Object::*)(QString)) & Object::setColor)
+            .property("col", (QString(Object::*)(void)) & Object::getColorString,
+                      (void(Object::*)(const QString &)) & Object::setColor)
 
            .property("pos", (btVector3(Object::*)(void)) & Object::getPosition,
                      (void(Object::*)(const btVector3 &)) & Object::setPosition)
@@ -179,15 +179,15 @@ void Object::luaBind(lua_State *s) {
                      (bool(Object::*)(void)) & Object::getPOVExport,
                      (void(Object::*)(bool)) & Object::setPOVExport)
 
-           .property("pre_sdl", (QString(Object::*)(void)) & Object::getPreSDL,
-                     (void(Object::*)(QString)) & Object::setPreSDL)
+.property("pre_sdl", (QString(Object::*)(void)) & Object::getPreSDL,
+                      (void(Object::*)(const QString &)) & Object::setPreSDL)
 
-           .property("sdl", (QString(Object::*)(void)) & Object::getSDL,
-                     (void(Object::*)(QString)) & Object::setSDL)
+            .property("sdl", (QString(Object::*)(void)) & Object::getSDL,
+                      (void(Object::*)(const QString &)) & Object::setSDL)
 
-           .property("post_sdl",
-                     (QString(Object::*)(void)) & Object::getPostSDL,
-                     (void(Object::*)(QString)) & Object::setPostSDL)
+            .property("post_sdl",
+                      (QString(Object::*)(void)) & Object::getPostSDL,
+                      (void(Object::*)(const QString &)) & Object::setPostSDL)
 
            .def("getRigidBody", &Object::getRigidBody)
            .def("setRigidBody", &Object::setRigidBody)
@@ -254,15 +254,15 @@ void Object::renderInLocalFramePost(btVector3 &oaabbmin, btVector3 &oaabbmax) {
   }
 }
 
-void Object::setPostSDL(QString post_sdl) { mPostSDL = post_sdl; }
+void Object::setPostSDL(const QString &post_sdl) { mPostSDL = post_sdl; }
 
 QString Object::getPostSDL() const { return mPostSDL; }
 
-void Object::setPreSDL(QString pre_sdl) { mPreSDL = pre_sdl; }
+void Object::setPreSDL(const QString &pre_sdl) { mPreSDL = pre_sdl; }
 
 QString Object::getPreSDL() const { return mPreSDL; }
 
-void Object::setSDL(QString sdl) { mSDL = sdl; }
+void Object::setSDL(const QString &sdl) { mSDL = sdl; }
 
 QString Object::getSDL() const { return mSDL; }
 
@@ -280,10 +280,10 @@ void Object::setFriction(btScalar friction) {
 }
 
 btScalar Object::getFriction() const {
-  if (body != nullptr)
+  if (body != nullptr) {
     return body->getFriction();
-  else
-    return 0;
+  }
+  return 0;
 }
 
 void Object::setRestitution(btScalar restitution) {
@@ -292,10 +292,10 @@ void Object::setRestitution(btScalar restitution) {
 }
 
 btScalar Object::getRestitution() const {
-  if (body != nullptr)
+  if (body != nullptr) {
     return body->getRestitution();
-  else
-    return 0;
+  }
+  return 0;
 }
 
 void Object::setLinearDamping(btScalar linearDamping) {
@@ -314,17 +314,17 @@ void Object::setDamping(btScalar linearDamping, btScalar angularDamping) {
 }
 
 btScalar Object::getLinearDamping() const {
-  if (body != nullptr)
+  if (body != nullptr) {
     return body->getLinearDamping();
-  else
-    return 0;
+  }
+  return 0;
 }
 
 btScalar Object::getAngularDamping() const {
-  if (body != nullptr)
+  if (body != nullptr) {
     return body->getAngularDamping();
-  else
-    return 0;
+  }
+  return 0;
 }
 
 void Object::setLinearVelocity(const btVector3 &vector) {
@@ -333,10 +333,10 @@ void Object::setLinearVelocity(const btVector3 &vector) {
 }
 
 btVector3 Object::getLinearVelocity() const {
-  if (body != nullptr)
+  if (body != nullptr) {
     return body->getLinearVelocity();
-  else
-    return btVector3();
+  }
+  return btVector3();
 }
 
 void Object::setRigidBody(btRigidBody *b) {
@@ -348,7 +348,7 @@ btRigidBody *Object::getRigidBody() const { return body; }
 
 void Object::setCollisionShape(btCollisionShape *s) { shape = s; }
 
-btCollisionShape *Object::getCollisionShape() { return shape; }
+btCollisionShape *Object::getCollisionShape() const { return shape; }
 
 void Object::setColor(int r, int g, int b) {
   color[0] = r;
@@ -356,9 +356,9 @@ void Object::setColor(int r, int g, int b) {
   color[2] = b;
 }
 
-void Object::setColor(QString col) { setColor(QColor(col)); }
+void Object::setColor(const QString &col) { setColor(QColor(col)); }
 
-void Object::setColor(QColor col) {
+void Object::setColor(const QColor &col) {
   setColor(col.red(), col.green(), col.blue());
 }
 
@@ -386,9 +386,8 @@ btVector3 Object::getPosition() const {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans.getOrigin();
-  } else {
-    return btVector3();
   }
+  return btVector3();
 }
 
 void Object::setRotation(const btVector3 &axis, btScalar angle) {
@@ -419,9 +418,8 @@ btQuaternion Object::getRotation() const {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans.getRotation();
-  } else {
-    return btQuaternion();
   }
+  return btQuaternion();
 }
 
 void Object::setTransform(const btTransform &trans) {
@@ -436,16 +434,15 @@ btTransform Object::getTransform() const {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans;
-  } else {
-    return btTransform();
   }
+  return btTransform();
 }
 
 btScalar Object::getMass() const {
-  if (body != nullptr)
+  if (body != nullptr) {
     return body->getInvMass();
-  else
-    return 0;
+  }
+  return 0;
 }
 
 void Object::setPovPhotons(bool _photons_enable, bool _photons_reflection,
@@ -509,4 +506,4 @@ QString Object::toPOV() const {
 
 void Object::setPOVExport(bool onoff) { mPOVExport = onoff; }
 
-bool Object::getPOVExport() { return mPOVExport; }
+bool Object::getPOVExport() const { return mPOVExport; }

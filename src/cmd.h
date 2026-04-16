@@ -9,7 +9,7 @@ class CommandLine : public QLineEdit {
   Q_OBJECT
 
 public:
-  CommandLine(QWidget *parent = 0);
+  CommandLine(QWidget *parent = nullptr);
   ~CommandLine(); // Add destructor declaration
   QList<QString> *getHistory();
 

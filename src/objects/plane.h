@@ -12,16 +12,16 @@ public:
         btScalar nConst = 0.0, btScalar size = 10.0);
   ~Plane(); // Add destructor declaration
 
-  void setPigment(QString pigment);
+  void setPigment(const QString &pigment);
 
   static void luaBind(lua_State *s);
-  QString toString() const;
-  virtual void toPOV(QTextStream *s) const;
+  QString toString() const override;
+  void toPOV(QTextStream *s) const override;
 
-  virtual void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb);
-  virtual void render(btVector3 &minaabb, btVector3 &maxaabb);
+  void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) override;
+  void render(btVector3 &minaabb, btVector3 &maxaabb);
 
-  btScalar getSize();
+  btScalar getSize() const;
 
 protected:
   void init(btScalar nx, btScalar ny, btScalar nz, btScalar nConst,

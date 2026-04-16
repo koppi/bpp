@@ -18,28 +18,28 @@ class Gui : public QMainWindow {
   Q_OBJECT
 
 public:
-  Gui(QSettings *settings, QWidget *parent = 0);
-  ~Gui(); // Add destructor declaration
+  Gui(QSettings *settings, QWidget *parent = nullptr);
+  ~Gui() override;
 
   QString toString() const;
 
 private slots:
-  void command(QString cmd);
+  void command(const QString &cmd);
 
-  void moveEvent(QMoveEvent *);
-  void resizeEvent(QResizeEvent *);
-  void closeEvent(QCloseEvent *);
+  void moveEvent(QMoveEvent *) override;
+  void resizeEvent(QResizeEvent *) override;
+  void closeEvent(QCloseEvent *) override;
 
   void animStarted();
-  void animProgress(QString fmt, int n);
+  void animProgress(const QString &fmt, int n);
   void animFinished();
 
 public slots:
   void postDraw(int);
-  void debug(QString msg);
+  void debug(const QString &msg);
   void clearDebug();
 
-  void setStatusBarText(QString msg);
+  void setStatusBarText(const QString &msg);
 
   void toggleSimButton(bool);
 
@@ -72,8 +72,8 @@ public slots:
   void parseEditor();
 
   // drag & drop support
-  void dragEnterEvent(QDragEnterEvent *event);
-  void dropEvent(QDropEvent *event);
+  void dragEnterEvent(QDragEnterEvent *event) override;
+  void dropEvent(QDropEvent *event) override;
 
   void statusMessage(const QString aMessage) {
     statusBar()->showMessage(aMessage);
@@ -149,7 +149,7 @@ private:
   QString strippedName(const QString &fullFileName);
   QString strippedNameNoExt(const QString &fullFileName);
 
-  void log(QString text);
+  void log(const QString &text);
 
   Ui::MainWindow ui;
 

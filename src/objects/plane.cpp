@@ -17,13 +17,12 @@ using namespace std;
 #include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
-Plane::Plane(const btVector3 &dim, btScalar nConst, btScalar psize) : Object() {
+Plane::Plane(const btVector3 &dim, btScalar nConst, btScalar psize) {
   init(dim.getX(), dim.getY(), dim.getZ(), nConst, psize);
 }
 
 Plane::Plane(btScalar nx, btScalar ny, btScalar nz, btScalar nConst,
-             btScalar psize)
-    : Object() {
+             btScalar psize) {
   init(nx, ny, nz, nConst, psize);
 }
 
@@ -35,7 +34,7 @@ void Plane::init(btScalar nx, btScalar ny, btScalar nz, btScalar nConst,
 
   btQuaternion qtn;
   btTransform trans;
-  btDefaultMotionState *motionState;
+  btDefaultMotionState *motionState = nullptr;
 
   trans.setIdentity();
   qtn.setEuler(0.0, 0.0, 0.0);
@@ -52,7 +51,7 @@ Plane::~Plane() {
     delete body->getMotionState();
 }
 
-void Plane::setPigment(QString pigment) { mPigment = pigment; }
+void Plane::setPigment(const QString &pigment) { mPigment = pigment; }
 
 void Plane::luaBind(lua_State *s) {
   using namespace luabind;
@@ -169,4 +168,4 @@ void Plane::render(btVector3 &minaabb, btVector3 &maxaabb) {
   renderInLocalFrame(minaabb, maxaabb);
 }
 
-btScalar Plane::getSize() { return size; }
+btScalar Plane::getSize() const { return size; }

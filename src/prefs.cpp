@@ -174,12 +174,12 @@ void Prefs::guiWindowStateChanged(const bool checked) {
   emit checkOpenLastWindowState(getValue("gui/openlastwindowstate").toBool());
 }
 
-void Prefs::fontFamilyChanged(const QString family) {
+void Prefs::fontFamilyChanged(const QString &family) {
   setValue("editor/fontfamily", family);
   emit fontChanged(family, getValue("editor/fontsize").toUInt());
 }
 
-void Prefs::fontSizeChanged(const QString size) {
+void Prefs::fontSizeChanged(const QString &size) {
   uint intsize = size.toUInt();
 
   setValue("editor/fontsize", intsize);
@@ -278,11 +278,11 @@ void Prefs::removeDefaultSettings() {
   }
 }
 
-QVariant Prefs::getValue(QString key) const {
+QVariant Prefs::getValue(const QString &key) const {
   return _settings->value(key, this->defaultmap[key]);
 }
 
-void Prefs::setValue(QString key, QVariant value) {
+void Prefs::setValue(const QString &key, QVariant value) {
   _settings->setValue(key, value);
 }
 
@@ -320,7 +320,7 @@ void Prefs::changeGroup(QListWidgetItem *current, QListWidgetItem *previous) {
   tabWidgetStack->setCurrentIndex(listBox->row(current));
 }
 
-void Prefs::activateGroupPage(QString group, int index) {
+void Prefs::activateGroupPage(const QString &group, int index) {
   int ct = listBox->count();
 
   for (int i = 0; i < ct; i++) {

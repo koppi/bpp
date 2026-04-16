@@ -14,11 +14,11 @@ public:
   btScalar getRadius() const;
 
   static void luaBind(lua_State *s);
-  QString toString() const;
-  void toPOV(QTextStream *s) const;
+  QString toString() const override;
+  void toPOV(QTextStream *s) const override;
 
 protected:
-  virtual void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb);
+  void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) override;
 
   btScalar radius;
 };

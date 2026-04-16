@@ -16,12 +16,11 @@ using namespace std;
 #include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
-Cube::Cube(const btVector3 &dim, btScalar mass) : Object() {
+Cube::Cube(const btVector3 &dim, btScalar mass) {
   init(dim.getX(), dim.getY(), dim.getZ(), mass);
 }
 
-Cube::Cube(btScalar width, btScalar height, btScalar depth, btScalar mass)
-    : Object() {
+Cube::Cube(btScalar width, btScalar height, btScalar depth, btScalar mass) {
   init(width, height, depth, mass);
 }
 
@@ -35,7 +34,7 @@ void Cube::init(btScalar width, btScalar height, btScalar depth,
 
   btQuaternion qtn;
   btTransform trans;
-  btDefaultMotionState *motionState;
+  btDefaultMotionState *motionState = nullptr;
 
   trans.setIdentity();
   qtn.setEuler(0.0, 0.0, 0.0);

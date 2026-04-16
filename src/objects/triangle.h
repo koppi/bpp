@@ -17,10 +17,10 @@ public:
   btVector3 vertices[3];
 
   static void luaBind(lua_State *s);
-  QString toString() const;
-  virtual void toPOV(QTextStream *s) const;
+  QString toString() const override;
+  void toPOV(QTextStream *s) const override;
 
-  virtual void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb);
+  void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) override;
 
 protected:
   void init(const btVector3 &p0, const btVector3 &p1, const btVector3 &p2,

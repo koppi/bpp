@@ -19,8 +19,8 @@
 
 class Mesh : public Object {
 public:
-  Mesh(QString filename, btScalar mass);
-  Mesh(QString filename);
+  Mesh(const QString &filename, btScalar mass);
+  Mesh(const QString &filename);
   Mesh();
   ~Mesh();
 
@@ -30,7 +30,7 @@ public:
   btTriangleMesh *getTriangleMesh() const;
   void setTriangleMesh(btTriangleMesh *mesh);
 
-  virtual void setMass(btScalar mass);
+  void setMass(btScalar mass) override;
 
   void luaRelease() {
     m_shape = nullptr;
@@ -39,14 +39,14 @@ public:
     shape = nullptr;
   }
 
-  void loadFile(QString filename, btScalar mass);
+  void loadFile(const QString &filename, btScalar mass);
 
   static void luaBind(lua_State *s);
-  virtual QString toString() const;
-  virtual void toPOV(QTextStream *s) const;
-  virtual void toMesh2(QTextStream *s) const;
+  QString toString() const override;
+  void toPOV(QTextStream *s) const override;
+  void toMesh2(QTextStream *s) const;
 
-  virtual void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb);
+  void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) override;
 
 protected:
   btGImpactMeshShape *m_shape;
