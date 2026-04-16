@@ -1,3 +1,28 @@
+-- test OpenSCAD object creation and isReady
+
+local pass = 0
+local fail = 0
+
+local function assert_eq(name, got, expected)
+  if got == expected then
+    print("PASS " .. name)
+    pass = pass + 1
+  else
+    print("FAIL " .. name .. ": got=" .. tostring(got) .. " expected=" .. tostring(expected))
+    fail = fail + 1
+  end
+end
+
+local function assert_match(name, got, pattern)
+  if string.match(got, pattern) then
+    print("PASS " .. name)
+    pass = pass + 1
+  else
+    print("FAIL " .. name .. ": got=" .. tostring(got) .. " expected pattern=" .. pattern)
+    fail = fail + 1
+  end
+end
+
 o = OpenSCAD([===[
 
 // Written in 2015 by Marius Kintel <marius@kintel.net>
@@ -63,4 +88,7 @@ color("MediumSlateBlue")
 
 ]===], 1)
 o.col = "#7f7f7f"
-print(o)
+
+assert_match("OpenSCAD tostring", tostring(o), "OpenSCAD")
+
+print(string.format("\n%d passed, %d failed", pass, fail))
