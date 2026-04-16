@@ -7,7 +7,7 @@ SetCompressor lzma
 
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)" ;
-!define VERSION 0.1.7
+!define VERSION 0.1.8
 !define COMPANY "Jakob Flierl"
 !define URL https://github.com/bullet-physics-playground
 
@@ -15,7 +15,7 @@ SetCompressor lzma
 
 Caption "Bullet Physics Playground ${VERSION} Setup"
 
-BrandingText " © Jakob Flierl "
+BrandingText " ï¿½ Jakob Flierl "
 
 ; The file to write
 OutFile "bpp-${VERSION}-x64.exe"
