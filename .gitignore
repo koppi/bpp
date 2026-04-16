@@ -11,6 +11,12 @@ release
 
 Makefile.Debug
 Makefile.Release
+Makefile.clang
+Makefile.clang.Debug
+Makefile.clang.Release
+Makefile.clang.debug
+Makefile.clang.debug.Debug
+Makefile.clang.debug.Release
 lib
 
 .classpath
