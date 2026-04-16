@@ -39,7 +39,8 @@ Sphere::Sphere(btScalar pradius, btScalar mass) : Object() {
 
 Sphere::~Sphere() {
   delete shape;
-  delete body->getMotionState();
+  if (body && body->getMotionState())
+    delete body->getMotionState();
 }
 
 void Sphere::setRadius(btScalar pradius) {
@@ -66,14 +67,14 @@ void Sphere::luaBind(lua_State *s) {
 QString Sphere::toString() const { return QString("Sphere"); }
 
 void Sphere::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL) {
+  if (s != nullptr) {
     if (mPreSDL.isNull()) {
       *s << "sphere { <.0,.0,.0>, " << radius << "\n";
     } else {

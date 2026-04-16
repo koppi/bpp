@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
       return EXIT_FAILURE;
     }
 
-    Viewer *v = new Viewer(NULL, settings);
+    Viewer *v = new Viewer(nullptr, settings);
 
     QObject::connect(v, &Viewer::scriptHasOutput,
                      [=](QString o) { qStdOut() << o << "\n"; });

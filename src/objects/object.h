@@ -13,6 +13,8 @@
 
 #include <qgl.h>
 
+#include <vector>
+
 class Object;
 
 std::ostream &operator<<(std::ostream &, const Object &obj);
@@ -102,6 +104,7 @@ public:
 
   btRigidBody *body;
   btCollisionShape *shape;
+  bool _ownsBody;
 
   static void luaBind(lua_State *s);
 
@@ -145,6 +148,12 @@ protected:
   luabind::object _cb_render;
 
   mutable GLfloat matrix[16];
+
+  std::vector<void**> _luabindWeakPtrs;
+
+public:
+  void registerLuabindWeakPtr(void** p);
+  void preDestructor();
 };
 
 #endif // OBJECT_H

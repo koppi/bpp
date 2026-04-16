@@ -57,7 +57,8 @@ void Triangle::init(const btVector3 &p0, const btVector3 &p1,
 
 Triangle::~Triangle() {
   delete shape;
-  delete body->getMotionState();
+  if (body && body->getMotionState())
+    delete body->getMotionState();
 }
 
 void Triangle::luaBind(lua_State *s) {
@@ -77,14 +78,14 @@ void Triangle::luaBind(lua_State *s) {
 QString Triangle::toString() const { return QString("Triangle"); }
 
 void Triangle::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL) {
+  if (s != nullptr) {
     if (mPreSDL.isNull()) {
       *s << "triangle { <" << vertices[0].x() << ", " << vertices[0].y()
          << ", " << vertices[0].z() << ">, <" << vertices[1].x() << ", "

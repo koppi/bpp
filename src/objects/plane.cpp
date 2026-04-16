@@ -48,7 +48,8 @@ void Plane::init(btScalar nx, btScalar ny, btScalar nz, btScalar nConst,
 
 Plane::~Plane() {
   delete shape;
-  delete body->getMotionState();
+  if (body && body->getMotionState())
+    delete body->getMotionState();
 }
 
 void Plane::setPigment(QString pigment) { mPigment = pigment; }
@@ -74,14 +75,14 @@ void Plane::luaBind(lua_State *s) {
 QString Plane::toString() const { return QString("Plane"); }
 
 void Plane::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL) {
+  if (s != nullptr) {
     if (mPreSDL.isNull()) {
       const btStaticPlaneShape *staticPlaneShape =
           static_cast<const btStaticPlaneShape *>(shape);

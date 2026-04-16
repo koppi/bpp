@@ -1,8 +1,9 @@
 --
 -- Random pyramids demo
 --
--- Creates tetrahedra and square-based pyramids composed from
--- Triangle faces, plus dynamic cubes for physics interaction.
+-- Creates tetrahedra and square-based pyramids as compound
+-- rigid bodies with mass, using btTriangleMesh and Mesh for
+-- visual rendering with checker texture.
 --
 
 local color = require "module/color"
@@ -12,78 +13,149 @@ v.timeStep      = 1/50
 v.maxSubSteps   = 7
 v.fixedTimeStep = 1/120
 
+v.pre_sdl = [[
+
+#include "textures.inc"
+
+object {                                                                        
+  Light(                                                                        
+    EmissiveSpectrum(ES_GE_SW_Incandescent_100w),                               
+    Lm_Incandescent_100w,                                                       
+    x*50, z*50, 4, 4, on                                                        
+  )                                                                             
+  translate <0, 290, 150>                                                   
+}
+]]
+
+v.pre_sdl = v.pre_sdl..[==[
+#declare CheckerScale = 0.5;
+#declare CheckerPigment = pigment {
+  checker
+  color rgb <1, 1, 1>
+  color rgb <0.1, 0.1, 0.1>
+  scale CheckerScale
+}
+]==]
+
 -- ground plane
 p = Plane(0, 1, 0, 0, 50)
-p.col = "#333333"
+p.col = color.HuntersGreen
+p.sdl = [[
+  pigment { HuntersGreen }
+  normal  { quilted scale 2.5 }
+]]
 v:add(p)
 
--- helper: add a triangle face (static, mass = 0)
-function add_triangle(a, b, c, col)
-  local t = Triangle(a, b, c, 0)
-  t.col = col or color.random_google()
-  v:add(t)
-  return t
+-- helper: build a rigid body pyramid from a triangle mesh
+function make_pyramid(triangles, px, py, pz, mass, col)
+  local meshData = btTriangleMesh()
+
+  for _, tri in ipairs(triangles) do
+    meshData:addTriangle(tri[1], tri[2], tri[3], true)
+  end
+
+  local shape = btGImpactMeshShape(meshData)
+  shape:updateBound()
+
+  local trans = btTransform()
+  trans:setIdentity()
+  trans:setOrigin(btVector3(px, py, pz))
+  local ms = btDefaultMotionState(trans)
+
+  local inertia = btVector3()
+  if mass > 0 then
+    shape:calculateLocalInertia(mass, inertia)
+  end
+  local body = btRigidBody(mass, ms, shape, inertia)
+
+  local obj = Mesh()
+  obj.mesh  = meshData  -- transfer ownership to prevent GC
+  obj.shape = shape
+  obj.body  = body
+  obj.mass  = mass
+  obj.inertia = inertia:length()
+  obj.damp_lin = 0.0
+  obj.damp_ang = 0.0
+  obj.pos  = btVector3(px, py, pz)
+  obj.col  = col or color.random_google()
+  v:add(obj)
+  return obj
 end
 
--- helper: build a tetrahedron (3-sided pyramid) from Triangle faces
-function tetrahedron(cx, cy, cz, size, col)
+-- helper: tetrahedron face indices
+local tet_faces = {
+  {1, 2, 3},
+  {1, 2, 4},
+  {2, 3, 4},
+  {3, 1, 4},
+}
+
+-- helper: build a tetrahedron (3-sided pyramid)
+function tetrahedron(cx, cy, cz, size, mass, col)
   local s = size * 0.5
   local h = size
-  local base0 = btVector3(cx - s, cy, cz - s)
-  local base1 = btVector3(cx + s, cy, cz - s)
-  local base2 = btVector3(cx,     cy, cz + s)
-  local apex  = btVector3(cx,     cy + h, cz)
-
-  local c = col or color.random_google()
-  add_triangle(base0, base1, base2, c)
-  add_triangle(base0, base1, apex,  c)
-  add_triangle(base1, base2, apex,  c)
-  add_triangle(base2, base0, apex,  c)
+  local v = {
+    btVector3(-s, 0, -s),
+    btVector3( s, 0, -s),
+    btVector3( 0, 0,  s),
+    btVector3( 0, h,  0),
+  }
+  local tris = {}
+  for _, f in ipairs(tet_faces) do
+    table.insert(tris, { v[f[1]], v[f[2]], v[f[3]] })
+  end
+  return make_pyramid(tris, cx, cy, cz, mass, col)
 end
 
--- helper: build a square-based pyramid from Triangle faces
-function pyramid(cx, cy, cz, base, height, col)
+-- helper: square-based pyramid face indices
+local pyr_faces = {
+  {1, 2, 3}, -- base tri 1
+  {1, 3, 4}, -- base tri 2
+  {1, 2, 5}, -- side 1
+  {2, 3, 5}, -- side 2
+  {3, 4, 5}, -- side 3
+  {4, 1, 5}, -- side 4
+}
+
+-- helper: build a square-based pyramid
+function pyramid(cx, cy, cz, base, height, mass, col)
   local s = base * 0.5
   local h = height
-  local b0 = btVector3(cx - s, cy, cz - s)
-  local b1 = btVector3(cx + s, cy, cz - s)
-  local b2 = btVector3(cx + s, cy, cz + s)
-  local b3 = btVector3(cx - s, cy, cz + s)
-  local apex = btVector3(cx, cy + h, cz)
-
-  local c = col or color.random_google()
-  -- base
-  add_triangle(b0, b1, b2, c)
-  add_triangle(b0, b2, b3, c)
-  -- sides
-  add_triangle(b0, b1, apex, c)
-  add_triangle(b1, b2, apex, c)
-  add_triangle(b2, b3, apex, c)
-  add_triangle(b3, b0, apex, c)
+  local v = {
+    btVector3(-s, 0, -s), -- 1: b0
+    btVector3( s, 0, -s), -- 2: b1
+    btVector3( s, 0,  s), -- 3: b2
+    btVector3(-s, 0,  s), -- 4: b3
+    btVector3( 0, h,  0), -- 5: apex
+  }
+  local tris = {}
+  for _, f in ipairs(pyr_faces) do
+    table.insert(tris, { v[f[1]], v[f[2]], v[f[3]] })
+  end
+  return make_pyramid(tris, cx, cy, cz, mass, col)
 end
 
--- seed
-math.randomseed(os.time())
-
--- random tetrahedra sitting on the ground
-for i = 1, 5 do
-  local x  = math.random(-5, 5)
-  local z  = math.random(-5, 5)
+-- random tetrahedra
+for i = 1, 50 do
+  local x  = math.random(-20, 20)
+  local z  = math.random(-20, 20)
   local sz = 0.5 + math.random() * 1.2
-  tetrahedron(x, 0.0, z, sz, color.random_google())
+  local y  = sz + 1
+  tetrahedron(x, y, z, sz, 1, color.random_google())
 end
 
--- random square-based pyramids sitting on the ground
-for i = 1, 5 do
-  local x  = math.random(-5, 5)
-  local z  = math.random(-5, 5)
-  local b  = 0.5 + math.random() * 1.2
-  local h  = 0.8 + math.random() * 1.5
-  pyramid(x, 0.0, z, b, h, color.random_chrome())
+-- random square-based pyramids
+for i = 1, 100 do
+  local x  = math.random(-20, 20)
+  local z  = math.random(-20, 20)
+  local b  = 1.5 + math.random() * 1.2
+  local h  = 1.8 + math.random() * 1.5
+  local y  = h + 0.5
+  pyramid(x, y, z, b, h, 1, color.random_chrome())
 end
 
 -- dynamic cubes to knock into the pyramids
-for i = 1, 8 do
+for i = 1, 7 do
   local x = math.random(-4, 4)
   local y = 2 + math.random() * 5
   local z = math.random(-4, 4)
@@ -95,12 +167,16 @@ for i = 1, 8 do
 end
 
 -- some spheres too
-for i = 1, 4 do
+for i = 1, 7 do
   local r = 0.2 + math.random() * 0.3
   local s = Sphere(r, 1)
   s.pos = btVector3(math.random(-3, 3), 3 + math.random() * 4, math.random(-3, 3))
   s.col = color.random_bpp()
   v:add(s)
 end
+
+-- point camera at center of the scene
+v.cam.pos  = btVector3(0, 1500, 1500)
+v.cam.look = btVector3(0, 1, 0)
 
 -- EOF

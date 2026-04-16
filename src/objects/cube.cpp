@@ -55,7 +55,8 @@ void Cube::init(btScalar width, btScalar height, btScalar depth,
 
 Cube::~Cube() {
   delete shape;
-  delete body->getMotionState();
+  if (body && body->getMotionState())
+    delete body->getMotionState();
 }
 
 void Cube::luaBind(lua_State *s) {
@@ -73,14 +74,14 @@ void Cube::luaBind(lua_State *s) {
 QString Cube::toString() const { return QString("Cube"); }
 
 void Cube::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL) {
+  if (s != nullptr) {
     if (mPreSDL.isNull()) {
       *s << "box { <" << -lengths[0] / 2.0 << ", " << -lengths[1] / 2.0 << ", "
          << -lengths[2] / 2.0 << ">, <" << lengths[0] / 2.0 << ", "

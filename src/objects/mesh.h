@@ -27,7 +27,17 @@ public:
   btGImpactMeshShape *getShape() const;
   void setShape(btGImpactMeshShape *shape);
 
+  btTriangleMesh *getTriangleMesh() const;
+  void setTriangleMesh(btTriangleMesh *mesh);
+
   virtual void setMass(btScalar mass);
+
+  void luaRelease() {
+    m_shape = nullptr;
+    m_mesh = nullptr;
+    body = nullptr;
+    shape = nullptr;
+  }
 
   void loadFile(QString filename, btScalar mass);
 

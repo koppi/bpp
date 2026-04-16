@@ -75,8 +75,8 @@ public:
 
 Mesh::Mesh(QString filename, btScalar mass) : Object() {
   m_mesh = new btTriangleMesh();
-  m_shape = NULL;
-  m_scene = NULL;
+  m_shape = nullptr;
+  m_scene = nullptr;
 
   setColor(127, 127, 127);
 
@@ -86,8 +86,8 @@ Mesh::Mesh(QString filename, btScalar mass) : Object() {
 
 Mesh::Mesh(QString filename) : Object() {
   m_mesh = new btTriangleMesh();
-  m_shape = NULL;
-  m_scene = NULL;
+  m_shape = nullptr;
+  m_scene = nullptr;
 
   setColor(127, 127, 127);
 
@@ -98,7 +98,7 @@ Mesh::Mesh(QString filename) : Object() {
 Mesh::Mesh() : Object() {
   m_mesh = new btTriangleMesh();
   m_shape = new btGImpactMeshShape(m_mesh);
-  m_scene = NULL;
+  m_scene = nullptr;
 
   setColor(127, 127, 127);
   setMass(0);
@@ -106,8 +106,14 @@ Mesh::Mesh() : Object() {
 
 Mesh::~Mesh() {
   aiReleaseImport(m_scene);
-  delete m_mesh;
-  delete m_shape;
+  if (m_shape != nullptr) {
+    delete m_shape;
+    m_shape = nullptr;
+  }
+  if (m_mesh != nullptr) {
+    delete m_mesh;
+    m_mesh = nullptr;
+  }
   if (body && body->getMotionState()) {
     delete body->getMotionState();
   }
@@ -199,13 +205,15 @@ void Mesh::loadFile(QString filename, btScalar mass) {
 void Mesh::luaBind(lua_State *s) {
   using namespace luabind;
 
-  module(s)[class_<Mesh, Object>("Mesh")
-                .def(constructor<>(), adopt(result))
-                .def(constructor<QString>(), adopt(result))
-                .def(constructor<QString, btScalar>(), adopt(result))
-                .def(tostring(const_self))
+module(s)[class_<Mesh, Object>("Mesh")
+                 .def(constructor<>(), adopt(result))
+                 .def(constructor<QString>(), adopt(result))
+                 .def(constructor<QString, btScalar>(), adopt(result))
+                 .def(tostring(const_self))
 
-                .property("shape", &Mesh::getShape, &Mesh::setShape)
+                 .property("shape", &Mesh::getShape, &Mesh::setShape)
+                 .property("mesh", &Mesh::getTriangleMesh,
+                           &Mesh::setTriangleMesh)
 
   ];
 }
@@ -213,7 +221,7 @@ void Mesh::luaBind(lua_State *s) {
 QString Mesh::toString() const { return QString("Mesh"); }
 
 void Mesh::toMesh2(QTextStream *s) const {
-  if (s != NULL && m_shape != NULL) {
+  if (s != nullptr && m_shape != nullptr) {
     POVSaveCallback pov;
     btVector3 pminaabb = btVector3(-1e99, -1e99, -1e99); // XXX
     btVector3 pmaxaabb = btVector3(1e99, 1e99, 1e99);    // XXX
@@ -270,15 +278,15 @@ void Mesh::toMesh2(QTextStream *s) const {
 }
 
 void Mesh::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL && m_shape != NULL && body != NULL &&
-      body->getMotionState() != NULL) {
+  if (s != nullptr && m_shape != nullptr && body != nullptr &&
+      body->getMotionState() != nullptr) {
     if (mPreSDL.isNull()) {
 
       QByteArray *data = new QByteArray();
@@ -307,7 +315,7 @@ void Mesh::toPOV(QTextStream *s) const {
           QDir::separator() + "mesh_" + hash + ".inc";
 
       QFileInfo check_file(incfile);
-      if (!check_file.exists() && !check_file.isFile() && m_shape != NULL) {
+      if (!check_file.exists() && !check_file.isFile() && m_shape != nullptr) {
         QFile file(incfile);
         if (file.open(QIODevice::ReadWrite)) {
           QTextStream stream(&file);
@@ -379,14 +387,14 @@ void Mesh::renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) {
   glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
   glColor3ubv(color);
 
-  if (m_scene != NULL && m_scene->mMeshes != NULL) {
+  if (m_scene != nullptr && m_scene->mMeshes != nullptr) {
     const struct aiMesh *mesh = m_scene->mMeshes[0];
 
     unsigned int i, t;
 
     for (t = 0; t < mesh->mNumFaces; ++t) {
       const struct aiFace *face = &mesh->mFaces[t];
-      if (face != NULL) {
+      if (face != nullptr) {
         GLenum face_mode;
 
         switch (face->mNumIndices) {
@@ -409,30 +417,45 @@ void Mesh::renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) {
         for (i = 0; i < face->mNumIndices; i++) {
           int index = face->mIndices[i];
 
-          if (mesh->mColors[0] != NULL)
+          if (mesh->mColors[0] != nullptr)
             glColor4fv((GLfloat *)&mesh->mColors[0][index]);
 
-          if (mesh->mNormals != NULL)
+          if (mesh->mNormals != nullptr)
             glNormal3fv(&mesh->mNormals[index].x);
           glVertex3fv(&mesh->mVertices[index].x);
         }
         glEnd();
       }
     }
+  } else if (m_shape != nullptr) {
+    GlDrawcallback drawCallback;
+    btVector3 aabbMin(-1e99, -1e99, -1e99);
+    btVector3 aabbMax(1e99, 1e99, 1e99);
+    btConcaveShape *concaveMesh = (btConcaveShape *)m_shape;
+    concaveMesh->processAllTriangles(&drawCallback, aabbMin, aabbMax);
   }
 }
 
 btGImpactMeshShape *Mesh::getShape() const { return m_shape; }
 
 void Mesh::setShape(btGImpactMeshShape *shape) {
-  if (m_shape != NULL)
+  if (m_shape != nullptr)
     delete m_shape;
 
   m_shape = shape;
 }
 
+btTriangleMesh *Mesh::getTriangleMesh() const { return m_mesh; }
+
+void Mesh::setTriangleMesh(btTriangleMesh *mesh) {
+  if (m_mesh != nullptr)
+    delete m_mesh;
+
+  m_mesh = mesh;
+}
+
 void Mesh::setMass(btScalar _mass) {
-  if (body != NULL && m_shape != NULL) {
+  if (body != nullptr && m_shape != nullptr) {
     btVector3 inertia;
     m_shape->calculateLocalInertia(_mass, inertia);
     body->setMassProps(_mass, inertia);

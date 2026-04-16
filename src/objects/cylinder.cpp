@@ -14,6 +14,7 @@
 
 using namespace std;
 
+#include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
 Cylinder::Cylinder(const btVector3 &dim, btScalar mass) : Object() {
@@ -50,32 +51,33 @@ void Cylinder::init(btScalar radius, btScalar depth, btScalar mass) {
 
 Cylinder::~Cylinder() {
   delete shape;
-  delete body->getMotionState();
+  if (body && body->getMotionState())
+    delete body->getMotionState();
 }
 
 void Cylinder::luaBind(lua_State *s) {
   using namespace luabind;
 
   module(s)[class_<Cylinder, Object>("Cylinder")
-                .def(constructor<>())
-                .def(constructor<const btVector3 &>())
-                .def(constructor<const btVector3 &, btScalar>())
-                .def(constructor<btScalar, btScalar>())
-                .def(constructor<btScalar, btScalar, btScalar>())
-                .def(tostring(const_self))];
+                 .def(constructor<>(), adopt(result))
+                 .def(constructor<const btVector3 &>(), adopt(result))
+                 .def(constructor<const btVector3 &, btScalar>(), adopt(result))
+                 .def(constructor<btScalar, btScalar>(), adopt(result))
+                 .def(constructor<btScalar, btScalar, btScalar>(), adopt(result))
+                 .def(tostring(const_self))];
 }
 
 QString Cylinder::toString() const { return QString("Cylinder"); }
 
 void Cylinder::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL) {
+  if (s != nullptr) {
     if (mPreSDL.isNull()) {
       *s << "cylinder { " << -lengths[2] / 2.0 << "*z, " << lengths[2] / 2.0
          << "*z, " << lengths[0] << "\n";

@@ -15,6 +15,8 @@
 #include <QMutexLocker>
 #include <QSettings>
 #include <QTextStream>
+#include <map>
+#include <luabind/object.hpp>
 
 #include "objects/cam.h"
 
@@ -34,7 +36,7 @@ class Viewer : public QGLViewer {
   Q_OBJECT;
 
 public:
-  Viewer(QWidget *parent = NULL, QSettings *settings = NULL,
+  Viewer(QWidget *parent = nullptr, QSettings *settings = nullptr,
          bool savePOV = false);
   ~Viewer();
 
@@ -59,7 +61,7 @@ public:
   void resetCamView();
 
   void addObject(Object *o);
-  void removeObject(Object *o);
+  Object *removeObject(Object *o);
   void addObjectBody(Object *o);
   void setCamera(Cam *cam);
   Cam *getCamera();
@@ -77,7 +79,7 @@ public:
   void addConstraints(QList<btTypedConstraint *> cons);
   void addConstraint(btTypedConstraint *con);
   void addVehicle(btRaycastVehicle *veh);
-  void removeConstraint(btTypedConstraint *con);
+  btTypedConstraint *removeConstraint(btTypedConstraint *con);
 
   void addShortcut(const QString &, const luabind::object &fn);
   void removeShortcut(const QString &);
@@ -250,6 +252,7 @@ private:
   QSet<Object *> *_objects;
   QSet<btTypedConstraint *> *_constraints;
   QSet<btRaycastVehicle *> *_raycast_vehicles;
+  std::map<Object*, luabind::object> _luabindRegistry;
 
   btScalar _aabb[6];
 

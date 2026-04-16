@@ -4,6 +4,8 @@
 
 #include "viewer.h"
 
+#include <memory>
+
 #include <QColor>
 #include <QMessageBox>
 #include <QTextCodec>
@@ -50,6 +52,7 @@
 #include <luabind/operator.hpp>
 #include <luabind/tag_function.hpp>
 
+
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QStandardPaths>
@@ -93,13 +96,14 @@ void Viewer::luaBind(lua_State *s) {
            .def("getCam", &Viewer::getCamera)
            .def("add", (void(Viewer::*)(Object *)) & Viewer::addObject,
                 adopt(_2))
-           .def("remove", (void(Viewer::*)(Object *)) & Viewer::removeObject,
-                adopt(result))
+           .def("remove",
+                (Object * (Viewer::*)(Object *)) &
+                    Viewer::removeObject)
            .def("addConstraint",
                 (void(Viewer::*)(btTypedConstraint *)) & Viewer::addConstraint,
                 adopt(_2))
            .def("removeConstraint",
-                (void(Viewer::*)(btTypedConstraint *)) &
+                (btTypedConstraint * (Viewer::*)(btTypedConstraint *)) &
                     Viewer::removeConstraint,
                 adopt(result))
            .def("createVehicleRaycaster", &Viewer::createVehicleRaycaster)
@@ -231,22 +235,29 @@ void Viewer::luaBind(lua_State *s) {
 }
 
 void Viewer::addObject(Object *o) {
-  if (o == NULL)
+  if (o == nullptr)
     return;
+
+  if (L != nullptr && _luabindRegistry.find(o) == _luabindRegistry.end()) {
+    luabind::object obj(luabind::from_stack(L, 2));
+    _luabindRegistry[o] = obj;
+  }
 
   addObject(o, o->getCol1(), o->getCol2());
   addConstraints(o->getConstraints());
 }
 
-void Viewer::removeObject(Object *o) {
-  if (o == NULL)
-    return;
+Object *Viewer::removeObject(Object *o) {
+  if (o == nullptr)
+    return nullptr;
 
-  if (o->body != NULL)
+  if (o->body != nullptr)
     dynamicsWorld->removeRigidBody(o->body);
 
   _objects->remove(o);
   o->setParent(0);
+
+  return o;
 }
 
 void Viewer::addConstraint(btTypedConstraint *con) {
@@ -254,9 +265,10 @@ void Viewer::addConstraint(btTypedConstraint *con) {
   _constraints->insert(con);
 }
 
-void Viewer::removeConstraint(btTypedConstraint *con) {
+btTypedConstraint *Viewer::removeConstraint(btTypedConstraint *con) {
   dynamicsWorld->removeConstraint(con);
   _constraints->remove(con);
+  return con;
 }
 
 void Viewer::addConstraints(QList<btTypedConstraint *> cons) {
@@ -277,6 +289,7 @@ void Viewer::addVehicle(btRaycastVehicle *veh) {
 void Viewer::luaBindInstance(lua_State *s) {
   using namespace luabind;
 
+  L = s;
   globals(s)["v"] = this;
 }
 
@@ -304,7 +317,7 @@ void getAABB(QSet<Object *> *objects, btScalar aabb[6]) {
   for (oi = objects->begin(); oi != objects->end(); oi++) {
     Object *o = *oi;
 
-    if (o->body != NULL) {
+    if (o->body != nullptr) {
       btVector3 oaabbmin(0, 0, 0), oaabbmax(0, 0, 0);
       o->body->getAabb(oaabbmin, oaabbmax);
 
@@ -412,7 +425,7 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
 void Viewer::addObject(Object *o, int type, int mask) {
   _objects->insert(o);
 
-  if (o->body != NULL) {
+  if (o->body != nullptr) {
     if (!_deactivation) {
       o->body->setActivationState(DISABLE_DEACTIVATION);
     }
@@ -456,7 +469,7 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
   _constraints = new QSet<btTypedConstraint *>();
   _raycast_vehicles = new QSet<btRaycastVehicle *>();
 
-  L = NULL;
+  L = nullptr;
 
   _parsing = false;
   _has_exception = false;
@@ -597,7 +610,7 @@ int Viewer::lua_print(lua_State *L) {
       lua_pushvalue(L, i);  /* value to print */
       lua_call(L, 1, 1);
       s = lua_tostring(L, -1); /* get result */
-      if (s == NULL)
+      if (s == nullptr)
         return luaL_error(L, "'tostring' must return a string to 'print'");
       // if (i>1) p->emitScriptOutput(QString("\t"));
       p->emitScriptOutput(QString(s));
@@ -646,22 +659,10 @@ bool Viewer::parse(QString txt) {
     stopAnimation();
   }
 
-  emit scriptStarts();
+emit scriptStarts();
 
-  clear();
-
-  if (L != NULL) {
-
-    // XXX lua_gc(L, LUA_GCCOLLECT, 0); // collect garbage
-    int lsize = lua_gc(L, LUA_GCCOUNT, -1);
-    emit statusEvent(QString("LUA_GCCOUNT = %1").arg(lsize));
-    // lua_gc(L, LUA_GCSTOP, -1);
-
-    // XXX lua_gc(L, LUA_GCCOLLECT, 0); // collect garbage
-
-    // XXX clear();
-
-    // invalidate function refs
+  if (L != nullptr) {
+    // Invalidate callback refs so Lua GC can collect the functions
     _cb_preStart = luabind::object();
     _cb_preStop = luabind::object();
     _cb_preDraw = luabind::object();
@@ -671,30 +672,51 @@ bool Viewer::parse(QString txt) {
     _cb_onCommand = luabind::object();
     _cb_onJoystick = luabind::object();
 
-    // luabind::set_error_callback(&Viewer::luabind_error);
-
-    // Clear shortcuts before closing Lua state
     if (_cb_shortcuts) {
       for (auto it = _cb_shortcuts->begin(); it != _cb_shortcuts->end(); ++it) {
-        it->reset(); // Explicitly reset shared_ptr, which destructs luabind::object
+        it->reset();
       }
       _cb_shortcuts->clear();
     }
 
-    lua_getglobal(L, "exit_function");
-    int exists_exit_function = !lua_isnil(L, -1);
-    lua_pop(L, 1);
-    if (exists_exit_function) {
-      try {
-        luabind::call_function<int>(L, "exit_function");
-      } catch (const std::exception &e) {
-        showLuaException(e, "exit_function()");
+    // Notify all objects that their luabind weak pointers are about to become
+    // invalid (C++ objects will be deleted by clear() below).
+    foreach (Object *o, *_objects) {
+      o->preDestructor();
+    }
+
+    // Remove rigid bodies from the dynamics world while pointers are still
+    // valid. After lua_close() the Bullet objects will be freed by Lua's GC.
+    if (dynamicsWorld) {
+      foreach (Object *o, *_objects) {
+        if (o->body != nullptr) {
+          dynamicsWorld->removeRigidBody(o->body);
+        }
       }
     }
 
-    //XXX lua_close(L);
-    //XXX L = NULL;
+    // lua_close() performs a final GC sweep that deletes all Lua-adopted
+    // Bullet objects via their unique_ptr holders (adopt(result) policy).
+    // After this call, C++ raw pointers to those objects become dangling.
+    lua_close(L);
+    L = nullptr;
+
+    // Null out Bullet object pointers that Lua has freed. The C++ Object
+    // destructors in clear() will skip these null pointers, avoiding
+    // use-after-free and double-free.
+    foreach (Object *o, *_objects) {
+      o->body = nullptr;
+      o->shape = nullptr;
+#ifdef HAS_LIB_ASSIMP
+      Mesh *m = dynamic_cast<Mesh *>(o);
+      if (m) {
+        m->luaRelease();
+      }
+#endif
+    }
   }
+
+  clear();
 
   {
     // setup lua
@@ -739,6 +761,13 @@ bool Viewer::parse(QString txt) {
 
     luabind::open(L);
 
+    // Stop Lua GC to prevent collection of Bullet Physics objects (btRigidBody,
+    // btGImpactMeshShape, btTriangleMesh, etc.) that C++ holds raw pointers to.
+    // Lua's unique_ptr holders would delete these objects, leaving C++ with
+    // dangling pointers. GC will only run during lua_close() after we release
+    // all object ownership.
+    lua_gc(L, LUA_GCSTOP, 0);
+
     // register all bpp classes
     LuaBullet::luaBind(L);
 
@@ -780,6 +809,12 @@ bool Viewer::parse(QString txt) {
   int error = luaL_loadstring(L, txt.toUtf8().constData()) ||
               lua_pcall(L, 0, LUA_MULTRET, 0);
 
+  // After script execution, Lua GC is stopped (stopped above after luaL_openlibs).
+  // This prevents Lua from garbage-collecting Bullet Physics objects (btRigidBody,
+  // btGImpactMeshShape, etc.) that C++ holds raw pointers to via Object properties.
+  // These objects would be collected by Lua GC when local Lua variables go out of
+  // scope, leaving C++ with dangling pointers.
+
   if (error) {
     lua_error = tr("error: %1").arg(lua_tostring(L, -1));
 
@@ -795,9 +830,6 @@ bool Viewer::parse(QString txt) {
   } else {
     lua_error = tr("ok");
   }
-
-  // report_errors(L, error);
-  // lua_close(L);
 
   _frameNum = 0; // reset frames counter
   _firstFrame = 0;
@@ -818,18 +850,26 @@ bool Viewer::parse(QString txt) {
 void Viewer::clear() {
   // qDebug() << "Viewer::clear() objects: " << _objects->size();
 
-  // Delete existing Bullet Physics objects before re-creating them
-  if (dynamicsWorld) {
-    // The broadphase and solver are deleted by dynamicsWorld
-    delete dynamicsWorld;
-    dynamicsWorld = NULL;
-  }
-  if (collisionCfg) {
-    delete collisionCfg;
-    collisionCfg = NULL;
+  // Notify all objects that their luabind weak pointers are about to become
+  // invalid (C++ objects will be deleted by clear() below).
+  foreach (Object* o, *_objects) {
+    o->preDestructor();
   }
 
-  // Delete objects within the sets before clearing the sets
+  // Remove rigid bodies from the dynamics world before deleting anything.
+  // Note: body pointers may already be null if they were nulled before
+  // lua_close (Lua-owned bodies were freed by Lua GC).
+  if (dynamicsWorld) {
+    foreach (Object* o, *_objects) {
+      if (o->body != nullptr) {
+        dynamicsWorld->removeRigidBody(o->body);
+      }
+    }
+  }
+
+  // Delete Object instances. Body/shape pointers that were Lua-owned
+  // have already been nulled before lua_close, so destructors skip them.
+  // C++-owned body pointers (_ownsBody=true) are still valid and get deleted.
   qDeleteAll(*_objects);
   _objects->clear();
 
@@ -838,6 +878,15 @@ void Viewer::clear() {
 
   qDeleteAll(*_raycast_vehicles);
   _raycast_vehicles->clear();
+
+  if (dynamicsWorld) {
+    delete dynamicsWorld;
+    dynamicsWorld = nullptr;
+  }
+  if (collisionCfg) {
+    delete collisionCfg;
+    collisionCfg = nullptr;
+  }
 
   // It's important that timeStep is always less than maxSubSteps*fixedTimeStep,
   // otherwise you are losing time. Mathematically,
@@ -866,7 +915,7 @@ void Viewer::clear() {
   setPreSDL(QString());
   setPostSDL(QString());
 
-  if (_cam != NULL) {
+  if (_cam != nullptr) {
     _cam->setPreSDL(QString());
     _cam->setPostSDL(QString());
     _cam->setUseFocalBlur(0);
@@ -905,16 +954,6 @@ void Viewer::savePrefs() {
 Viewer::~Viewer() {
   // qDebug() << "Viewer::~Viewer()";
 
-  // Delete objects managed by QSet/QHash
-  qDeleteAll(*_objects);
-  delete _objects;
-
-  qDeleteAll(*_constraints);
-  delete _constraints;
-
-  qDeleteAll(*_raycast_vehicles);
-  delete _raycast_vehicles;
-
   // Reset luabind::object members before closing Lua state
   _cb_preStart = luabind::object();
   _cb_preDraw = luabind::object();
@@ -923,25 +962,69 @@ Viewer::~Viewer() {
   _cb_postSim = luabind::object();
   _cb_preStop = luabind::object();
   _cb_onCommand = luabind::object();
-  _cb_onJoystick = luabind::object();
 
   if (_cb_shortcuts) {
     delete _cb_shortcuts;
-    _cb_shortcuts = nullptr; // Set to nullptr after deletion
+    _cb_shortcuts = nullptr;
   }
 
-  // Close Lua state if it's still open
-  //XXX if (L != NULL) {
-    //XXX lua_close(L);
-    //XXX L = NULL;
-  //XXX }
+  // Notify all objects that their luabind weak pointers are invalid
+  foreach (Object* o, *_objects) {
+    o->preDestructor();
+  }
 
-  // Delete Bullet Physics objects
-  // delete dynamicsWorld;
-  // delete collisionCfg; // broadphase and solver are deleted by dynamicsWorld
+  // Remove rigid bodies from the dynamics world while pointers are still valid.
+  if (dynamicsWorld) {
+    foreach (Object* o, *_objects) {
+      if (o->body != nullptr) {
+        dynamicsWorld->removeRigidBody(o->body);
+      }
+    }
+  }
 
-  // Delete other dynamically allocated members
-  
+  // lua_close() performs a final GC sweep that deletes all Lua-adopted
+  // Bullet objects via their unique_ptr holders (adopt(result) policy).
+  if (L != nullptr) {
+    lua_close(L);
+    L = nullptr;
+  }
+
+  // Null out Bullet object pointers that Lua has freed. The C++ Object
+  // destructors below will skip these null pointers, avoiding use-after-free
+  // and double-free.
+  foreach (Object* o, *_objects) {
+    o->body = nullptr;
+    o->shape = nullptr;
+#ifdef HAS_LIB_ASSIMP
+    Mesh *m = dynamic_cast<Mesh *>(o);
+    if (m) {
+      m->luaRelease();
+    }
+#endif
+  }
+
+  // Delete dynamics world and collision config (after removing rigid bodies).
+  if (dynamicsWorld) {
+    delete dynamicsWorld;
+    dynamicsWorld = nullptr;
+  }
+  if (collisionCfg) {
+    delete collisionCfg;
+    collisionCfg = nullptr;
+  }
+
+  // Delete Object instances. Lua-owned pointers (body, shape, m_shape, m_mesh)
+  // have been nulled above, so destructors skip them.
+  qDeleteAll(*_objects);
+  _objects->clear();
+  delete _objects;
+
+  _constraints->clear();
+  delete _constraints;
+
+  _raycast_vehicles->clear();
+  delete _raycast_vehicles;
+
   delete _joystickInterface;
 }
 
@@ -990,13 +1073,6 @@ void Viewer::draw() {
   if (_parsing || !isVisible()) {
     mutex.unlock();
     return;
-  }
-
-  if (L) {
-    // lua_gc(L, LUA_GCCOLLECT, 0); // collect garbage
-    // int lsize = lua_gc(L, LUA_GCCOUNT, -1);
-    // emit statusEvent(QString("LUA_GCCOUNT = %1").arg(lsize));
-    // lua_gc(L, LUA_GCSTOP, -1);
   }
 
   if (_cb_preDraw) {
@@ -1050,7 +1126,7 @@ void Viewer::draw() {
   glMaterialfv(GL_FRONT, GL_SPECULAR, _gl_specular);
   glMaterialf(GL_FRONT, GL_SHININESS, _gl_shininess);
 
-  if (manipulatedFrame() != NULL) {
+  if (manipulatedFrame() != nullptr) {
     glPushMatrix();
     glMultMatrixd(manipulatedFrame()->matrix());
   }
@@ -1058,7 +1134,7 @@ void Viewer::draw() {
   glDisable(GL_CULL_FACE);
   drawSceneInternal(0);
 
-  if (manipulatedFrame() != NULL) {
+  if (manipulatedFrame() != nullptr) {
     glPopMatrix();
   }
 
@@ -1234,7 +1310,7 @@ void Viewer::savePOV(bool force) {
              << "\n";
   }
 
-  if (_cam != NULL) {
+  if (_cam != nullptr) {
 
     *_stream << "#declare use_focal_blur = " << _cam->getUseFocalBlur()
     << "; // 0=off 1=low quality 10=high quality" << "\n"
@@ -1317,7 +1393,7 @@ void Viewer::savePOV(bool force) {
              << "\n";
   }
 
-  if (_file != NULL) {
+  if (_file != nullptr) {
     _file->close();
   }
 }
@@ -1334,7 +1410,7 @@ QString Viewer::toPOV() const {
        << "\n";
   }
 
-  if (_cam != NULL) {
+  if (_cam != nullptr) {
 
     *s << "#declare use_focal_blur = " << _cam->getUseFocalBlur()
        << "; // 0=off 1=low quality 10=high quality" << "\n"

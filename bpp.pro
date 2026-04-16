@@ -9,6 +9,7 @@ QT      *= opengl xml gui core
 
 DEFINES += HAS_LIB_ASSIMP
 DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
+DEFINES += LUABIND_USE_CXX11
 
 # QMAKE_CXXFLAGS += -Wno-attributes -Wno-deprecated -Wno-deprecated-copy -Wno-deprecated-declarations -Wno-reorder -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-local-typedefs -Wno-terminate
 QMAKE_CXXFLAGS += -Wno-deprecated-copy
@@ -64,8 +65,8 @@ win32 {
   export.commands = make -C export
   QMAKE_EXTRA_TARGETS += export
 
-  tests.depends  = debug release
-  tests.commands = make -C tests debug release
+  tests.depends  = debug
+  tests.commands = make -C tests debug
   tests.CONFIG   = phony
   QMAKE_EXTRA_TARGETS += tests
 }

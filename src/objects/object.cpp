@@ -12,7 +12,7 @@
 
 #include <QDebug>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <luabind/adopt_policy.hpp>
 
 using namespace std;
@@ -36,6 +36,7 @@ Object::Object(QObject *parent, btScalar pmass) : QObject(parent) {
 
   shape = 0;
   body = 0;
+  _ownsBody = true;
 
   setColor(127, 127, 127);
 
@@ -49,18 +50,26 @@ Object::Object(QObject *parent, btScalar pmass) : QObject(parent) {
 }
 
 Object::~Object() {
-
-  // qDebug() << "Object::~Object()";
-
-  if (shape != NULL) {
+  if (shape != nullptr) {
     // delete shape;
-    // FIXME shape = NULL;
+    // FIXME shape = nullptr;
   }
 
-  if (body != NULL) {
+  if (body != nullptr && _ownsBody) {
     delete body;
-    // FIXME body = NULL;
+    body = nullptr;
   }
+}
+
+void Object::registerLuabindWeakPtr(void** p) {
+  _luabindWeakPtrs.push_back(p);
+}
+
+void Object::preDestructor() {
+  for (void** p : _luabindWeakPtrs) {
+    *p = nullptr;
+  }
+  _luabindWeakPtrs.clear();
 }
 
 void Object::setCollisionTypes(collisiontypes col1, collisiontypes col2) {
@@ -77,14 +86,14 @@ QList<btTypedConstraint *> Object::getConstraints() { return _constraints; }
 QString Object::toString() const { return QString("Object"); }
 
 void Object::toPOV(QTextStream *s) const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
 
     body->getMotionState()->getWorldTransform(trans);
     trans.getOpenGLMatrix(matrix);
   }
 
-  if (s != NULL) {
+  if (s != nullptr) {
     if (mPreSDL.isNull()) {
       *s << "sphere { <0,0,0>, 1" << "\n";
     } else {
@@ -219,7 +228,7 @@ void Object::renderInLocalFramePre(btVector3 &oaabbmin, btVector3 &oaabbmax) {
       isfinite(oaabbmax[0]) && isfinite(oaabbmax[1]) && isfinite(oaabbmax[2])) {
     // qDebug() << toString() << (body->getMotionState());
 
-    if (body != NULL && body->getMotionState() != NULL
+    if (body != nullptr && body->getMotionState() != nullptr
         //&& typeid(body->getMotionState()) == typeid(btDefaultMotionState)
         ////XXX
     ) {
@@ -258,7 +267,7 @@ void Object::setSDL(QString sdl) { mSDL = sdl; }
 QString Object::getSDL() const { return mSDL; }
 
 void Object::setMass(btScalar _mass) {
-  if (body != NULL && shape != NULL) {
+  if (body != nullptr && shape != nullptr) {
     btVector3 inertia;
     shape->calculateLocalInertia(_mass, inertia);
     body->setMassProps(_mass, inertia);
@@ -266,71 +275,74 @@ void Object::setMass(btScalar _mass) {
 }
 
 void Object::setFriction(btScalar friction) {
-  if (body != NULL)
+  if (body != nullptr)
     body->setFriction(friction);
 }
 
 btScalar Object::getFriction() const {
-  if (body != NULL)
+  if (body != nullptr)
     return body->getFriction();
   else
     return 0;
 }
 
 void Object::setRestitution(btScalar restitution) {
-  if (body != NULL)
+  if (body != nullptr)
     body->setRestitution(restitution);
 }
 
 btScalar Object::getRestitution() const {
-  if (body != NULL)
+  if (body != nullptr)
     return body->getRestitution();
   else
     return 0;
 }
 
 void Object::setLinearDamping(btScalar linearDamping) {
-  if (body != NULL)
+  if (body != nullptr)
     body->setDamping(linearDamping, getAngularDamping());
 }
 
 void Object::setAngularDamping(btScalar angularDamping) {
-  if (body != NULL)
+  if (body != nullptr)
     body->setDamping(getLinearDamping(), angularDamping);
 }
 
 void Object::setDamping(btScalar linearDamping, btScalar angularDamping) {
-  if (body != NULL)
+  if (body != nullptr)
     body->setDamping(linearDamping, angularDamping);
 }
 
 btScalar Object::getLinearDamping() const {
-  if (body != NULL)
+  if (body != nullptr)
     return body->getLinearDamping();
   else
     return 0;
 }
 
 btScalar Object::getAngularDamping() const {
-  if (body != NULL)
+  if (body != nullptr)
     return body->getAngularDamping();
   else
     return 0;
 }
 
 void Object::setLinearVelocity(const btVector3 &vector) {
-  if (body != NULL)
+  if (body != nullptr)
     body->setLinearVelocity(vector);
 }
 
 btVector3 Object::getLinearVelocity() const {
-  if (body != NULL)
+  if (body != nullptr)
     return body->getLinearVelocity();
   else
     return btVector3();
 }
 
-void Object::setRigidBody(btRigidBody *b) { body = b; }
+void Object::setRigidBody(btRigidBody *b) {
+    body = b;
+    _ownsBody = false;
+}
 
 btRigidBody *Object::getRigidBody() const { return body; }
 
@@ -357,9 +369,9 @@ QString Object::getColorString() const { return getColor().name(); }
 void Object::setPosition(const btVector3 &v) { setPosition(v[0], v[1], v[2]); }
 
 void Object::setPosition(btScalar x, btScalar y, btScalar z) {
-  if (body != NULL) {
+  if (body != nullptr) {
     btTransform trans;
-    if (body->getMotionState() == NULL) {
+    if (body->getMotionState() == nullptr) {
       body->setMotionState(new btDefaultMotionState());
     }
     body->getMotionState()->getWorldTransform(trans);
@@ -370,7 +382,7 @@ void Object::setPosition(btScalar x, btScalar y, btScalar z) {
 }
 
 btVector3 Object::getPosition() const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans.getOrigin();
@@ -380,7 +392,7 @@ btVector3 Object::getPosition() const {
 }
 
 void Object::setRotation(const btVector3 &axis, btScalar angle) {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
     btQuaternion rot;
     body->getMotionState()->getWorldTransform(trans);
@@ -393,7 +405,7 @@ void Object::setRotation(const btVector3 &axis, btScalar angle) {
 }
 
 void Object::setRotation(const btQuaternion &r) {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     trans.setRotation(r);
@@ -403,7 +415,7 @@ void Object::setRotation(const btQuaternion &r) {
 }
 
 btQuaternion Object::getRotation() const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans.getRotation();
@@ -413,14 +425,14 @@ btQuaternion Object::getRotation() const {
 }
 
 void Object::setTransform(const btTransform &trans) {
-  if (body != NULL) {
+  if (body != nullptr) {
     delete body->getMotionState();
     body->setMotionState(new btDefaultMotionState(trans));
   }
 }
 
 btTransform Object::getTransform() const {
-  if (body != NULL && body->getMotionState() != NULL) {
+  if (body != nullptr && body->getMotionState() != nullptr) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans;
@@ -430,7 +442,7 @@ btTransform Object::getTransform() const {
 }
 
 btScalar Object::getMass() const {
-  if (body != NULL)
+  if (body != nullptr)
     return body->getInvMass();
   else
     return 0;
@@ -476,7 +488,7 @@ luabind::object Object::getRenderFunction() const { return _cb_render; }
 QString Object::toPOV() const {
   btTransform trans;
 
-  if (body != NULL && body->getMotionState() != NULL
+  if (body != nullptr && body->getMotionState() != nullptr
       //&& typeid(body->getMotionState()) == typeid(btDefaultMotionState) //XXX
   ) {
     body->getMotionState()->getWorldTransform(trans);

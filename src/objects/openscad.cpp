@@ -21,7 +21,7 @@ using namespace std;
 
 static int s_runningCount = 0;
 
-OpenSCAD::OpenSCAD(QString sdl, btScalar mass) : Mesh(NULL, mass) {
+OpenSCAD::OpenSCAD(QString sdl, btScalar mass) : Mesh(nullptr, mass) {
   this->sdl = sdl;
   m_process = nullptr;
   m_pendingMass = mass;

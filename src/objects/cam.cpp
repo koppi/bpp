@@ -5,6 +5,7 @@
 #include <QDebug>
 
 #include <boost/shared_ptr.hpp>
+#include <memory>
 #include <luabind/adopt_policy.hpp>
 
 using namespace std;
@@ -34,7 +35,7 @@ QString Cam::toString() const { return QString("Cam"); }
 void Cam::luaBind(lua_State *s) {
   using namespace luabind;
 
-  module(s)[class_<Camera, boost::shared_ptr<Camera>>("Camera").def(
+  module(s)[class_<Camera>("Camera").def(
       constructor<>())];
 
   module(

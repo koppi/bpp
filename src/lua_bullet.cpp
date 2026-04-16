@@ -2,13 +2,6 @@
 
 #include <QDebug>
 
-std::ostream &operator<<(std::ostream &ostream, const btVector3 &v) {
-  ostream << "btVector3(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
-  return ostream;
-}
-
-#include <boost/shared_ptr.hpp>
-
 #include <btBulletDynamicsCommon.h>
 
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
@@ -585,9 +578,8 @@ void LuaBullet::luaBind(lua_State *s) {
                 .def("z", &btQuaternion::z)];
 
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtCollisionObject.html
-      [class_<btCollisionObject, boost::shared_ptr<btCollisionObject>>(
-           "btCollisionObject")
-           .def(constructor<>(), adopt(result))
+      [class_<btCollisionObject>("btCollisionObject")
+       .def(constructor<>(), adopt(result))
            .def("mergesSimulationIslands",
                 &btCollisionObject::mergesSimulationIslands)
            .def("getAnisotropicFriction",
