@@ -663,9 +663,11 @@ void Gui::showProgressBar(const QString &message) {
   if (!message.isEmpty())
     statusBar()->showMessage(message);
   progressBar->show();
+  progressBar->repaint();
 }
 
 void Gui::hideProgressBar() {
   progressBar->hide();
   statusBar()->clearMessage();
+  statusBar()->repaint();
 }
