@@ -264,11 +264,11 @@ Info "DEB_BUILD_PROFILES: ${DEB_BUILD_PROFILES:-<not set>}"
 if [ "${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}" = true ] || [ ! -f debian/changelog ]
 then
 	cat >debian/changelog.new <<EOF
-${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
+${SOURCE} (${VERSION}) UNRELEASED; urgency=medium
 
   * Automatic build.
 
- -- travis.debian.net <nobody@nobody.example>  $(date --utc -R)
+  -- Jakob Flierl <jakob.flierl@gmail.com>  $(date --utc -R)
 
 EOF
 	# Don't rely on debian/changelog existing

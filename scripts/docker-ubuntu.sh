@@ -98,11 +98,11 @@ Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
 if [ "${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}" = true ]
 then
 	cat >debian/changelog.new <<EOF
-${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
+${SOURCE} (${VERSION}) UNRELEASED; urgency=medium
 
   * Automatic build.
 
- -- travis.debian.net <nobody@nobody>  $(date --utc -R)
+  -- Jakob Flierl <jakob.flierl@gmail.com>  $(date --utc -R)
 
 EOF
 	cat <debian/changelog >>debian/changelog.new
