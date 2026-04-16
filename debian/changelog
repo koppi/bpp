@@ -1,12 +1,5 @@
-bpp (0.1.6~noble1) UNRELEASED; urgency=medium
+bpp (0.1.7~noble1) noble; urgency=medium
 
-  * Automatic build.
+  * New upstream release
 
- -- Jakob Flierl <jakob.flierl@gmail.com>  Thu, 17 Jul 2025 18:17:24 +0000
-
-bpp (0.1.6~noble1) noble; urgency=medium
-
-  * Automatic build from Github
-  * Automatic build from Github
-
- -- Jakob Flierl <jakob.flierl@gmail.com>  Thu, 17 Jul 2025 17:15:06 +0200
+ -- Jakob Flierl <jakob.flierl@gmail.com>  Thu, 16 Apr 2026 00:00:00 +0200
