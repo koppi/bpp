@@ -370,7 +370,7 @@ void Object::setPosition(btScalar x, btScalar y, btScalar z) {
 }
 
 btVector3 Object::getPosition() const {
-  if (body != NULL) {
+  if (body != NULL && body->getMotionState() != NULL) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans.getOrigin();
@@ -380,7 +380,7 @@ btVector3 Object::getPosition() const {
 }
 
 void Object::setRotation(const btVector3 &axis, btScalar angle) {
-  if (body != NULL) {
+  if (body != NULL && body->getMotionState() != NULL) {
     btTransform trans;
     btQuaternion rot;
     body->getMotionState()->getWorldTransform(trans);
@@ -393,7 +393,7 @@ void Object::setRotation(const btVector3 &axis, btScalar angle) {
 }
 
 void Object::setRotation(const btQuaternion &r) {
-  if (body != NULL) {
+  if (body != NULL && body->getMotionState() != NULL) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     trans.setRotation(r);
@@ -403,7 +403,7 @@ void Object::setRotation(const btQuaternion &r) {
 }
 
 btQuaternion Object::getRotation() const {
-  if (body != NULL) {
+  if (body != NULL && body->getMotionState() != NULL) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans.getRotation();
@@ -420,7 +420,7 @@ void Object::setTransform(const btTransform &trans) {
 }
 
 btTransform Object::getTransform() const {
-  if (body != NULL) {
+  if (body != NULL && body->getMotionState() != NULL) {
     btTransform trans;
     body->getMotionState()->getWorldTransform(trans);
     return trans;

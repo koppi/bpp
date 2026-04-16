@@ -457,10 +457,14 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
 
   L = NULL;
 
+  _parsing = false;
+  _has_exception = false;
+
   _file = nullptr;
   _fileMain = nullptr;
   _fileINI = nullptr;
   _fileMakefile = nullptr;
+  _stream = nullptr;
 
   _savePOV = savePOV;
 
@@ -468,6 +472,23 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
 
   _simulate = false;
   _deactivation = true;
+
+  _timeStep = 1 / 25.0;
+  _maxSubSteps = 7;
+  _fixedTimeStep = 1 / 100.0;
+
+  _initialCameraPosition = Vec(0, 0, 0);
+  _initialCameraOrientation = Quaternion();
+  _initialCameraHorizontalFieldOfView = 0.5;
+
+  _light0 = btVector4(100.0, 200.0, 100.0, 0.4);
+  _light1 = btVector4(-200.0, 100.0, -200.0, 0.2);
+  _gl_ambient = btVector3(0.2f, 0.2f, 0.2f);
+  _gl_diffuse = btVector4(0.7f, 0.7f, 0.7f, 1.0f);
+  _gl_shininess = btScalar(100.0);
+  _gl_specular_col = btVector4(1.0f, 1.0f, 1.0f, 1.0f);
+  _gl_specular = btVector4(1.0f, 1.0f, 1.0f, 1.0f);
+  _gl_model_ambient = btVector4(0.2f, 0.2f, 0.2f, 1.0f);
 
   collisionCfg = new btDefaultCollisionConfiguration();
   btBroadphaseInterface *broadphase = new btDbvtBroadphase();
@@ -1627,19 +1648,22 @@ void Viewer::showLuaException(const std::exception &e, const QString &context) {
     std::cout << stack << "\n";
   }
 
-  // the error message should be on top of the stack
-  QString luaWhat = QString("%1").arg(lua_tostring(L, -1));
+  if (L) {
+    QString luaWhat = QString("%1").arg(lua_tostring(L, -1));
 
-  lua_Debug ar;
-  lua_getstack(L, 1, &ar);
-  lua_getinfo(L, "nSl", &ar);
-  int line = ar.currentline;
+    lua_Debug ar;
+    lua_getstack(L, 1, &ar);
+    lua_getinfo(L, "nSl", &ar);
+    int line = ar.currentline;
 
-  emitScriptOutput(QString("%1 in %2: %3 (line %4)")
-                       .arg(e.what())
-                       .arg(context)
-                       .arg(luaWhat)
-                       .arg(line));
+    emitScriptOutput(QString("%1 in %2: %3 (line %4)")
+                         .arg(e.what())
+                         .arg(context)
+                         .arg(luaWhat)
+                         .arg(line));
+  } else {
+    emitScriptOutput(QString("%1 in %2").arg(e.what()).arg(context));
+  }
 }
 
 void Viewer::setGLShininess(const btScalar &s) { _gl_shininess = s; }
