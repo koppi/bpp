@@ -60,8 +60,13 @@ jobs:
         name: ${{ matrix.target }}
         if-no-files-found: error
         path: |
-          ../*.buildinfo
-          ../*.changes
-          ../*.dsc
-          ../*.tar.*
-          ../*.deb
+          *.buildinfo
+          *.changes
+          *.dsc
+          *.tar.*
+          *.deb
+          ~/**/*/*.buildinfo
+          ~/**/*/*.changes
+          ~/**/*/*.dsc
+          ~/**/*/*.tar.*
+          ~/**/*/*.deb
