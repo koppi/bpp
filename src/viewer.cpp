@@ -684,10 +684,17 @@ bool Viewer::parse(QString txt) {
     luaL_dostring(L, "os.setlocale('C')");
     luaL_dostring(L, "printf = function(s,...) print(s:format(...)) end");
 
-    QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath()).arg(QDir::separator()).arg("demo").arg(QDir::separator()).arg("?.lua;");
+    // Build Lua package.path: search CWD/demo first, then installed location
+    QStringList luaPaths;
+    QString cwdDemo = QDir::currentPath() + "/demo/?.lua;";
+    QString installDemo = "/usr/share/bpp/demo/?.lua;";
+    luaPaths << cwdDemo;
+    if (QDir("/usr/share/bpp/demo").exists())
+      luaPaths << installDemo;
+    QString defaultLuaPath = luaPaths.join("");
 
     QString path = _settings->value("lua/path", defaultLuaPath).toString();
-    QString p = QString("%1\";%2\"").arg("package.path = package.path..", path);
+    QString p = QString("package.path = package.path..\";%1\"").arg(path);
 
     int error =
         luaL_loadstring(L, qPrintable(p)) || lua_pcall(L, 0, LUA_MULTRET, 0);

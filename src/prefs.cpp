@@ -62,8 +62,14 @@ void Prefs::setupPages() {
   this->defaultmap["editor/fontsize"] =
       _settings->value("editor/fontsize", 12).toInt();
 
-  // LUA paths always have slashes and never backslashes as directory separators
-  QString defaultLuaPath = QString("%1%2%3%4%5").arg(QDir::currentPath(), "/", "demo", "/", "?.lua;");
+  // LUA paths always use forward slashes; search CWD/demo first, then installed
+  QStringList luaPaths;
+  QString cwdDemo = QDir::currentPath() + "/demo/?.lua;";
+  QString installDemo = "/usr/share/bpp/demo/?.lua;";
+  luaPaths << cwdDemo;
+  if (QDir("/usr/share/bpp/demo").exists())
+    luaPaths << installDemo;
+  QString defaultLuaPath = luaPaths.join("");
 
   qDebug() << "defaultLuaPath" << defaultLuaPath;
 
