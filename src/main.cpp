@@ -4,9 +4,9 @@
 #define APP_ORGANIZATION QString("bullet-physics-playground.github.io")
 
 #include <QApplication>
-
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QTimer>
 
 #include "gui.h"
 #include "viewer.h"
@@ -119,6 +119,7 @@ int main(int argc, char **argv) {
     int ret = app->exec();
     delete g; // Qt will delete children, but explicit delete for top-level widget is good practice
     delete settings;
+    glutExit();
     return ret;
 } else {
     QStringList lua = parser.values(luaOption);
@@ -236,13 +237,15 @@ int main(int argc, char **argv) {
       v->animate();
     }
 
+    v->stopAnimation();
     v->close();
 
-    QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
+    QTimer::singleShot(100, qApp, []() { qApp->quit(); });
 
     int ret = app->exec();
     delete v;
     delete settings;
+    glutExit();
     return ret;
   }
 }
