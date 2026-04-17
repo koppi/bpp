@@ -64,10 +64,10 @@ void Prefs::setupPages() {
 
   // LUA paths always use forward slashes; search CWD/demo first, then installed
   QStringList luaPaths;
-  QString cwdDemo = QDir::currentPath() + "/demo/?.lua;";
-  QString installDemo = "/usr/share/bpp/demo/?.lua;";
+  QString cwdDemo = QDir::currentPath() + "/demo/module/?.lua;";
+  QString installDemo = "/usr/share/bpp/demo/module/?.lua;";
   luaPaths << cwdDemo;
-  if (QDir("/usr/share/bpp/demo").exists())
+  if (QDir("/usr/share/bpp/demo/module").exists())
     luaPaths << installDemo;
   QString defaultLuaPath = luaPaths.join("");
 
