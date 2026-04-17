@@ -8,9 +8,9 @@
 -- http://www.thingiverse.com/thing:965737
 --
 
-local nutsnbolts  = require "module/scad/nutsnbolts"
-local color       = require "module/color"
-local trans       = require "module/scad/trans"
+local nutsnbolts  = require "scad/nutsnbolts"
+local color       = require "color"
+local trans       = require "scad/trans"
 
 v.pre_sdl = [==[
 

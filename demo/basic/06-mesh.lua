@@ -2,7 +2,7 @@
 -- Lua transform module demo (WIP)
 --
 
-trans = require "module/trans"
+trans = require "trans"
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 10

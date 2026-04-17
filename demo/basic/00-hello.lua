@@ -2,8 +2,8 @@
 -- Demo of basic BPP objects and functions
 --
 
-local color = require "module/color"
-local gs    = require "module/scad/geodesic_sphere"
+local color = require "color"
+local gs    = require "scad/geodesic_sphere"
 
 v.timeStep      = 1/25 -- 25 frames per second
 v.maxSubSteps   = 120

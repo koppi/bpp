@@ -2,7 +2,7 @@
 -- util/trans.lua library demo
 --
 
-local trans = require "module/scad/trans"
+local trans = require "scad/trans"
 
 plane = Plane(0,1,0,0,1000)
 plane.pos = btVector3(0,-100,0)

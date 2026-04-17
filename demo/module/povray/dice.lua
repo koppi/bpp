@@ -1,6 +1,6 @@
 local M = {}
 
-local color = require "module/color"
+local color = require "color"
 
 function M.new(params)
    params    = params or {}

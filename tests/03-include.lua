@@ -21,7 +21,7 @@ local function assert_match(name, got, pattern)
   end
 end
 
-local c = require "module/color"
+local c = require "color"
 
 assert_eq("color module red", c.red, "#ff0000")
 assert_match("color module is table", type(c), "table")

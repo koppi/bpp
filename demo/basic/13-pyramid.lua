@@ -6,7 +6,7 @@
 -- visual rendering with checker texture.
 --
 
-local color = require "module/color"
+local color = require "color"
 
 v.gravity = btVector3(0, -9.81, 0)
 v.timeStep      = 1/50

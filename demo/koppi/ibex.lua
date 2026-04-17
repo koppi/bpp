@@ -2,7 +2,7 @@
 -- IBEX sculpture (WIP)
 --
 
-local color = require "module/color"
+local color = require "color"
 
 v.pre_sdl = [[
 

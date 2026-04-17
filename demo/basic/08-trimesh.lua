@@ -6,7 +6,7 @@
 -- Needs more investigation (koppi).
 --
 
-local color = require "module/color"
+local color = require "color"
 
 v.gravity = btVector3(0,-9.81,0)
 

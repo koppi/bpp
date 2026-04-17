@@ -4,8 +4,8 @@
 
 -- Notice: POV-Ray export requires the user_defined cam feature
 
-local color = require "module/color"
-local metal = require "module/povray/metal"
+local color = require "color"
+local metal = require "povray/metal"
 
 v.timeStep      = 1/25 -- fps
 -- v.fixedTimeStep = v.timeStep / 2

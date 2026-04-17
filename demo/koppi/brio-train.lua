@@ -2,8 +2,8 @@
 -- BRIO bricks train
 --
 
-color = require "module/color"
-brio  = require "module/scad/brio"
+color = require "color"
+brio  = require "scad/brio"
 
 v.timeStep      = 1/2
 v.maxSubSteps   = 100

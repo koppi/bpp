@@ -4,8 +4,8 @@
 -- http://www.thingiverse.com/thing:3575
 --
 
-local color = require "module/color"
-local gearsv50 = require "module/scad/gearsv50"
+local color = require "color"
+local gearsv50 = require "scad/gearsv50"
 
 v.timeStep      = 1/25
 v.maxSubSteps   = 60

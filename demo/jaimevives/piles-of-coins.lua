@@ -2,7 +2,7 @@
 -- Piles of coins
 --
 
-local color = require "module/color"
+local color = require "color"
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 200

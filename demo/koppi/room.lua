@@ -2,8 +2,8 @@
 -- A room with random objects (WIP)
 --
 
-local color = require "module/color"
-local path_extrude = require "module/scad/path_extrude"
+local color = require "color"
+local path_extrude = require "scad/path_extrude"
 
 v.pre_sdl = [[
 

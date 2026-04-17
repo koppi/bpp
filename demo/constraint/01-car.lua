@@ -6,7 +6,7 @@
 -- * F1 - prev car
 -- * F2 - next car
 
-local trans = require "module/scad/trans"
+local trans = require "scad/trans"
 
 v.timeStep      = 1/10
 v.maxSubSteps   = 10

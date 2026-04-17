@@ -4,8 +4,8 @@
 -- http://thingiverse.com/thing:159219
 --
 
-local duplo = require "module/scad/duplo"
-local color = require "module/color"
+local duplo = require "scad/duplo"
+local color = require "color"
 
 v.timeStep      = 1/3
 v.maxSubSteps   = 50

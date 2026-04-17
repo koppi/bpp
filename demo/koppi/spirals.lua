@@ -2,8 +2,8 @@
 -- Parametric OpenSCAD spirals
 --
 
-color = require "module/color"
-marble = require "module/marble"
+color = require "color"
+marble = require "povray/marble"
 
 v.timeStep      = 1/6
 v.maxSubSteps   = 200

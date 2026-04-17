@@ -4,7 +4,7 @@
 -- preSim used to insert coins on-the-fly
 --
 
-local color = require "module/color"
+local color = require "color"
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 100
