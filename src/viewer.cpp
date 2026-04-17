@@ -867,6 +867,13 @@ void Viewer::clear() {
     }
   }
 
+  // Remove constraints from the dynamics world before deleting them.
+  if (dynamicsWorld) {
+    foreach (btTypedConstraint* c, *_constraints) {
+      dynamicsWorld->removeConstraint(c);
+    }
+  }
+
   // Delete Object instances. Body/shape pointers that were Lua-owned
   // have already been nulled before lua_close, so destructors skip them.
   // C++-owned body pointers (_ownsBody=true) are still valid and get deleted.
