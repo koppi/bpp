@@ -1020,6 +1020,9 @@ Viewer::~Viewer() {
     collisionCfg = nullptr;
   }
 
+  // Clear the luabind registry map before deleting objects, as it holds pointers to them
+  _luabindRegistry.clear();
+
   // Delete Object instances. Lua-owned pointers (body, shape, m_shape, m_mesh)
   // have been nulled above, so destructors skip them.
   qDeleteAll(*_objects);

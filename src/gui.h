@@ -82,10 +82,10 @@ public slots:
   void showProgressBar(const QString &message = QString());
   void hideProgressBar();
 
-  void runProgram() {
+void runProgram() {
     statusBar()->showMessage(tr("Running simulation..."));
+    parseEditor();
     ui.viewer->startSim();
-    // emit play();
   }
 
   void toggleSim() {
