@@ -30,7 +30,7 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install devscripts equivs lintian
           mk-build-deps -i -s sudo -t "apt --yes --no-install-recommends"
 
-- name: build source package
+      - name: build source package
       env:
         DEBFULLNAME: "Jakob Flierl"
         DEBEMAIL: "jakob.flierl@gmail.com"
