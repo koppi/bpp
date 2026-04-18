@@ -95,7 +95,8 @@ jobs:
         mkdir -p artifacts
         cp ../*.buildinfo ../*.changes ../*.dsc ../*.tar.* ../*.deb artifacts/ 2>/dev/null || true
 
-    - uses: softprops/action-gh-release@v1
+    - uses: softprops/action-gh-release@v3
+      if: github.ref_type == 'tag'
       with:
         files: artifacts/*
         generate_release_notes: true
