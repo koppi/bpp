@@ -3,7 +3,7 @@ name: CI for release tags
 on:
   push:
     tags:
-      - "v*" # matches v1.0.1, v1.2, v2, etc
+      - "v*" # matches v1.0.1, v2, etc
 
 jobs:
   build:
@@ -14,23 +14,23 @@ jobs:
       matrix:
         target:
           - ubuntu-24.04
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-          submodules: true
+    - name: Set Node.js 24
+      run: echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
 
-      - name: install packages required for the build
-        run: |
-          sudo apt update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install devscripts equivs lintian
-          mk-build-deps -i -s sudo -t "apt --yes --no-install-recommends"
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+        submodules: true
 
-      - name: build source package
+    - name: install packages required for the build
+      run: |
+        sudo apt update -qq
+        sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install devscripts equivs lintian
+        mk-build-deps -i -s sudo -t "apt --yes --no-install-recommends"
+
+    - name: build source package
       env:
         DEBFULLNAME: "Jakob Flierl"
         DEBEMAIL: "jakob.flierl@gmail.com"
@@ -40,12 +40,12 @@ jobs:
         dch --increment --distribution ${TARGET} -- "Automatic build"
         debuild -S -sa -us -uc -d
 
-      - name: build binary package
-        run: dpkg-buildpackage -b -us -uc
+    - name: build binary package
+      run: dpkg-buildpackage -b -us -uc
 
-      - name: upload debian package
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ../*.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: upload debian package
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ../*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
