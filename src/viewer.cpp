@@ -240,8 +240,15 @@ void Viewer::addObject(Object *o) {
     return;
 
   if (L != nullptr && _luabindRegistry.find(o) == _luabindRegistry.end()) {
-    luabind::object obj(luabind::from_stack(L, 2));
-    _luabindRegistry[o] = obj;
+    // Only attempt to create a luabind::object if there are at least two
+    // stack elements (self + arg) and the second isn't nil. When this
+    // function is called from C++ (not Lua) the Lua stack may be empty and
+    // calling from_stack would read invalid memory and corrupt luabind's
+    // object_rep.
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2)) {
+      luabind::object obj(luabind::from_stack(L, 2));
+      _luabindRegistry[o] = obj;
+    }
   }
 
   addObject(o, o->getCol1(), o->getCol2());
@@ -506,13 +513,15 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
   _gl_model_ambient = btVector4(0.2f, 0.2f, 0.2f, 1.0f);
 
   collisionCfg = new btDefaultCollisionConfiguration();
-  btBroadphaseInterface *broadphase = new btDbvtBroadphase();
-  dynamicsWorld = new btDiscreteDynamicsWorld(
-      new btCollisionDispatcher(collisionCfg), broadphase,
-      new btSequentialImpulseConstraintSolver, collisionCfg);
-  btCollisionDispatcher *dispatcher =
-      static_cast<btCollisionDispatcher *>(dynamicsWorld->getDispatcher());
-  btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+  // create and keep pointers to subcomponents so we can delete them later
+  broadphase = new btDbvtBroadphase();
+  dispatcher = new btCollisionDispatcher(collisionCfg);
+  solver = new btSequentialImpulseConstraintSolver();
+
+  dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase,
+                                              solver, collisionCfg);
+  btCollisionDispatcher *dispatcher_ptr = dispatcher;
+  btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher_ptr);
 
   _frameNum = 0;
   _firstFrame = 0;
@@ -890,6 +899,7 @@ void Viewer::clear() {
   }
   _raycast_vehicles->clear();
 
+  // Delete existing dynamics world and its subcomponents
   if (dynamicsWorld) {
     delete dynamicsWorld;
     dynamicsWorld = nullptr;
@@ -897,6 +907,18 @@ void Viewer::clear() {
   if (collisionCfg) {
     delete collisionCfg;
     collisionCfg = nullptr;
+  }
+  if (dispatcher) {
+    delete dispatcher;
+    dispatcher = nullptr;
+  }
+  if (solver) {
+    delete solver;
+    solver = nullptr;
+  }
+  if (broadphase) {
+    delete broadphase;
+    broadphase = nullptr;
   }
 
   // It's important that timeStep is always less than maxSubSteps*fixedTimeStep,
@@ -910,16 +932,16 @@ void Viewer::clear() {
   _fixedTimeStep = 1 / 100.0; // 1/60th of a second
 
   collisionCfg = new btDefaultCollisionConfiguration();
-  btBroadphaseInterface *broadphase = new btDbvtBroadphase();
+  broadphase = new btDbvtBroadphase();
+  dispatcher = new btCollisionDispatcher(collisionCfg);
+  solver = new btSequentialImpulseConstraintSolver();
 
-  dynamicsWorld = new btDiscreteDynamicsWorld(
-      new btCollisionDispatcher(collisionCfg), broadphase,
-      new btSequentialImpulseConstraintSolver, collisionCfg);
+  dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase,
+                                              solver, collisionCfg);
   dynamicsWorld->setGravity(btVector3(0.0f, -G, 0.0f));
 
-  btCollisionDispatcher *dispatcher =
-      static_cast<btCollisionDispatcher *>(dynamicsWorld->getDispatcher());
-  btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+  btCollisionDispatcher *dispatcher_ptr = dispatcher;
+  btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher_ptr);
 
   _pov_settings_inc = "settings.inc";
 
@@ -1269,6 +1291,37 @@ void Viewer::savePOV(bool force) {
 
   qDebug() << "POV-Ray file: " << file;
 
+  // Clean up any previous export objects to avoid leaking when saving every
+  // frame (savePOV can be called repeatedly during animation).
+  if (_stream) {
+    delete _stream;
+    _stream = nullptr;
+  }
+  if (_file) {
+    if (_file->isOpen())
+      _file->close();
+    delete _file;
+    _file = nullptr;
+  }
+  if (_fileMain) {
+    if (_fileMain->isOpen())
+      _fileMain->close();
+    delete _fileMain;
+    _fileMain = nullptr;
+  }
+  if (_fileINI) {
+    if (_fileINI->isOpen())
+      _fileINI->close();
+    delete _fileINI;
+    _fileINI = nullptr;
+  }
+  if (_fileMakefile) {
+    if (_fileMakefile->isOpen())
+      _fileMakefile->close();
+    delete _fileMakefile;
+    _fileMakefile = nullptr;
+  }
+
   _fileINI = new QFile(fileINI, this);
   _fileINI->open(QFile::WriteOnly | QFile::Truncate);
 
@@ -1456,6 +1509,36 @@ void Viewer::savePOV(bool force) {
 
   if (_file != nullptr) {
     _file->close();
+  }
+
+  // free the objects allocated for this export immediately
+  if (_stream) {
+    delete _stream;
+    _stream = nullptr;
+  }
+  if (_file) {
+    if (_file->isOpen())
+      _file->close();
+    delete _file;
+    _file = nullptr;
+  }
+  if (_fileMain) {
+    if (_fileMain->isOpen())
+      _fileMain->close();
+    delete _fileMain;
+    _fileMain = nullptr;
+  }
+  if (_fileINI) {
+    if (_fileINI->isOpen())
+      _fileINI->close();
+    delete _fileINI;
+    _fileINI = nullptr;
+  }
+  if (_fileMakefile) {
+    if (_fileMakefile->isOpen())
+      _fileMakefile->close();
+    delete _fileMakefile;
+    _fileMakefile = nullptr;
   }
 }
 

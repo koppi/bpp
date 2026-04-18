@@ -260,6 +260,11 @@ private:
   btDefaultCollisionConfiguration *collisionCfg;
   btDiscreteDynamicsWorld *dynamicsWorld;
 
+  // Keep ownership of Bullet subcomponents so we can delete them explicitly
+  btBroadphaseInterface *broadphase;
+  btCollisionDispatcher *dispatcher;
+  btConstraintSolver *solver;
+
   QElapsedTimer _timer;
 
   QTextStream *_stream;
