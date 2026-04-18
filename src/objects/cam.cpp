@@ -22,6 +22,11 @@ Cam::Cam(QObject *parent) : Camera() {
 
   standard = true;
   orthoSize = 1.0;
+
+  // Initialize focal point, aperture and lookAt to avoid uninitialized reads
+  _focalPoint = btVector3(0, 0, 0);
+  _focalAperture = 0.0;
+  _lookAt = btVector3(0, 0, 0);
 }
 
 Cam::~Cam() {
