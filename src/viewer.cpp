@@ -1486,9 +1486,8 @@ void Viewer::savePOV(bool force) {
                << dir.z
                << "> ";
 */
-      Vec look =
-          ((Cam *)camera())->viewDirection() * 1000000 + camera()->position();
-      *_stream << "  look_at <" << look.x << ", " << look.y << ", " << look.z
+      btVector3 lookAt = _cam->getLookAt();
+      *_stream << "  look_at <" << lookAt.x() << ", " << lookAt.y() << ", " << lookAt.z()
                << "> ";
 
       *_stream << "  angle " << 180.0 * camera()->horizontalFieldOfView() / M_PI
@@ -1599,27 +1598,15 @@ QString Viewer::toPOV() const {
        << "\n";
 
     if (_cam->getPreSDL().isNull()) {
-      Vec pos = camera()->position();
+Vec pos = camera()->position();
 
       *s << "camera { " << "\n"
-         << "  location < " << pos.x << ", " << pos.y << ", " << pos.z << " >"
-         << "\n"
-         << "  right - image_width / image_height*x" << "\n";
+          << "  location < " << pos.x << ", " << pos.y << ", " << pos.z << ">"
+          << "\n"
+          << "  right - image_width / image_height*x" << "\n";
 
-      /*
-      Vec dir = ((Cam*)camera())->viewDirection();
-      *s << "  direction <"
-         << dir.x
-         << ", "
-         << dir.y
-         << ", "
-         << dir.z
-         << "> ";
-         */
-
-      Vec look =
-          ((Cam *)camera())->viewDirection() * 1000000 + camera()->position();
-      *s << "  look_at <" << look.x << ", " << look.y << ", " << look.z << "> ";
+      btVector3 lookAt = _cam->getLookAt();
+      *s << "  look_at <" << lookAt.x() << ", " << lookAt.y() << ", " << lookAt.z() << "> ";
 
       *s << "  angle " << 180.0 * camera()->horizontalFieldOfView() / M_PI
          << "\n";
@@ -1836,6 +1823,14 @@ void Viewer::animate() {
   // emitScriptOutput(QString("_frameNum = %1").arg(_frameNum));
 
   // emitScriptOutput("Viewer::animate() begin");
+
+  if (_cb_preDraw) {
+    try {
+      luabind::call_function<void>(_cb_preDraw, _frameNum);
+    } catch (const std::exception &e) {
+      showLuaException(e, "preDraw()");
+    }
+  }
 
   if (_savePOV) {
     savePOV();
