@@ -576,8 +576,7 @@ void Gui::loadSettings() {
   }
 
   renderSettings->setCurrentIndex(renderSettings->findText(
-      settings->value("gui/renderResolution",
-                    settings->value("renderResolution", "view size").toString()).toString()));
+      settings->value("gui/renderResolution", "view size").toString()));
 
   ui.actionToggleDeactivation->setChecked(
       settings->value("deactivationState", true).toBool());
@@ -605,8 +604,7 @@ void Gui::saveSettings() {
 
   QString renderRes = renderSettings->currentText();
   if (renderRes.isEmpty()) {
-    renderRes = settings->value("gui/renderResolution",
-                              settings->value("renderResolution", "view size").toString()).toString();
+    renderRes = settings->value("gui/renderResolution", "view size").toString();
   }
   settings->setValue("gui/renderResolution", renderRes);
 
