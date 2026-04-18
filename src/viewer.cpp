@@ -1788,18 +1788,21 @@ void Viewer::showLuaException(const std::exception &e, const QString &context) {
   }
 
   if (L) {
-    QString luaWhat = QString("%1").arg(lua_tostring(L, -1));
+    const char *s = lua_tostring(L, -1);
+    QString luaWhat = QString("%1").arg(s ? s : "");
 
     lua_Debug ar;
-    lua_getstack(L, 1, &ar);
-    lua_getinfo(L, "nSl", &ar);
-    int line = ar.currentline;
-
-    emitScriptOutput(QString("%1 in %2: %3 (line %4)")
-                         .arg(e.what())
-                         .arg(context)
-                         .arg(luaWhat)
-                         .arg(line));
+    int stack_ok = lua_getstack(L, 1, &ar);
+    if (stack_ok && lua_getinfo(L, "nSl", &ar)) {
+      int line = ar.currentline;
+      emitScriptOutput(QString("%1 in %2: %3 (line %4)")
+                           .arg(e.what())
+                           .arg(context)
+                           .arg(luaWhat)
+                           .arg(line));
+    } else {
+      emitScriptOutput(QString("%1 in %2: %3").arg(e.what()).arg(context).arg(luaWhat));
+    }
   } else {
     emitScriptOutput(QString("%1 in %2").arg(e.what()).arg(context));
   }
