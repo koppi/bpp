@@ -1905,7 +1905,7 @@ void Viewer::showLuaException(const std::exception &e, const QString &context) {
   _has_exception = true;
 
   if (std::string const *stack = boost::get_error_info<stack_info>(e)) {
-    std::cout << stack << "\n";
+    emitScriptOutput(QString::fromStdString(*stack));
   }
 
   if (L) {
