@@ -95,8 +95,10 @@ jobs:
         mkdir -p artifacts
         cp ../*.buildinfo ../*.changes ../*.dsc ../*.tar.* ../*.deb artifacts/ 2>/dev/null || true
 
-    - uses: actions/upload-artifact@v5
+    - uses: softprops/action-gh-release@v1
       with:
-        name: ${{ matrix.target }}
-        if-no-files-found: error
-        path: artifacts
+        files: artifacts/*
+        generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
