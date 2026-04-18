@@ -492,15 +492,14 @@ QString Object::toPOV() const {
     trans.getOpenGLMatrix(matrix);
   }
 
-  QByteArray *data = new QByteArray();
-  QTextStream *s = new QTextStream(data);
+  QByteArray data;
+  QTextStream s(&data);
 
-  toPOV(s);
+  toPOV(&s);
 
-  s->flush();
+  s.flush();
 
-  QString str = QString::fromStdString(data->toStdString());
-  delete data;
+  QString str = QString::fromStdString(data.toStdString());
   return str;
 }
 
