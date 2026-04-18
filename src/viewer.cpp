@@ -1983,8 +1983,6 @@ void Viewer::onQuickRender(QString povargs) {
 
   QString defaultExportPath = QString("%1%2%3").arg(QDir::currentPath(), QDir::separator(), "export");
 
-  qDebug() << "defaultExportPath" << defaultExportPath;
-
   QString exportDir = _settings->value("povray/export", defaultExportPath).toString();
   QString sceneDir =
       dir.absoluteFilePath(exportDir + QDir::separator() + sceneName);

@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
     app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc, argv));
   } else {
     app = QSharedPointer<QCoreApplication>(new QApplication(argc, argv));
+    // Set style to fusion to prevent crash in Qt Breeze style plugin cleanup
+    QApplication::setStyle("fusion");
   }
 
   // end workaround

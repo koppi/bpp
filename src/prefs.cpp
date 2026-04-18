@@ -102,8 +102,6 @@ void Prefs::setupPages() {
 
   QString defaultExportPath = QString("%1%2%3%4").arg(QDir::currentPath(), QDir::separator(), "export", QDir::separator());
 
-  qDebug() << "defaultExportPath" << defaultExportPath;
-
   this->defaultmap["povray/export"] =
       _settings->value("povray/export", defaultExportPath).toString();
 
