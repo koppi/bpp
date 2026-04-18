@@ -151,8 +151,16 @@ int main(int argc, char **argv) {
         QIcon::setThemeName("humanity");
       }
 
+      // Temporarily disable auto-loading the last file when a positional Lua
+      // script is provided so the positional script takes precedence.
+      QVariant oldOpenLast = settings->value("gui/openlastfile", false);
+      settings->setValue("gui/openlastfile", false);
+
       Gui *g = new Gui(settings);
       g->show();
+
+      // Restore the user's preference.
+      settings->setValue("gui/openlastfile", oldOpenLast);
 
       g->fileOpen(positionalLuaFile);
       g->runProgram();
