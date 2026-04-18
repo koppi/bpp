@@ -61,6 +61,11 @@ bpp -n 200 -f demo/basic/01-hello-cmdline.lua | \
     gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
 ```
 
+## Documentation / Wiki
+
+* Basic Usage HOWTO: https://github.com/bullet-physics-playground/bpp/wiki/Basic-Usage-HOWTO
+* LUA Bindings Reference: https://github.com/bullet-physics-playground/bpp/wiki/LUA-Bindings-Reference
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a pull request or open an
