@@ -63,8 +63,8 @@ bpp -n 200 -f demo/basic/01-hello-cmdline.lua | \
 
 ## Documentation / Wiki
 
-* Basic Usage HOWTO: https://github.com/bullet-physics-playground/bpp/wiki/Basic-Usage-HOWTO
-* LUA Bindings Reference: https://github.com/bullet-physics-playground/bpp/wiki/LUA-Bindings-Reference
+* [Basic Usage HOWTO](https://github.com/bullet-physics-playground/bpp/wiki/Basic-Usage-HOWTO)
+* [LUA Bindings Reference](https://github.com/bullet-physics-playground/bpp/wiki/LUA-Bindings-Reference)
 
 ## Contributing
 
