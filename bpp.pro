@@ -17,6 +17,7 @@ DEFINES += LUABIND_USE_CXX11
 QMAKE_CXXFLAGS += -Wno-deprecated-copy
 QMAKE_CXXFLAGS_RELEASE += -O3
 QMAKE_CXXFLAGS_DEBUG   += -O0
+QMAKE_CXXFLAGS_DEBUG   += -fno-sanitize=alignment
 
 CONFIG(debug, debug|release) {
     DESTDIR = debug

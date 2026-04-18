@@ -48,6 +48,32 @@
 #include <boost/exception/info.hpp>
 #include <boost/throw_exception.hpp>
 
+#include <cstdlib>
+
+static void *aligned_lua_alloc(void *ud, void *ptr, size_t osize,
+                               size_t nsize) {
+  (void)ud;
+  (void)osize;
+  if (nsize == 0) {
+    if (ptr)
+      free(ptr);
+    return nullptr;
+  }
+  if (ptr) {
+    void *newptr = nullptr;
+    if (posix_memalign(&newptr, 16, nsize) != 0)
+      return nullptr;
+    size_t copy = nsize < osize ? nsize : osize;
+    memcpy(newptr, ptr, copy);
+    free(ptr);
+    return newptr;
+  }
+  void *newptr = nullptr;
+  if (posix_memalign(&newptr, 16, nsize) != 0)
+    return nullptr;
+  return newptr;
+}
+
 #include <luabind/adopt_policy.hpp>
 #include <luabind/class_info.hpp>
 #include <luabind/operator.hpp>
@@ -731,7 +757,7 @@ emit scriptStarts();
 
   {
     // setup lua
-    L = luaL_newstate();
+    L = lua_newstate(aligned_lua_alloc, nullptr);
 
     // open all standard Lua libs
     luaL_openlibs(L);
@@ -1047,6 +1073,18 @@ Viewer::~Viewer() {
   if (dynamicsWorld) {
     delete dynamicsWorld;
     dynamicsWorld = nullptr;
+  }
+  if (dispatcher) {
+    delete dispatcher;
+    dispatcher = nullptr;
+  }
+  if (solver) {
+    delete solver;
+    solver = nullptr;
+  }
+  if (broadphase) {
+    delete broadphase;
+    broadphase = nullptr;
   }
   if (collisionCfg) {
     delete collisionCfg;
