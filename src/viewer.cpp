@@ -996,6 +996,10 @@ Viewer::~Viewer() {
     }
   }
 
+  // Clear the luabind registry map before closing Lua, as object destructors
+  // may call back into the Lua API and expect a live lua_State.
+  _luabindRegistry.clear();
+
   // lua_close() performs a final GC sweep that deletes all Lua-adopted
   // Bullet objects via their unique_ptr holders (adopt(result) policy).
   if (L != nullptr) {
@@ -1026,9 +1030,6 @@ Viewer::~Viewer() {
     delete collisionCfg;
     collisionCfg = nullptr;
   }
-
-  // Clear the luabind registry map before deleting objects, as it holds pointers to them
-  _luabindRegistry.clear();
 
   // Close and delete POV export files
   if (_stream) {
