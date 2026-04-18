@@ -872,13 +872,22 @@ void Viewer::clear() {
   // Delete Object instances. Body/shape pointers that were Lua-owned
   // have already been nulled before lua_close, so destructors skip them.
   // C++-owned body pointers (_ownsBody=true) are still valid and get deleted.
-  qDeleteAll(*_objects);
+  {
+    QList<Object*> objs = _objects->values();
+    for (Object* o : objs) delete o;
+  }
   _objects->clear();
 
-  qDeleteAll(*_constraints);
+  {
+    QList<btTypedConstraint*> cons = _constraints->values();
+    for (btTypedConstraint* c : cons) delete c;
+  }
   _constraints->clear();
 
-  qDeleteAll(*_raycast_vehicles);
+  {
+    QList<btRaycastVehicle*> rvs = _raycast_vehicles->values();
+    for (btRaycastVehicle* rv : rvs) delete rv;
+  }
   _raycast_vehicles->clear();
 
   if (dynamicsWorld) {
@@ -1057,13 +1066,24 @@ Viewer::~Viewer() {
 
   // Delete Object instances. Lua-owned pointers (body, shape, m_shape, m_mesh)
   // have been nulled above, so destructors skip them.
-  qDeleteAll(*_objects);
+  {
+    QList<Object*> objs = _objects->values();
+    for (Object* o : objs) delete o;
+  }
   _objects->clear();
   delete _objects;
 
+  {
+    QList<btTypedConstraint*> cons = _constraints->values();
+    for (btTypedConstraint* c : cons) delete c;
+  }
   _constraints->clear();
   delete _constraints;
 
+  {
+    QList<btRaycastVehicle*> rvs = _raycast_vehicles->values();
+    for (btRaycastVehicle* rv : rvs) delete rv;
+  }
   _raycast_vehicles->clear();
   delete _raycast_vehicles;
 
