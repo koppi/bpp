@@ -4,6 +4,8 @@ TEMPLATE = app
 
 CONFIG  += c++11
 
+PRECOMPILED_HEADER = src/pch.h
+
 CONFIG  *= qt opengl warn_on shared thread debug_and_release
 QT      *= opengl xml gui core
 
