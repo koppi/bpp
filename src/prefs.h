@@ -12,6 +12,8 @@
 
 #include "ui_prefs.h"
 
+QString getDefaultLuaPath(const QString &scriptBasePath = QString());
+
 class Prefs : public QDialog, public Ui_Prefs {
   Q_OBJECT
 

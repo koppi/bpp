@@ -21,9 +21,29 @@ local function assert_match(name, got, pattern)
   end
 end
 
+local function assert_contains(name, haystack, needle)
+  if string.match(haystack, needle) then
+    print("PASS " .. name)
+    pass = pass + 1
+  else
+    print("FAIL " .. name .. ": haystack='" .. haystack .. "' missing needle='" .. needle .. "'")
+    fail = fail + 1
+  end
+end
+
 local c = require "color"
 
 assert_eq("color module red", c.red, "#ff0000")
 assert_match("color module is table", type(c), "table")
+
+-- Test package.path contains expected paths
+local fullPath = package.path
+
+-- CLI mode: path should contain bpp demo/module
+assert_contains("cli path contains bpp demo/module", fullPath, "bpp/demo/module")
+
+-- GUI mode (if running from bpp dir): path should work from any directory
+-- The exact path depends on whether running from bpp/ or release/ subdir
+print("package.path = " .. fullPath)
 
 print(string.format("\n%d passed, %d failed", pass, fail))

@@ -3,6 +3,7 @@
 #endif
 
 #include "viewer.h"
+#include "prefs.h"
 
 #include <memory>
 
@@ -592,6 +593,7 @@ void Viewer::stopSim() { _simulate = false; }
 void Viewer::restartSim() { parse(_scriptContent); }
 
 void Viewer::setScriptName(QString sn) { _scriptName = sn; }
+void Viewer::setScriptBasePath(QString sbp) { _scriptBasePath = sbp; }
 
 void Viewer::emitScriptOutput(const QString &out) { emit scriptHasOutput(out); }
 
@@ -728,16 +730,10 @@ emit scriptStarts();
     luaL_dostring(L, "os.setlocale('C')");
     luaL_dostring(L, "printf = function(s,...) print(s:format(...)) end");
 
-    // Build Lua package.path: search CWD/demo/module first, then installed location
-    QStringList luaPaths;
-    QString cwdDemo = QDir::currentPath() + "/demo/module/?.lua;";
-    QString installDemo = "/usr/share/bpp/demo/module/?.lua;";
-    luaPaths << cwdDemo;
-    if (QDir("/usr/share/bpp/demo/module").exists())
-      luaPaths << installDemo;
-    QString defaultLuaPath = luaPaths.join("");
-
-    QString path = _settings->value("lua/path", defaultLuaPath).toString();
+    // Build Lua package.path: search script directory first (if console mode), then CWD/demo, then installed
+    QString defaultPath = getDefaultLuaPath(_scriptBasePath);
+    qDebug() << "defaultLuaPath" << defaultPath;
+    QString path = _settings->value("lua/path", defaultPath).toString();
     QString p = QString("package.path = package.path..\";%1\"").arg(path);
 
     int error =

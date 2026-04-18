@@ -71,6 +71,7 @@ public:
   void luaBindInstance(lua_State *s);
   virtual QString toString() const;
   void setScriptName(QString sn);
+  void setScriptBasePath(QString sbp);
 
   void emitScriptOutput(const QString &);
   void emitClearOutput();
@@ -274,6 +275,7 @@ private:
   bool _savePOV;
   bool _deactivation;
   QString _scriptName;
+  QString _scriptBasePath;
   QString _scriptContent;
 
   QMutex mutex;

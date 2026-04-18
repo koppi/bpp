@@ -6,9 +6,11 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QFileInfo>
 #include <QTimer>
 
 #include "gui.h"
+#include "prefs.h"
 #include "viewer.h"
 
 #include <GL/freeglut.h>
@@ -222,8 +224,10 @@ int main(int argc, char **argv) {
 
     if (!lua.isEmpty()) {
       v->setScriptName(withoutExtension(lua[0]));
+      v->setScriptBasePath(QFileInfo(lua[0]).absolutePath());
     } else if (!positionalLuaFile.isEmpty()) {
       v->setScriptName(withoutExtension(positionalLuaFile));
+      v->setScriptBasePath(QFileInfo(positionalLuaFile).absolutePath());
     } else {
       v->setScriptName("stdin");
     }

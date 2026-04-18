@@ -1,5 +1,7 @@
 #include <QMessageBox>
 
+#include <QCoreApplication>
+#include <QFileInfo>
 #include <QDebug>
 #include <QFileDialog>
 #include <QFont>
@@ -8,6 +10,29 @@
 #include <QPlainTextEdit>
 
 #include "prefs.h"
+
+QString getDefaultLuaPath(const QString &scriptBasePath) {
+  QStringList luaPaths;
+
+  if (!scriptBasePath.isEmpty() && QDir(scriptBasePath + "/module").exists()) {
+    luaPaths << scriptBasePath + "/module/?.lua;";
+  }
+
+  QString appDir = QFileInfo(QCoreApplication::applicationFilePath()).absolutePath();
+  QString appDemo = appDir + "/demo/module/?.lua;";
+  if (QDir(appDir + "/demo/module").exists())
+    luaPaths << appDemo;
+
+  QString siblingDemoDir = appDir + "/../demo/module";
+  if (QDir(siblingDemoDir).exists())
+    luaPaths << QFileInfo(siblingDemoDir).absolutePath() + "/module/?.lua;";
+
+  QString installDemo = "/usr/share/bpp/demo/module/?.lua;";
+  if (QDir("/usr/share/bpp/demo/module").exists())
+    luaPaths << installDemo;
+
+  return luaPaths.join("");
+}
 
 Prefs::Prefs(QSettings *settings, QWidget *parent) : QDialog(parent) {
 
@@ -63,13 +88,7 @@ void Prefs::setupPages() {
       _settings->value("editor/fontsize", 12).toInt();
 
   // LUA paths always use forward slashes; search CWD/demo first, then installed
-  QStringList luaPaths;
-  QString cwdDemo = QDir::currentPath() + "/demo/module/?.lua;";
-  QString installDemo = "/usr/share/bpp/demo/module/?.lua;";
-  luaPaths << cwdDemo;
-  if (QDir("/usr/share/bpp/demo/module").exists())
-    luaPaths << installDemo;
-  QString defaultLuaPath = luaPaths.join("");
+  QString defaultLuaPath = getDefaultLuaPath();
 
   qDebug() << "defaultLuaPath" << defaultLuaPath;
 
