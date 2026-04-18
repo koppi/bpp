@@ -47,6 +47,7 @@ jobs:
           prerelease: false
 
   build:
+    needs: create-release
     name: ${{ matrix.target }}
     strategy:
       fail-fast: false
