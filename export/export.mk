@@ -43,6 +43,9 @@ help:
 	@echo "  make ec2-down  # make ${SCENE}.mkv on ${EC2} with ffmpeg and scp to local machine"
 	@echo ""
 	@echo "  see https://github.com/bullet-physics-playground/bpp/issues/8 for POV-Ray on Amazon EC2"
+	@echo " Cluster rendering using slurm"
+	@echo ""
+	@echo "  make slurm           # render using the slurm workload manager"
 	@echo ""
 	@echo " YouTube"
 	@echo ""
@@ -66,9 +69,6 @@ mkv-loop: mkv
 	ffmpeg -y -f concat -i loop.txt -c copy ${SCENE}-loop.mkv
 	rm loop.txt
 
-slurm-job:
-	slurm-pov-job -f $(shell grep Final_Frame ${SCENE}.ini | awk -F= '{ print $$2 }') -s ${SCENE}
-
 ec2-up:
 	rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress ../${SCENE}.tar.xz ${EC2}:.
 	ssh ${EC2} "tar xvf ${SCENE}.tar.xz"
@@ -76,6 +76,9 @@ ec2-up:
 ec2-down:
 	ssh ${EC2} "make -C ${SCENE} mkv"
 	scp ${EC2}:${SCENE}/${SCENE}.mkv .
+
+slurm:
+	sbatch --hint=compute_bound -J ${SCENE} -a 0-`ls -1 *.inc|wc -l` ../povray.sbatch ${SCENE} `ls -1 *.inc | wc -l`
 
 #youtube-up: mkv
 #	youtube-upload -t "Bullet Physics Playground – ${SCENE}" --privacy=unlisted --category "Science & Technology" ${SCENE}.mkv

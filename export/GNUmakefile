@@ -8,6 +8,7 @@ DIRS = $(shell find -mindepth 2 -name 'GNUmakefile' -printf '%h\n' | sed -e 's/\
 
 DIRS_BUILD = $(DIRS:%=build-%)
 DIRS_FINAL = $(DIRS:%=final-%)
+DIRS_SLURM = $(DIRS:%=slurm-%)
 DIRS_CLEAN = $(DIRS:%=clean-%)
 DIRS_DISTCLEAN = $(DIRS:%=distclean-%)
 
@@ -23,6 +24,12 @@ $(DIRS_FINAL):
 	@echo " $(@:final-%=%)"
 	$(Q)$(MAKE) -C $(@:final-%=%) final
 
+slurm: $(DIRS_SLURM)
+
+$(DIRS_SLURM):
+	@echo " $(@slurm-%=%))"
+	$(Q)$(MAKE) -C $(@:slurm-%=%) slurm
+
 clean: $(DIRS_CLEAN)
 
 $(DIRS_CLEAN):
@@ -36,4 +43,4 @@ $(DIRS_DISTCLEAN):
 	$(Q)$(MAKE) -C $(@:distclean-%=%) distclean
 
 
-.PHONY: all $(DIRS_BUILD) final $(DIRS_FINAL) clean $(DIRS_CLEAN) distclean $(DIRS_DISTCLEAN)
+.PHONY: all $(DIRS_BUILD) final $(DIRS_FINAL) slurm $(DIRS_SLURM) clean $(DIRS_CLEAN) distclean $(DIRS_DISTCLEAN)
