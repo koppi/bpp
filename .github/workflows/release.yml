@@ -30,19 +30,15 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install devscripts equivs lintian
           mk-build-deps -i -s sudo -t "apt --yes --no-install-recommends"
 
-      - name: build source package
-        env:
-          DEBFULLNAME: "Github Actions"
-          DEBEMAIL: "jakob.flierl@gmail.com"
-        run: |
-          export TARGET=$(. /etc/lsb-release && echo $DISTRIB_CODENAME)
-          VERSION="$(git describe --tags | sed -e "s/^v//" -e "s/-/+git/")"
-          dch --create \
-              --distribution ${TARGET} \
-              --package bpp \
-              --newversion ${VERSION}~${TARGET}1 \
-              "Automatic build from Github"
-          debuild -S -sa -us -uc -d
+- name: build source package
+      env:
+        DEBFULLNAME: "Jakob Flierl"
+        DEBEMAIL: "jakob.flierl@gmail.com"
+      run: |
+        export TARGET=$(. /etc/lsb-release && echo $DISTRIB_CODENAME)
+        VERSION="$(git describe --tags | sed -e "s/^v//" -e "s/-/+git/")"
+        dch --increment --distribution ${TARGET} -- "Automatic build"
+        debuild -S -sa -us -uc -d
 
       - name: build binary package
         run: dpkg-buildpackage -b -us -uc
