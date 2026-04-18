@@ -66,6 +66,7 @@ public slots:
   void openRecentFile();
 
   void loadLastFile();
+  void setOpenLastFile(bool checked);
 
   void scriptChanged();
 

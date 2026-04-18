@@ -37,20 +37,20 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
 
   renderSettings = new QComboBox(ui.toolBarView);
 
-  QStringList settings;
-  settings << "view size";
-  settings << "  426x240 (240p)";
-  settings << " 1280x720 (720p)";
-  settings << "1920x1080 (1080p)";
-  settings << "1080x1920 TikTok (9:16)";
-  settings << "3840x2160 YouTube 4K";
-  settings << "4480x2520 Apple M1";
-  settings << "5120x2880 Apple 5K";
-  settings << "7680x4320 YouTube 8K";
-  settings << "3470x2442 DIN A4 landscape 300dpi 5mm margin";
-  settings << "6780x4725 DIN A4 landscape 600dpi 5mm margin";
+  QStringList renderSettingsList;
+  renderSettingsList << "view size";
+  renderSettingsList << "  426x240 (240p)";
+  renderSettingsList << " 1280x720 (720p)";
+  renderSettingsList << "1920x1080 (1080p)";
+  renderSettingsList << "1080x1920 TikTok (9:16)";
+  renderSettingsList << "3840x2160 YouTube 4K";
+  renderSettingsList << "4480x2520 Apple M1";
+  renderSettingsList << "5120x2880 Apple 5K";
+  renderSettingsList << "7680x4320 YouTube 8K";
+  renderSettingsList << "3470x2442 DIN A4 landscape 300dpi 5mm margin";
+  renderSettingsList << "6780x4725 DIN A4 landscape 600dpi 5mm margin";
 
-  renderSettings->addItems(settings);
+  renderSettings->addItems(renderSettingsList);
   renderSettings->setEditable(true);
   renderSettings->lineEdit()->setReadOnly(true);
   renderSettings->lineEdit()->setAlignment(Qt::AlignRight);
@@ -96,11 +96,18 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   connect(ui.viewer, &Viewer::postDrawShot, this, &Gui::postDraw);
   commandLine->setFocus();
 
-  fileNew();
+fileNew();
 
   QTimer::singleShot(500, this, &Gui::setFullscreenActionState);
 
-  if (this->settings->value("gui/openlastfile", false).toBool()) {
+  bool openLast = settings->value("gui/openlastfile", false).toBool();
+  if (!openLast) {
+    openLast = settings->value("openlastfile", false).toBool();
+    if (openLast) {
+      settings->setValue("gui/openlastfile", true);
+    }
+  }
+  if (openLast) {
     QTimer::singleShot(0, this, &Gui::loadLastFile);
   }
 }
@@ -525,6 +532,8 @@ void Gui::editPreferences() {
 
   connect(p, SIGNAL(fontChanged(QString, uint)), this,
           SLOT(fontChanged(QString, uint)));
+  connect(p, SIGNAL(checkOpenLastFileChanged(bool)), this,
+          SLOT(setOpenLastFile(bool)));
 
   p->show();
 }
@@ -534,6 +543,10 @@ void Gui::openRecentFile() {
   if (action) {
     fileLoad(action->data().toString());
   }
+}
+
+void Gui::setOpenLastFile(bool checked) {
+  settings->setValue("gui/openlastfile", checked);
 }
 
 void Gui::fontChanged(const QString &family, uint size) {
@@ -563,7 +576,8 @@ void Gui::loadSettings() {
   }
 
   renderSettings->setCurrentIndex(renderSettings->findText(
-      settings->value("renderResolution", "View size").toString()));
+      settings->value("gui/renderResolution",
+                    settings->value("renderResolution", "view size").toString()).toString()));
 
   ui.actionToggleDeactivation->setChecked(
       settings->value("deactivationState", true).toBool());
@@ -589,7 +603,12 @@ void Gui::saveSettings() {
     }
   }
 
-  settings->setValue("renderResolution", renderSettings->currentText());
+  QString renderRes = renderSettings->currentText();
+  if (renderRes.isEmpty()) {
+    renderRes = settings->value("gui/renderResolution",
+                              settings->value("renderResolution", "view size").toString()).toString();
+  }
+  settings->setValue("gui/renderResolution", renderRes);
 
   settings->setValue("deactivationState",
                      ui.actionToggleDeactivation->isChecked());

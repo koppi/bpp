@@ -54,8 +54,14 @@ Prefs::~Prefs() {
 }
 
 void Prefs::setupPages() {
-  this->defaultmap["gui/openlastfile"] =
-      _settings->value("gui/openlastfile", false).toBool();
+  bool openLastFile = _settings->value("gui/openlastfile", false).toBool();
+  if (!openLastFile) {
+    openLastFile = _settings->value("openlastfile", false).toBool();
+    if (openLastFile) {
+      _settings->setValue("gui/openlastfile", true);
+    }
+  }
+  this->defaultmap["gui/openlastfile"] = openLastFile;
   this->defaultmap["gui/openlastwindowstate"] =
       _settings->value("gui/openlastwindowstate", true).toBool();
 
@@ -83,14 +89,12 @@ void Prefs::setupPages() {
   font.setFamily(fontfamily);
 
   this->defaultmap["editor/fontfamily"] =
-      _settings->value("editor/fontfamily", "Courier").toString();
+      _settings->value("editor/fontfamily", fontfamily).toString();
   this->defaultmap["editor/fontsize"] =
       _settings->value("editor/fontsize", 12).toInt();
 
   // LUA paths always use forward slashes; search CWD/demo first, then installed
   QString defaultLuaPath = getDefaultLuaPath();
-
-  qDebug() << "defaultLuaPath" << defaultLuaPath;
 
   this->defaultmap["lua/path"] =
       _settings->value("lua/path", defaultLuaPath)

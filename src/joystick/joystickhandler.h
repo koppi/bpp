@@ -27,11 +27,14 @@ class JoystickHandler : public QObject
       //! setter for joystick interface
       void setInterface(JoystickInterface*);
 
-      //! setter for update interval
-      void setUpdateInterval(int interval);
+//! setter for update interval
+       void setUpdateInterval(int interval);
+
+       //! stop joystick handler
+       void stop();
 
 
-   signals:
+    signals:
 
       //! joystick data
       void data(const JoystickInfo&);

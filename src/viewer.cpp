@@ -732,7 +732,6 @@ emit scriptStarts();
 
     // Build Lua package.path: search script directory first (if console mode), then CWD/demo, then installed
     QString defaultPath = getDefaultLuaPath(_scriptBasePath);
-    qDebug() << "defaultLuaPath" << defaultPath;
     QString path = _settings->value("lua/path", defaultPath).toString();
     QString p = QString("package.path = package.path..\";%1\"").arg(path);
 
@@ -957,6 +956,9 @@ void Viewer::savePrefs() {
 Viewer::~Viewer() {
   // qDebug() << "Viewer::~Viewer()";
 
+  // Stop joystick handler before deleting anything
+  _joystickHandler.stop();
+
   // Reset luabind::object members before closing Lua state
   _cb_preStart = luabind::object();
   _cb_preDraw = luabind::object();
@@ -1018,6 +1020,40 @@ Viewer::~Viewer() {
 
   // Clear the luabind registry map before deleting objects, as it holds pointers to them
   _luabindRegistry.clear();
+
+  // Close and delete POV export files
+  if (_stream) {
+    delete _stream;
+    _stream = nullptr;
+  }
+  if (_file && _file->isOpen()) {
+    _file->close();
+  }
+  if (_file) {
+    delete _file;
+    _file = nullptr;
+  }
+  if (_fileMain && _fileMain->isOpen()) {
+    _fileMain->close();
+  }
+  if (_fileMain) {
+    delete _fileMain;
+    _fileMain = nullptr;
+  }
+  if (_fileINI && _fileINI->isOpen()) {
+    _fileINI->close();
+  }
+  if (_fileINI) {
+    delete _fileINI;
+    _fileINI = nullptr;
+  }
+  if (_fileMakefile && _fileMakefile->isOpen()) {
+    _fileMakefile->close();
+  }
+  if (_fileMakefile) {
+    delete _fileMakefile;
+    _fileMakefile = nullptr;
+  }
 
   // Delete Object instances. Lua-owned pointers (body, shape, m_shape, m_mesh)
   // have been nulled above, so destructors skip them.

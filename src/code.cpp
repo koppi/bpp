@@ -7,7 +7,18 @@
 
 CodeEditor::CodeEditor(QSettings *s, QWidget *parent) : QPlainTextEdit(parent) {
 
-  QString family = s->value("editor/fontfamily", "Courier").toString();
+  QString family;
+#ifdef Q_OS_LINUX
+  family = "Mono";
+#elif defined(Q_OS_WIN)
+  family = "Console";
+#elif defined(Q_OS_MAC)
+  family = "Monaco";
+#else
+  family = "Courier";
+#endif
+
+  family = s->value("editor/fontfamily", family).toString();
   uint size = s->value("editor/fontsize", 10).toUInt();
 
   setFont(family, size);
