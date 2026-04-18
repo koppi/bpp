@@ -106,6 +106,32 @@ int main(int argc, char **argv) {
     }
   }
 
+  // If requested, report which script source would be used and exit (test mode)
+  if (parser.isSet("report-load")) {
+    if (!positionalLuaFile.isEmpty()) {
+      qStdOut() << QString("positional:%1").arg(positionalLuaFile) << "\n";
+      return 0;
+    }
+
+    // Check settings for lastFile
+    settings->beginGroup("mainwindow");
+    QString lastFile = settings->value("lastFile", "").toString();
+    settings->endGroup();
+
+    bool openLast = settings->value("gui/openlastfile", false).toBool();
+    if (!openLast) {
+      openLast = settings->value("openlastfile", false).toBool();
+    }
+
+    if (openLast && !lastFile.isEmpty()) {
+      qStdOut() << QString("lastfile:%1").arg(lastFile) << "\n";
+      return 0;
+    }
+
+    qStdOut() << "none\n";
+    return 0;
+  }
+
   if (!parser.isSet(luaOption) && !parser.isSet(luaStdinOption) &&
       !parser.isSet(luaExpressionOption) && positionalLuaFile.isEmpty()) {
     Gui *g;
