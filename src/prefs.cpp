@@ -100,7 +100,19 @@ void Prefs::setupPages() {
       _settings->value("lua/path", defaultLuaPath)
           .toString();
 
-  QString defaultExportPath = QString("%1%2%3%4").arg(QDir::currentPath(), QDir::separator(), "export", QDir::separator());
+  QDir currDir(QDir::currentPath());
+  QString currExport = currDir.filePath("export");
+  QDir parentDir = currDir;
+  parentDir.cdUp();
+  QString parentExport = parentDir.filePath("export");
+  QString defaultExportPath;
+  if (QDir(currExport).exists()) {
+    defaultExportPath = currExport;
+  } else if (QDir(parentExport).exists()) {
+    defaultExportPath = parentExport;
+  } else {
+    defaultExportPath = currExport;
+  }
 
   this->defaultmap["povray/export"] =
       _settings->value("povray/export", defaultExportPath).toString();
