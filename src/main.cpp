@@ -94,6 +94,10 @@ int main(int argc, char **argv) {
   parser.addOption(povExportOption);
   parser.addOption(verboseOption);
 
+  QCommandLineOption reportLoadOption(QStringList() << "r" << "report-load",
+      QObject::tr("Print which script source would be used (positional or lastfile) and exit."));
+  parser.addOption(reportLoadOption);
+
   parser.process(*app);
 
   QStringList positionalArgs = parser.positionalArguments();
