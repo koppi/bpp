@@ -7,13 +7,13 @@ SetCompressor lzma
 
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)" ;
-!define VERSION 0.1.12
+!define VERSION 0.1.14
 !define COMPANY "Jakob Flierl"
 !define URL https://github.com/bullet-physics-playground
 
 !define DLL C:\msys64\mingw64\bin
 
-Caption "Bullet Physics Playground ${VERSION} Setup"
+Caption "Bullet Physics Playground ${VERSION} Setup" 
 
 BrandingText " � Jakob Flierl "
 

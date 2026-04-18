@@ -24,9 +24,6 @@ v:add(p)
 
 v:add(text.new({ str = "Bullet Physics Playground",
   size = 1, height = 1, y = 8, z = -2, mass = 0}))
-txt = text.new({ str = "version 0.1.12",
-  size = 1, height = 1, y = 6, z = -2, mass = 0})
-v:add(txt)
 
 function run()
   d = dice.new({ mass = 10, col = color.random_google() })
@@ -65,8 +62,3 @@ v.cam:setUpVector(btVector3(0,1,0), false)
 --v.cam.pos  = btVector3(1,4,900)
 v.cam.pos  = btVector3(0, 4, 550)
 v.cam.look = btVector3(0,4,0)
-
-v.cam.focal_blur      = 10
-v.cam.focal_aperture  = 5
---- set blur point to txt shape position
-v.cam.focal_point = txt.pos
