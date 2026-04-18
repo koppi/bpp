@@ -97,6 +97,22 @@ unix:link_pkgconfig {
   message(This is $$LSB_RELEASE_ID $$LSB_RELEASE_REL)
 
   contains(LSB_RELEASE_ID, Ubuntu): {
+    contains(LSB_RELEASE_REL, 21.04) : {
+      PKGCONFIG += lua5.2
+      PKGCONFIG -= luabind
+      PKGCONFIG += bullet
+      PKGCONFIG += sdl2
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
+    }
+    contains(LSB_RELEASE_REL, 21.10) : {
+      PKGCONFIG += lua5.2
+      PKGCONFIG -= luabind
+      PKGCONFIG += bullet
+      PKGCONFIG += sdl2
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
+    }
     contains(LSB_RELEASE_REL, 22.04) : {
       PKGCONFIG += lua5.2
       PKGCONFIG -= luabind
