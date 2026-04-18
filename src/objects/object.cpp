@@ -70,6 +70,10 @@ void Object::preDestructor() {
     *p = nullptr;
   }
   _luabindWeakPtrs.clear();
+
+  // Clear any luabind object references so their destructors do not touch
+  // the Lua state after it has been closed.
+  _cb_render = luabind::object();
 }
 
 void Object::setCollisionTypes(collisiontypes col1, collisiontypes col2) {
