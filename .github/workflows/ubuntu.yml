@@ -7,6 +7,45 @@ on:
     branches: [ master ]
 
 jobs:
+  create-release:
+    runs-on: ubuntu-24.04
+    outputs:
+      tag_name: ${{ steps.gen.outputs.tag_name }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: false
+
+      - name: Generate Tag Name
+        id: gen
+        run: |
+          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
+          echo "tag_name=$TIMESTAMP" >> $GITHUB_OUTPUT
+
+      - name: Create and Push Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag "${{ steps.gen.outputs.tag_name }}"
+          git push origin "${{ steps.gen.outputs.tag_name }}"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.gen.outputs.tag_name }}
+          release_name: Release ${{ steps.gen.outputs.tag_name }}
+          body: |
+            Support BPP development: https://github.com/sponsors/koppi
+          draft: false
+          prerelease: false
+
   build:
     name: ${{ matrix.target }}
     strategy:
@@ -34,7 +73,7 @@ jobs:
         DEBEMAIL: "jakob.flierl@gmail.com"
       run: |
         export TARGET=$(. /etc/lsb-release && echo $DISTRIB_CODENAME)
-        VERSION="$(git describe --tags | sed -e "s/^v//" -e "s/-/+git/")"
+        VERSION="${{ needs.create-release.outputs.tag_name }}"
         dch --increment --distribution ${TARGET} -- "Automatic build"
         debuild -S -sa -us -uc -d
 

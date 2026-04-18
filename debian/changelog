@@ -1,3 +1,9 @@
+bpp (0.1.12) UNRELEASED; urgency=medium
+
+  * Bump version.
+
+ -- Jakob Flierl <jakob.flierl@gmail.com>  Sat, 18 Apr 2026 13:49:37 +0200
+
 bpp (0.1.12) resolute; urgency=medium
 
   * Initial release.
