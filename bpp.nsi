@@ -7,7 +7,7 @@ SetCompressor lzma
 
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)" ;
-!define VERSION 0.1.15
+!define VERSION 0.1.16
 !define COMPANY "Jakob Flierl"
 !define URL https://github.com/bullet-physics-playground
 
