@@ -43,7 +43,8 @@ int main(int argc, char **argv) {
   bool runCore = false;
   for (int i = 0; i < argc; i++) {
     if (QString(argv[i]) == "-h" || QString(argv[i]) == "--help" ||
-        QString(argv[i]) == "-v" || QString(argv[i]) == "--version") {
+        QString(argv[i]) == "-v" || QString(argv[i]) == "--version" ||
+        QString(argv[i]) == "-r" || QString(argv[i]) == "--report-load") {
       runCore = true;
       break;
     }
