@@ -1088,9 +1088,7 @@ void Viewer::init() {
 
   computeBoundingBox();
 
-  if (!restoreStateFromFile()) {
-    showEntireScene();
-  }
+  showEntireScene();
 
   _light0 = btVector4(100.0, 200.0, 100.0, 0.4);
   _light1 = btVector4(-200.0, 100.0, -200.0, 0.2);
