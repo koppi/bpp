@@ -1283,7 +1283,7 @@ void Viewer::savePOV(bool force) {
   if (!force && !_savePOV)
     return;
 
-  qDebug() << "openPovFile() " << _scriptName;
+  qDebug() << "openPovFile() scriptName: " << _scriptName;
 
   QString sceneName;
   if (!_scriptName.isEmpty()) {
@@ -2025,7 +2025,7 @@ void Viewer::onQuickRender(QString povargs) {
   QString renderResolution =
       _settings->value("gui/renderResolution", "view size").toString();
 
-  qDebug() << "renderResolution" << renderResolution;
+  qDebug() << "renderResolution: " << renderResolution;
 
   int renderWidth, renderHeight;
 
@@ -2085,7 +2085,7 @@ void Viewer::onQuickRender(QString povargs) {
   QString systemPovExe = QStandardPaths::findExecutable(defaultPovrayExe);
   if (systemPovExe.isEmpty()) systemPovExe = "POV-Ray not found!";
 
-  QString defaultPreview = QString("%1 -c +d -A +p +Q4 +GA").arg(defaultIncludes);
+  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA").arg(defaultIncludes);
 
   QString povray = _settings->value("povray/executable", systemPovExe).toString();
   QString opts =   _settings->value("povray/preview", defaultPreview).toString();
