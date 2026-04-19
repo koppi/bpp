@@ -120,23 +120,7 @@ void Mesh::loadFile(const QString &filename, btScalar mass) {
       aiImportFile(filename.toUtf8(), aiProcessPreset_TargetRealtime_Fast);
 
   if (!m_scene) {
-    // qDebug() << "Unable to load " << filename << ": using empty shape.";
-    m_shape = new btGImpactMeshShape(m_mesh);
-    m_shape->updateBound();
-
-    btQuaternion qtn;
-    btTransform trans;
-    btDefaultMotionState *motionState = nullptr;
-
-    trans.setIdentity();
-    qtn.setEuler(0.0, 0.0, 0.0);
-    trans.setRotation(qtn);
-    trans.setOrigin(btVector3(0, 0, 0));
-    motionState = new btDefaultMotionState(trans);
-
-    btVector3 inertia;
-    m_shape->calculateLocalInertia(mass, inertia);
-    body = new btRigidBody(mass, motionState, m_shape, inertia);
+    return;
   } else {
     assert(m_scene->mNumMeshes > 0);
 
