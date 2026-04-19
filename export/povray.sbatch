@@ -6,12 +6,15 @@
 #SBATCH --mail-user koppi
 #SBATCH --mail-type ALL
 
-#SBATCH --cpu-bind=none
+#SBATCH --nodes=1                   # node count
+#SBATCH --ntasks-per-node=1         # total number of tasks per node
+#SBATCH --cpus-per-task=2           # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --mem=4GB
 
 SCENE=${1}
 FRAMES=${2}
 
-POVARGS="+W7680 +H4320 +A0.3 -J"
+POVARGS="+W1280 +H720 +A0.3 -J"
 
 if [ -z "${SCENE}" ]; then
   echo "SCENE is unset or set to the empty string"
@@ -29,4 +32,4 @@ echo
 
 PNG="$SCENE-$(printf "%05d" $FRAME).png"
 
-nice povray /nfs/bpp/export/$SCENE/$SCENE.ini +L. +Lincludes +L/nfs/bpp/includes +L/nfs/bpp/export/$SCENE -V -D +KFI0 +KFF$FRAMES +SF$FRAME +EF$FRAME +WT4 $POVARGS -O- > $WORKDIR/$PNG
+povray /nfs/bpp/export/$SCENE/$SCENE.ini +L. +Lincludes +L/nfs/bpp/includes +L/nfs/bpp/export/$SCENE -V -D +KFI0 +KFF$FRAMES +SF$FRAME +EF$FRAME $POVARGS -O- > $WORKDIR/$PNG
