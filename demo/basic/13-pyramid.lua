@@ -177,10 +177,4 @@ for i = 1, 50 do
   v:add(s)
 end
 
--- point camera at center of the scene
-v.cam:setUpVector(btVector3(0.0458897, 0.780428, -0.623559), true)
-v.cam.up   = btVector3(0.0458897, 0.780428, -0.623559)
-v.cam.pos  = btVector3(-0.727403, 81.1753, 100.409)
-v.cam.look = btVector3(5884.31, -624336, -780968)
-
 -- EOF

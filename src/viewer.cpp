@@ -1486,9 +1486,11 @@ void Viewer::savePOV(bool force) {
                << dir.z
                << "> ";
 */
-      btVector3 lookAt = _cam->getLookAt();
-      *_stream << "  look_at <" << lookAt.x() << ", " << lookAt.y() << ", " << lookAt.z()
-               << "> ";
+
+	  
+	  Vec look = ((Cam *)camera())->viewDirection() * 1000000 + camera()->position();
+      *_stream << "  look_at <" << look.x << ", " << look.y << ", " << look.z
+			   << "> ";
 
       *_stream << "  angle " << 180.0 * camera()->horizontalFieldOfView() / M_PI
                << "\n";

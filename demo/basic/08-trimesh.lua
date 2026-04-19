@@ -1,18 +1,8 @@
 --
 -- btTriangleMesh pyramids
 --
--- This demo crashes randomly at startup.
---
--- Needs more investigation (koppi).
---
 
 local color = require "color"
-
-v.gravity = btVector3(0,-9.81,0)
-
-v.timeStep      = 1/50
-v.maxSubSteps   = 7
-v.fixedTimeStep = 1/120
 
 v.pre_sdl = v.pre_sdl..[==[
 
@@ -84,7 +74,7 @@ shape:calculateLocalInertia(mass, inertia)
 body = btRigidBody(mass, ms, shape, inertia)
 
 mm = Mesh()
-mm.col   = color.random_google()
+mm.col   = color.random_chrome()
 mm.shape = shape
 mm.body  = body
 mm.mass     = 1
@@ -101,7 +91,6 @@ end
 function tst()
   for i = 0,60 do
     m = mesh()
-    m.pos = btVector3(0,0,0)
   end
 end
 

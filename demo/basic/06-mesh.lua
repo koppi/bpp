@@ -1,8 +1,6 @@
 --
--- Lua transform module demo (WIP)
+-- Mesh loading (stl and 3ds)
 --
-
-trans = require "trans"
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 10
@@ -21,7 +19,6 @@ for i = 1,3 do
     math.random()*d-d/2,
     45-i*2,
     math.random()*d-d/2)
---  t.rotate(m, btQuaternion(0,1,0,1), btVector3(0,0,0))
   v:add(m)
 end
  
