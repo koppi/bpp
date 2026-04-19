@@ -224,7 +224,7 @@ function pulleys()
   p = nil
   for i = 6,10 do
     g = pulley(6+i*2, 1, 1)
-    g.pos = btVector3(-140+i*15,16,0)
+    g.pos = btVector3(-140+i*25,16,0)
     g.col = color.random_pastel()
     g.sdl = [[
       texture{ t_metal }
@@ -244,7 +244,7 @@ v.cam.focal_point     = pos
 
 -- pseudo orthogonal view
 v.cam:setFieldOfView(.3)
-v.cam:setUpVector(btVector3(0,1,0), false)
---v.cam:setHorizontalFieldOfView(1.1)
-v.cam.pos  = btVector3(140,75,140)
-v.cam.look = btVector3(0,15,0)
+v.cam:setUpVector(btVector3(-0.205076, 0.95702, -0.205076), true)
+v.cam.up   = btVector3(-0.205076, 0.95702, -0.205076)
+v.cam.pos  = btVector3(185.779, 55.6399, 102.518)
+v.cam.look = btVector3(-676530, -289965, -676613)
