@@ -13,6 +13,8 @@ v.timeStep      = 1/50
 v.maxSubSteps   = 7
 v.fixedTimeStep = 1/120
 
+local dim = 20 -- scene dimension
+
 v.pre_sdl = [[
 
 #include "textures.inc"
@@ -42,7 +44,7 @@ p = Plane(0, 1, 0, 0, 50)
 p.col = color.HuntersGreen
 p.sdl = [[
   pigment { HuntersGreen }
-  normal  { quilted scale 2.5 }
+  normal  { quilted scale 0.5 }
 ]]
 v:add(p)
 
@@ -137,17 +139,17 @@ end
 
 -- random tetrahedra
 for i = 1, 50 do
-  local x  = math.random(-20, 20)
-  local z  = math.random(-20, 20)
+  local x  = math.random(-dim, dim)
+  local z  = math.random(-dim, dim)
   local sz = 0.5 + math.random() * 1.2
   local y  = sz + 1
-  tetrahedron(x, y, z, sz, 1, color.random_google())
+  tetrahedron(x, y, z, sz, 1, color.random_chrome())
 end
 
 -- random square-based pyramids
-for i = 1, 100 do
-  local x  = math.random(-20, 20)
-  local z  = math.random(-20, 20)
+for i = 1, 50 do
+  local x  = math.random(-dim, dim)
+  local z  = math.random(-dim, dim)
   local b  = 1.5 + math.random() * 1.2
   local h  = 1.8 + math.random() * 1.5
   local y  = h + 0.5
@@ -155,11 +157,11 @@ for i = 1, 100 do
 end
 
 -- dynamic cubes to knock into the pyramids
-for i = 1, 7 do
-  local x = math.random(-4, 4)
+for i = 1, 50 do
+  local x = math.random(-dim, dim)
   local y = 2 + math.random() * 5
-  local z = math.random(-4, 4)
-  local s = 0.3 + math.random() * 0.4
+  local z = math.random(-dim, dim)
+  local s = 1.8 + math.random() * 0.4
   local c = Cube(s, s, s, 1)
   c.pos = btVector3(x, y, z)
   c.col = color.random_google()
@@ -167,16 +169,18 @@ for i = 1, 7 do
 end
 
 -- some spheres too
-for i = 1, 7 do
-  local r = 0.2 + math.random() * 0.3
+for i = 1, 50 do
+  local r = 0.9 + math.random() * 0.3
   local s = Sphere(r, 1)
-  s.pos = btVector3(math.random(-3, 3), 3 + math.random() * 4, math.random(-3, 3))
-  s.col = color.random_bpp()
+  s.pos = btVector3(math.random(-dim, dim), 3 + math.random() * 4, math.random(-dim, dim))
+  s.col = color.random_chrome()
   v:add(s)
 end
 
 -- point camera at center of the scene
-v.cam.pos  = btVector3(0, 1500, 1500)
-v.cam.look = btVector3(0, 1, 0)
+v.cam:setUpVector(btVector3(0.0458897, 0.780428, -0.623559), true)
+v.cam.up   = btVector3(0.0458897, 0.780428, -0.623559)
+v.cam.pos  = btVector3(-0.727403, 81.1753, 100.409)
+v.cam.look = btVector3(5884.31, -624336, -780968)
 
 -- EOF
