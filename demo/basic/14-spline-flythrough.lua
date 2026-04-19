@@ -1,4 +1,5 @@
 local spline = require "spline"
+local color = require "color"
 
 math.randomseed(1)
 
@@ -17,19 +18,10 @@ floor.sdl = [[
     roughness 0.05
     reflection 0.1
   }
-]]
+ ]]
 v:add(floor)
 
 local objects = {}
-local colors = {
-  "#e74c3c", "#3498db", "#2ecc71", "#f39c12",
-  "#9b59b6", "#1abc9c", "#e67e22", "#ecf0f1",
-  "#e91e63", "#00bcd4", "#8bc34a", "#ff5722",
-}
-
-local function random_color()
-  return colors[math.random(#colors)]
-end
 
 for i = 1, 7 do
   local s = Sphere(1 + math.random() * 2, 1)
@@ -39,7 +31,7 @@ for i = 1, 7 do
     3 + math.random() * 10,
     (math.random() - 0.5) * range * 2
   )
-  s.col = random_color()
+  s.col = color.random_chrome()
   s.friction = 0.6
   s.restitution = 0.5
   s.sdl = [[
@@ -59,7 +51,7 @@ for i = 1, 7 do
       caustics 1
     }
   }
-]]
+ ]]
   v:add(s)
   table.insert(objects, s)
 end
@@ -73,7 +65,7 @@ for i = 1, 7 do
     3 + math.random() * 12,
     (math.random() - 0.5) * range * 2
   )
-  c.col = random_color()
+  c.col = color.random_chrome()
   c.friction = 0.5
   c.restitution = 0.3
   v:add(c)
@@ -90,7 +82,7 @@ for i = 1, 7 do
     3 + math.random() * 8,
     (math.random() - 0.5) * range * 2
   )
-  c.col = random_color()
+  c.col = color.random_chrome()
   c.friction = 0.5
   v:add(c)
   table.insert(objects, c)
@@ -127,6 +119,7 @@ local manual_mode = false
 local manual_transition_frame = 0
 local from_look = btVector3(0, 0, 0)
 local to_look = btVector3(0, 0, 0)
+local transition_spline = nil
 
 function cycle_object(direction)
   manual_mode = true
@@ -143,6 +136,15 @@ function cycle_object(direction)
 
   local to_obj = objects[current_target_idx]
   to_look = btVector3(to_obj.pos.x, to_obj.pos.y, to_obj.pos.z)
+
+  local from_pos = { x = from_look.x, y = from_look.y, z = from_look.z }
+  local to_pos = { x = to_look.x, y = to_look.y, z = to_look.z }
+  local mid_pos = {
+    x = (from_pos.x + to_pos.x) / 2,
+    y = (from_pos.y + to_pos.y) / 2 + 3,
+    z = (from_pos.z + to_pos.z) / 2,
+  }
+  transition_spline = spline.CatmullRom({from_pos, mid_pos, to_pos})
 end
 
 v:cycleObject(cycle_object)
@@ -164,14 +166,13 @@ v:postSim(function(N)
 
   if manual_mode then
     manual_transition_frame = manual_transition_frame + 1
-    local blend = manual_transition_frame / zoom_in_frames
-    if blend > 1 then blend = 1 end
-
-    current_look = btVector3(
-      from_look.x + (to_look.x - from_look.x) * blend,
-      from_look.y + (to_look.y - from_look.y) * blend,
-      from_look.z + (to_look.z - from_look.z) * blend
-    )
+    if transition_spline and manual_transition_frame <= zoom_in_frames then
+      local blend = manual_transition_frame / zoom_in_frames
+      local sp = transition_spline:eval(blend * transition_spline.num_segments)
+      current_look = btVector3(sp.x, sp.y, sp.z)
+    else
+      current_look = to_look
+    end
   else
     look_transition = look_transition + 1
     local cycle_frames = zoom_in_frames + hold_frames + transition_frames
