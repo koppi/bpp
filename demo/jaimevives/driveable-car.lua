@@ -1001,41 +1001,66 @@ v:addShortcut("F1", function(N)
   switch_camera(N)
 end)
 
-function steer_left(N)
-  steer_power_right=max_angular_steer_power
+function steer_left(N, factor)
+  local f = factor or 1.0
+  local steer_limit = math.pi * 0.33 * f
+  steer_power_right=max_angular_steer_power * f
   front_center_stabilizer_bar_constraint:setLimit(0,-tire_radius*.5,tire_radius*.5)
   front_center_stabilizer_bar_constraint:setLimit(2,-tire_radius*.25,tire_radius*.25)
   front_center_stabilizer_bar2_constraint:setLimit(0,-tire_radius*.5,tire_radius*.5)
   front_center_stabilizer_bar2_constraint:setLimit(2,-tire_radius*.25,tire_radius*.25)
-  front_right_disc_spindle_constraint:setLimit(-math.pi*.33,math.pi*.33,.9,.3,1)
-  front_left_disc_spindle_constraint:setLimit(-math.pi*.33,math.pi*.33,.9,.3,1)
-  front_right_disc_spindle_constraint:enableAngularMotor(true, -10, steer_power_right)
-  front_left_disc_spindle_constraint:enableAngularMotor(true, -10, steer_power_right)
+  front_right_disc_spindle_constraint:setLimit(-steer_limit, steer_limit,.9,.3,1)
+  front_left_disc_spindle_constraint:setLimit(-steer_limit, steer_limit,.9,.3,1)
+  front_right_disc_spindle_constraint:enableAngularMotor(true, -50 * f, steer_power_right)
+  front_left_disc_spindle_constraint:enableAngularMotor(true, -50 * f, steer_power_right)
   turning_right=N
   turning_left=nil
 end
 
 v:addShortcut("F9", function(N)
-  steer_left(N)
+  steer_left(N, 1.0)
 end)
 
-function steer_right(N)
-  steer_power_left=max_angular_steer_power
+function steer_right(N, factor)
+  local f = factor or 1.0
+  local steer_limit = math.pi * 0.33 * f
+  steer_power_left=max_angular_steer_power * f
   front_center_stabilizer_bar_constraint:setLimit(0,-tire_radius*.5,tire_radius*.5)
   front_center_stabilizer_bar_constraint:setLimit(2,-tire_radius*.25,tire_radius*.25)
   front_center_stabilizer_bar2_constraint:setLimit(0,-tire_radius*.5,tire_radius*.5)
   front_center_stabilizer_bar2_constraint:setLimit(2,-tire_radius*.25,tire_radius*.25)
-  front_right_disc_spindle_constraint:setLimit(-math.pi*.33,math.pi*.33,.9,.3,1)
-  front_left_disc_spindle_constraint:setLimit(-math.pi*.33,math.pi*.33,.9,.3,1)
-  front_right_disc_spindle_constraint:enableAngularMotor(true, 10, steer_power_left)
-  front_left_disc_spindle_constraint:enableAngularMotor(true, 10, steer_power_left)
+  front_right_disc_spindle_constraint:setLimit(-steer_limit, steer_limit,.9,.3,1)
+  front_left_disc_spindle_constraint:setLimit(-steer_limit, steer_limit,.9,.3,1)
+  front_right_disc_spindle_constraint:enableAngularMotor(true, 50 * f, steer_power_left)
+  front_left_disc_spindle_constraint:enableAngularMotor(true, 50 * f, steer_power_left)
   turning_left=N
   turning_right=nil
 end
 
 v:addShortcut("F10", function(N)
-  steer_right(N)
+  steer_right(N, 1.0)
 end)
+
+function steer_proportional(N, dir)
+  local f = math.abs(dir)
+  local steer_limit = math.pi * 0.33 * f
+  local steer_power = max_angular_steer_power * f
+  front_center_stabilizer_bar_constraint:setLimit(0,-tire_radius*.5,tire_radius*.5)
+  front_center_stabilizer_bar_constraint:setLimit(2,-tire_radius*.25,tire_radius*.25)
+  front_center_stabilizer_bar2_constraint:setLimit(0,-tire_radius*.5,tire_radius*.5)
+  front_center_stabilizer_bar2_constraint:setLimit(2,-tire_radius*.25,tire_radius*.25)
+  front_right_disc_spindle_constraint:setLimit(-steer_limit, steer_limit,.9,.3,1)
+  front_left_disc_spindle_constraint:setLimit(-steer_limit, steer_limit,.9,.3,1)
+  front_right_disc_spindle_constraint:enableAngularMotor(true, 50 * dir, steer_power)
+  front_left_disc_spindle_constraint:enableAngularMotor(true, 50 * dir, steer_power)
+  if dir < 0 then
+    turning_right=N
+    turning_left=nil
+  else
+    turning_left=N
+    turning_right=nil
+  end
+end
 
 -- accelerate forward
 function accelerate_forward(N)
@@ -1064,8 +1089,34 @@ function accelerate_forward(N)
 end
 
 v:addShortcut("F2", function(N)
- accelerate_forward(N)
+  accelerate_forward(N)
 end)
+
+function accelerate_proportional(N, dir)
+  local f = math.abs(dir)
+  front_right_wheel_disc_constraint:setLimit(1,-1,0,.3,1)
+  front_left_wheel_disc_constraint:setLimit(1,-1,0,.3,1)
+  rear_right_wheel_disc_constraint:setLimit(1,-1,0,.3,1)
+  rear_left_wheel_disc_constraint:setLimit(1,-1,0,.3,1)
+  current_angular_velocity=initial_angular_velocity * dir
+  steer_angle=front_right_disc_spindle_constraint:getHingeAngle()
+  car_direction=btVector3(
+    rear_left_wheel.pos.x-rear_right_wheel.pos.x,
+    rear_left_wheel.pos.y-rear_right_wheel.pos.y,
+    rear_left_wheel.pos.z-rear_right_wheel.pos.z
+  ):normalized():rotate(btVector3(0,1,0),-steer_angle)
+  wheel_angular_velocity=car_direction*current_angular_velocity
+  if(drivetrain_type==1 or drivetrain_type==3) then
+   front_right_wheel.body:setAngularVelocity(wheel_angular_velocity)
+   front_left_wheel.body:setAngularVelocity(wheel_angular_velocity)
+  end
+  if(drivetrain_type==2 or drivetrain_type==3) then
+   rear_right_wheel.body:setAngularVelocity(wheel_angular_velocity)
+   rear_left_wheel.body:setAngularVelocity(wheel_angular_velocity)
+  end
+  accelerating=N
+  braking=nil
+end
 
 function accelerate_backward(N)
  front_right_wheel_disc_constraint:setLimit(1,-1,0,.3,1)
@@ -1256,17 +1307,37 @@ end)  -- onCommand
   v.cam:setUpVector(btVector3(0,1,0), false)
 
 v:onJoystick(function(N, joy)
-  if(joy.axes[1] < 0) then
-    steer_left(N)
+  local steer_axis = math.max(-1, math.min(1, joy.axes[1] / 32767))
+  local accel_axis = -math.max(-1, math.min(1, joy.axes[2] / 32767))
+  if(steer_axis ~= 0) then
+    steer_proportional(N, steer_axis)
+  else
+    steer_power_right=nil
+    steer_power_left=nil
+    front_right_disc_spindle_constraint:enableAngularMotor(false, 0, 0)
+    front_left_disc_spindle_constraint:enableAngularMotor(false, 0, 0)
+    front_right_disc_spindle_constraint:setLimit(0,0,.9,.3,1)
+    front_left_disc_spindle_constraint:setLimit(0,0,.9,.3,1)
+    front_center_stabilizer_bar_constraint:setLimit(0,0,0)
+    front_center_stabilizer_bar_constraint:setLimit(2,0,0)
+    front_center_stabilizer_bar2_constraint:setLimit(0,0,0)
+    front_center_stabilizer_bar2_constraint:setLimit(2,0,0)
+    turning_right=nil
+    turning_left=nil
   end
-  if(joy.axes[1] > 0) then
-    steer_right(N)
-  end
-  if (joy.triggeredButton0) then
+  if(accel_axis ~= 0) then
+    accelerate_proportional(N, accel_axis)
+  elseif (joy.triggeredButton0) then
     accelerate_forward(N)
-  end
-  if (joy.triggeredButton1) then
+  elseif (joy.triggeredButton1) then
     accelerate_backward(N)
+  else
+    front_right_wheel.body:setAngularVelocity(btVector3(0,0,0))
+    front_left_wheel.body:setAngularVelocity(btVector3(0,0,0))
+    rear_right_wheel.body:setAngularVelocity(btVector3(0,0,0))
+    rear_left_wheel.body:setAngularVelocity(btVector3(0,0,0))
+    accelerating=nil
+    braking=nil
   end
   if (joy.triggeredButton2) then
     brake(N)
