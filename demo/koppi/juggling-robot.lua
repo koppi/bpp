@@ -85,10 +85,10 @@ v:preSim(function(N)
   rot(N)
 end)
 
-v.cam:setUpVector(btVector3(-0.366909, 0.930252, -0.00286776), true)
-v.cam.up   = btVector3(-0.366909, 0.930252, -0.00286776)
-v.cam.pos  = btVector3(51481.7, 20304.7, -1010.78)
-v.cam.look = btVector3(-878639, -346496, 17249.6)
+v.cam:setUpVector(btVector3(-6.90089e-17, 1, -6.90089e-17), true)
+v.cam.up   = btVector3(-6.90089e-17, 1, -6.90089e-17)
+v.cam.pos  = btVector3(19.4706, 2.72201, 0.289923)
+v.cam.look = btVector3(-999981, 2.72201, 0.289923)
 
 v.cam.focal_blur      = 0
 v.cam.focal_aperture  = 5

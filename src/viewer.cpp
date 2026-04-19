@@ -167,11 +167,15 @@ void Viewer::luaBind(lua_State *s) {
                 (void(Viewer::*)(const luabind::object &fn)) &
                     Viewer::setCBOnCommand,
                 adopt(luabind::result))
-           .def("onJoystick",
-                (void(Viewer::*)(const luabind::object &fn)) &
-                    Viewer::setCBOnJoystick,
-                adopt(luabind::result))
-           .def("savePrefs", &Viewer::setPrefs)
+.def("onJoystick",
+                 (void(Viewer::*)(const luabind::object &fn)) &
+                     Viewer::setCBOnJoystick,
+                 adopt(luabind::result))
+            .def("cycleObject",
+                 (void(Viewer::*)(const luabind::object &fn)) &
+                     Viewer::setCBCycleObject,
+                 adopt(luabind::result))
+            .def("savePrefs", &Viewer::setPrefs)
            .def("loadPrefs", &Viewer::getPrefs)
            .def("clearDebugText", &Viewer::clearDebugText)
 
@@ -447,6 +451,17 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
     break;
   case Qt::Key_R:
     parse(_scriptContent);
+    break;
+  case Qt::Key_F1:
+  case Qt::Key_F2:
+    if (luabind::type(_cb_cycleObject) == LUA_TFUNCTION) {
+      int direction = (e->key() == Qt::Key_F1) ? -1 : 1;
+      try {
+        luabind::call_function<void>(_cb_cycleObject, direction);
+      } catch (const std::exception &e) {
+        showLuaException(e, "onCycleObject()");
+      }
+    }
     break;
   case Qt::Key_C:
     resetCamView();
@@ -848,15 +863,32 @@ emit scriptStarts();
   if (error) {
     lua_error = tr("error: %1").arg(lua_tostring(L, -1));
 
-    if (lua_error.contains(QRegExp(tr("stopping$")))) {
-      lua_error = tr("script stopped");
-      // qDebug() << "lua run : script stopped";
-    } else {
-      // qDebug() << QString("lua run : %1").arg(lua_error);
-      emit scriptHasOutput(lua_error);
+    QString trace;
+    lua_Debug ar;
+    for (int level = 0; lua_getstack(L, level, &ar); level++) {
+      lua_getinfo(L, "Snl", &ar);
+      QString info = QString("[%1] %2 (%3)")
+                      .arg(ar.name ? ar.name : "?")
+                      .arg(ar.short_src)
+                      .arg(ar.currentline);
+      if (trace.isEmpty()) {
+        trace = info;
+      } else {
+        trace += "\n" + info;
+      }
     }
 
-    lua_pop(L, 1); /* pop error message from the stack */
+    if (lua_error.contains(QRegExp(tr("stopping$")))) {
+      lua_error = tr("script stopped");
+    } else {
+      if (!trace.isEmpty()) {
+        emit scriptHasOutput(lua_error + "\n" + trace);
+      } else {
+        emit scriptHasOutput(lua_error);
+      }
+    }
+
+    lua_pop(L, 1);
   } else {
     lua_error = tr("ok");
   }
@@ -1389,6 +1421,7 @@ void Viewer::savePOV(bool force) {
 
   ini << "+L" << QStandardPaths::writableLocation(QStandardPaths::CacheLocation) << "\n";
   ini << "+L../../includes" << "\n" << "\n";
+  ini << "+L/nfs/cache" << "\n" << "\n"; // XXX make this an option in the prefs
 
   ini << "Initial_Clock=" << _firstFrame << "\n";
   ini << "Final_Clock="   << _frameNum << "\n";
@@ -1700,6 +1733,12 @@ void Viewer::setCBOnJoystick(const luabind::object &fn) {
   }
 }
 
+void Viewer::setCBCycleObject(const luabind::object &fn) {
+  if (luabind::type(fn) == LUA_TFUNCTION) {
+    _cb_cycleObject = fn;
+  }
+}
+
 void Viewer::addShortcut(const QString &keys, const luabind::object &fn) {
   if (luabind::type(fn) == LUA_TFUNCTION) {
     _cb_shortcuts->insert(keys, std::make_shared<luabind::object>(fn));
@@ -1873,6 +1912,7 @@ void Viewer::animate() {
     if (_frameNum > 10)
       emit postDrawShot(_frameNum);
 
+    emit frameUpdate(_frameNum);
     _frameNum++;
   }
 

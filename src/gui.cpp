@@ -35,6 +35,11 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   progressBar->hide();
   statusBar()->addPermanentWidget(progressBar);
 
+  frameLabel = new QLabel("frame 0", statusBar());
+  frameLabel->setObjectName("bppFrameLabel");
+  frameLabel->setMinimumWidth(100);
+  statusBar()->addPermanentWidget(frameLabel);
+
   renderSettings = new QComboBox(ui.toolBarView);
 
   QStringList renderSettingsList;
@@ -94,6 +99,7 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   loadSettings();
 
   connect(ui.viewer, &Viewer::postDrawShot, this, &Gui::postDraw);
+  connect(ui.viewer, &Viewer::frameUpdate, this, &Gui::updateFrameLabel);
   commandLine->setFocus();
 
 fileNew();
@@ -434,6 +440,10 @@ void Gui::animStarted() {}
 void Gui::animProgress(const QString &, int) {}
 
 void Gui::animFinished() {}
+
+void Gui::updateFrameLabel(int frameNum) {
+  frameLabel->setText(QString("frame %1").arg(frameNum));
+}
 
 void Gui::debug(const QString &txt) { debugText->appendLine(txt); }
 

@@ -172,6 +172,7 @@ public slots:
   void setCBPreStop(const luabind::object &fn);
   void setCBOnCommand(const luabind::object &fn);
   void setCBOnJoystick(const luabind::object &fn);
+  void setCBCycleObject(const luabind::object &fn);
 
   void keyPressEvent(QKeyEvent *e);
 
@@ -193,6 +194,8 @@ public slots:
   };
 
 signals:
+  void cycleObject(int direction);
+  void frameUpdate(int frameNum);
   void statusEvent(const QString &);
 
   void scriptFinished();
@@ -293,6 +296,7 @@ private:
   luabind::object _cb_preStop;
   luabind::object _cb_onCommand;
   luabind::object _cb_onJoystick;
+  luabind::object _cb_cycleObject;
 
   #include <memory>
 

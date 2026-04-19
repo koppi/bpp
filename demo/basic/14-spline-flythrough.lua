@@ -1,5 +1,7 @@
 local spline = require "spline"
 
+math.randomseed(1)
+
 local floor = Plane(0, 1, 0, 0, 50)
 floor.col = "#222222"
 floor.friction = 0.8
@@ -29,7 +31,7 @@ local function random_color()
   return colors[math.random(#colors)]
 end
 
-for i = 1, 8 do
+for i = 1, 7 do
   local s = Sphere(1 + math.random() * 2, 1)
   local range = 20
   s.pos = btVector3(
@@ -62,7 +64,7 @@ for i = 1, 8 do
   table.insert(objects, s)
 end
 
-for i = 1, 6 do
+for i = 1, 7 do
   local size = 1 + math.random() * 2.5
   local c = Cube(size, size, size, 1)
   local range = 18
@@ -78,7 +80,7 @@ for i = 1, 6 do
   table.insert(objects, c)
 end
 
-for i = 1, 4 do
+for i = 1, 7 do
   local r = 0.5 + math.random() * 1.5
   local h = 2 + math.random() * 4
   local c = Cylinder(r, h, 1)
@@ -94,36 +96,56 @@ for i = 1, 4 do
   table.insert(objects, c)
 end
 
-v.cam.pos = btVector3(40, 25, 40)
-v.cam.look = btVector3(0, 5, 0)
-v.cam:setUpVector(btVector3(0, 1, 0), false)
-v.cam:setHorizontalFieldOfView(0.4)
+local cam_path_points = {}
+local num_points = 16
+for i = 0, num_points - 1 do
+  local angle = (i / num_points) * math.pi * 2
+  local radius = 35
+  local height = 20 + 8 * math.sin(angle * 2)
+  local x = radius * math.cos(angle)
+  local z = radius * math.sin(angle)
+  local y = height
+  cam_path_points[i + 1] = btVector3(x, y, z)
+end
 
-local cam_path_points = {
-  btVector3(40, 25, 40),
-  btVector3(25, 15, 35),
-  btVector3(10, 12, 20),
-  btVector3(0, 10, 5),
-  btVector3(-15, 18, 10),
-  btVector3(-25, 22, 25),
-  btVector3(-10, 30, 35),
-  btVector3(10, 35, 25),
-  btVector3(25, 28, 10),
-  btVector3(30, 20, 15),
-  btVector3(15, 12, 25),
-  btVector3(5, 8, 15),
-  btVector3(-5, 14, 0),
-  btVector3(10, 20, 15),
-  btVector3(30, 25, 5),
-  btVector3(40, 25, 40),
-}
+v.cam.pos  = btVector3(cam_path_points[1].x, cam_path_points[1].y, cam_path_points[1].z)
+v.cam.look = btVector3(cam_path_points[2].x, cam_path_points[2].y, cam_path_points[2].z)
 
 local cam_spline = spline.CatmullRom(cam_path_points)
-local scene_center = btVector3(0, 5, 0)
 
 local anim_duration = 1200
 local anim_frame = 0
 local animating = true
+local current_target_idx = 1
+local look_transition = 0
+local zoom_in_frames = 50
+local hold_frames = 20
+local transition_frames = 30
+local current_look = btVector3(0, 0, 0)
+local prev_target_pos = btVector3(0, 0, 0)
+local manual_mode = false
+local manual_transition_frame = 0
+local from_look = btVector3(0, 0, 0)
+local to_look = btVector3(0, 0, 0)
+
+function cycle_object(direction)
+  manual_mode = true
+  from_look = current_look
+  manual_transition_frame = 0
+
+  local new_target_idx = current_target_idx + direction
+  if new_target_idx > #objects then
+    new_target_idx = 1
+  elseif new_target_idx < 1 then
+    new_target_idx = #objects
+  end
+  current_target_idx = new_target_idx
+
+  local to_obj = objects[current_target_idx]
+  to_look = btVector3(to_obj.pos.x, to_obj.pos.y, to_obj.pos.z)
+end
+
+v:cycleObject(cycle_object)
 
 v:postSim(function(N)
   if not animating then return end
@@ -131,19 +153,86 @@ v:postSim(function(N)
   local progress = anim_frame / anim_duration
 
   if progress > 1 then
-    progress = 1
-    animating = false
+    progress = progress - 1
+    anim_frame = 0
   end
 
   local t = progress * cam_spline.num_segments
 
   local p = cam_spline:eval(t)
   v.cam.pos = btVector3(p.x, p.y, p.z)
-  v.cam.look = scene_center
-  v.cam:setUpVector(btVector3(0, 1, 0), false)
 
-  local fov = 0.4 + 0.2 * math.sin(progress * math.pi * 2)
-  v.cam:setHorizontalFieldOfView(fov)
+  if manual_mode then
+    manual_transition_frame = manual_transition_frame + 1
+    local blend = manual_transition_frame / zoom_in_frames
+    if blend > 1 then blend = 1 end
+
+    current_look = btVector3(
+      from_look.x + (to_look.x - from_look.x) * blend,
+      from_look.y + (to_look.y - from_look.y) * blend,
+      from_look.z + (to_look.z - from_look.z) * blend
+    )
+  else
+    look_transition = look_transition + 1
+    local cycle_frames = zoom_in_frames + hold_frames + transition_frames
+    local phase = look_transition % cycle_frames
+
+    if look_transition > cycle_frames - 1 then
+      look_transition = 0
+      prev_target_pos = current_look
+      current_target_idx = (current_target_idx % #objects) + 1
+    end
+
+    local target = objects[current_target_idx]
+    local target_pos = btVector3(target.pos.x, target.pos.y, target.pos.z)
+
+    if phase < zoom_in_frames then
+      local blend = phase / zoom_in_frames
+      current_look = btVector3(
+        prev_target_pos.x + (target_pos.x - prev_target_pos.x) * blend,
+        prev_target_pos.y + (target_pos.y - prev_target_pos.y) * blend,
+        prev_target_pos.z + (target_pos.z - prev_target_pos.z) * blend
+      )
+    elseif phase < zoom_in_frames + hold_frames then
+      current_look = target_pos
+    else
+      current_look = target_pos
+    end
+  end
+
+  v.cam.look = current_look
+
+  local forward = {
+    x = current_look.x - p.x,
+    y = current_look.y - p.y,
+    z = current_look.z - p.z,
+  }
+  local len = math.sqrt(forward.x^2 + forward.y^2 + forward.z^2)
+  if len > 0.001 then
+    forward.x = forward.x / len
+    forward.y = forward.y / len
+    forward.z = forward.z / len
+  end
+
+  local default_up = { x = 0, y = 1, z = 0 }
+  local right = {
+    x = forward.y * default_up.z - forward.z * default_up.y,
+    y = forward.z * default_up.x - forward.x * default_up.z,
+    z = forward.x * default_up.y - forward.y * default_up.x,
+  }
+  local rlen = math.sqrt(right.x^2 + right.y^2 + right.z^2)
+  if rlen > 0.001 then
+    right.x = right.x / rlen
+    right.y = right.y / rlen
+    right.z = right.z / rlen
+
+    local new_up = {
+      x = right.y * forward.z - right.z * forward.y,
+      y = right.z * forward.x - right.x * forward.z,
+      z = right.x * forward.y - right.y * forward.x,
+    }
+    v.cam:setUpVector(btVector3(new_up.x, new_up.y, new_up.z), true)
+  end
 
   anim_frame = anim_frame + 1
 end)

@@ -54,7 +54,7 @@ help:
 	@echo ""
 
 quick:
-	povray ${SCENE}.ini -V +W380 +H252 +Q4 -A -d +c ${POVOPT} || true
+	povray ${SCENE}.ini -V +W380 +H252 +Q3 -A +D +c ${POVOPT} || true
 
 final: 720p
 

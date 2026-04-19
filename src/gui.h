@@ -25,6 +25,7 @@ public:
 
 private slots:
   void command(const QString &cmd);
+  void updateFrameLabel(int frameNum);
 
   void moveEvent(QMoveEvent *) override;
   void resizeEvent(QResizeEvent *) override;
@@ -166,6 +167,7 @@ private:
 
   QComboBox *renderSettings;
   QProgressBar *progressBar;
+  QLabel *frameLabel;
 };
 
 #endif
