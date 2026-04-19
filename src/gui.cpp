@@ -74,7 +74,7 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
   connect(ui.viewer, &Viewer::scriptHasOutput, this, &Gui::debug);
   connect(ui.viewer, &Viewer::scriptStarts, this, &Gui::clearDebug);
   connect(ui.viewer, &Viewer::scriptStarts, this,
-          [this]() { showProgressBar(tr("Parsing script...")); });
+          [this]() { showProgressBar(tr("Parsing script, please be patient ...")); });
   connect(ui.viewer, &Viewer::scriptFinished, this,
           [this]() { hideProgressBar(); });
   connect(ui.viewer, &Viewer::simulationStateChanged, this,
@@ -576,7 +576,7 @@ void Gui::loadSettings() {
   }
 
   renderSettings->setCurrentIndex(renderSettings->findText(
-      settings->value("gui/renderResolution", "view size").toString()));
+      settings->value("renderResolution", "view size").toString()));
 
   ui.actionToggleDeactivation->setChecked(
       settings->value("deactivationState", true).toBool());
@@ -604,9 +604,9 @@ void Gui::saveSettings() {
 
   QString renderRes = renderSettings->currentText();
   if (renderRes.isEmpty()) {
-    renderRes = settings->value("gui/renderResolution", "view size").toString();
+    renderRes = settings->value("renderResolution", "view size").toString();
   }
-  settings->setValue("gui/renderResolution", renderRes);
+  settings->setValue("renderResolution", renderRes);
 
   settings->setValue("deactivationState",
                      ui.actionToggleDeactivation->isChecked());
