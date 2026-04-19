@@ -6,6 +6,8 @@
 #SBATCH --mail-user koppi
 #SBATCH --mail-type ALL
 
+#SBATCH --cpu-bind=none
+
 SCENE=${1}
 FRAMES=${2}
 
@@ -27,4 +29,4 @@ echo
 
 PNG="$SCENE-$(printf "%05d" $FRAME).png"
 
-nice povray /nfs/bpp/export/$SCENE/$SCENE.ini +L. +Lincludes +L/nfs/bpp/includes +L/nfs/bpp/export/$SCENE -V -D +KFI0 +KFF$FRAMES +SF$FRAME +EF$FRAME $POVARGS -O- > $WORKDIR/$PNG
+nice povray /nfs/bpp/export/$SCENE/$SCENE.ini +L. +Lincludes +L/nfs/bpp/includes +L/nfs/bpp/export/$SCENE -V -D +KFI0 +KFF$FRAMES +SF$FRAME +EF$FRAME +WT4 $POVARGS -O- > $WORKDIR/$PNG
