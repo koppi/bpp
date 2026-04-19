@@ -26,7 +26,7 @@ cd $WORKDIR
 echo "$SLURMD_NODENAME:$WORKDIR"
 echo
 
-PNG="$SCENE-$(printf "%07d" $FRAME).png"
+PNG="$SCENE-$(printf "%05d" $FRAME).png"
 
 #nice povray /nfs/bpp/export/gh/14-spline-flythrough.ini +Lincludes +L../../includes +D +KFI1 +KFF945 +SF1 +EF1 +W1280 +H720
 
