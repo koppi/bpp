@@ -1,8 +1,13 @@
 --
 -- Callback functions demo
 --
-
--- tip: type "run()" in the GUI Command Line
+-- Demonstrates all available callback hooks in BPP.
+-- These callbacks allow you to run code at specific points
+-- during the simulation lifecycle.
+--
+-- Usage: bpp -f demo/basic/03-callback.lua
+--
+-- Tip: type "run()" in the GUI Command Line to spawn new cubes
 
 p = Plane(0,1,0,0,10)
 p.col = "#111111" 

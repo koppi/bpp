@@ -1,6 +1,10 @@
 --
 -- btTriangleMesh pyramids
 --
+-- Demonstrates low-level triangle mesh creation using btTriangleMesh.
+-- Shows how to manually define custom mesh geometry.
+--
+-- Usage: bpp -f demo/basic/08-trimesh.lua
 
 local color = require "color"
 

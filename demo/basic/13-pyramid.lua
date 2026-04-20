@@ -5,6 +5,7 @@
 -- rigid bodies with mass, using btTriangleMesh and Mesh for
 -- visual rendering with checker texture.
 --
+-- Usage: bpp -f demo/basic/13-pyramid.lua
 
 local color = require "color"
 

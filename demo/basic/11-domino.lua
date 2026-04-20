@@ -1,6 +1,10 @@
 --
--- Dominos
+-- Dominos demo
 --
+-- Physics simulation of domino chains being struck by a sphere.
+-- Demonstrates collision, friction, and restitution settings.
+--
+-- Usage: bpp -f demo/basic/11-domino.lua
 
 v.pre_sdl = [[
 

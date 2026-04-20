@@ -1,6 +1,10 @@
 --
 -- Mesh loading (stl and 3ds)
 --
+-- Demonstrates loading mesh files in various formats (STL, 3DS).
+-- Also shows randomized positioning and multiple meshes.
+--
+-- Usage: bpp -f demo/basic/06-mesh.lua
 
 v.timeStep      = 1/5
 v.maxSubSteps   = 10

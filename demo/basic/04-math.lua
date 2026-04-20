@@ -1,8 +1,13 @@
 --
 -- Lua math functions demo
 --
--- see: http://lua-users.org/wiki/MathLibraryTutorial
+-- Demonstrates the use of Lua's math library for creating
+-- geometric patterns. Shows circles of spheres at different radii.
 --
+-- Usage: bpp -f demo/basic/04-math.lua
+--
+-- Reference: http://lua-users.org/wiki/MathLibraryTutorial
+-- 
 -- math.abs   math.acos  math.asin  math.atan math.atan2 math.ceil
 -- math.cos   math.cosh  math.deg   math.exp  math.floor math.fmod
 -- math.frexp math.huge  math.ldexp math.log  math.log10 math.max

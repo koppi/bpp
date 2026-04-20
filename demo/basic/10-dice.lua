@@ -1,6 +1,10 @@
 --
--- Dice
+-- Dice demo
 --
+-- Shows falling dice with physics simulation.
+-- Uses custom dice and text modules.
+--
+-- Usage: bpp -f demo/basic/10-dice.lua
 
 local color = require "color"
 local dice  = require "povray/dice"

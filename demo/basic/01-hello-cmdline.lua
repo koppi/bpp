@@ -3,44 +3,49 @@
  A red sphere drops on a plane
 
  * You can run this LUA script from the command-line:
-
    $ bpp -n 200 -f demo/basic/01-hello-cmdline.lua
 
  * Or plot the result with gnuplot:
-
    $ bpp -n 200 -f demo/basic/01-hello-cmdline.lua | gnuplot -e "set terminal dumb; plot for[col=3:3] '/dev/stdin' using 1:col title columnheader(col) with lines"
 
-10 +---------------------------------------------------------------------+
-   | **   +      +      +      +      +      +      +      +      +      |
- 9 |-+**                                                       Y *******-|
-   |   **                                                                |
- 8 |-+  **                                                             +-|
-   |     *                                                               |
- 7 |-+   **           *****                                            +-|
-   |      *          **   ***                                            |
- 6 |-+    **        **      **                                         +-|
-   |       *       *         *                                           |
- 5 |-+     *      **          *         *****                          +-|
-   |        *     *           **      **     *                           |
- 4 |-+      *    *             *      *       *                        +-|
-   |         *   *              *    *         *                         |
- 3 |-+       *  *               *   **         **                      +-|
-   |          * *                *  *           **                       |
- 2 |-+        ***                * *             *  *****    **        +-|
-   |          **                 * *              ***    * *** **        |
- 1 |-+         *                  *               *       **     ********|
-   |      +      +      +      +      +      +      +      +      +      |
- 0 +---------------------------------------------------------------------+
-   0      20     40     60     80    100    120    140    160    180    200
+ 10 +---------------------------------------------------------------------+
+    | **   +      +      +      +      +      +      +      +      +      |
+  9 |-+**                                                       Y *******-|
+    |   **                                                                |
+  8 |-+  **                                                             +-|
+    |     *                                                               |
+  7 |-+   **           *****                                            +-|
+    |      *          **   ***                                            |
+  6 |-+    **        **      **                                         +-|
+    |       *       *         *                                           |
+  5 |-+     *      **          *         *****                          +-|
+    |        *     *           **      **     *                           |
+  4 |-+      *    *             *      *       *                        +-|
+    |         *   *              *    *         *                         |
+  3 |-+       *  *               *   **         **                      +-|
+    |          * *                *  *           **                       |
+  2 |-+        ***                * *             *  *****    **        +-|
+    |          **                 * *              ***    * *** **        |
+  1 |-+         *                  *               *       **     ********|
+    |      +      +      +      +      +      +      +      +      +      |
+  0 +---------------------------------------------------------------------+
+    0      20     40     60     80    100    120    140    160    180    200
+
+This demo shows a bouncing ball with position tracking.
+It outputs frame number and X/Y/Z positions that can be plotted with gnuplot.
+
+Usage: bpp -n 200 -f demo/basic/01-hello-cmdline.lua
 
 ]==]
 
-debug_pov = 0 -- debug pov sdl generation
+-- Enable debug POV SDL generation (set to 1 for debug)
+debug_pov = 0
 
 --
 -- SCENE SETUP
 --
 
+-- POV-Ray pre-SDL (scene setup before objects)
 v.pre_sdl = [==[
 #include "colors.inc"
 #include "textures.inc"
@@ -64,11 +69,13 @@ v.pre_sdl = [==[
 
 ]==]
 
-p = Plane(0,1,0,0,100) -- ground (x-z dimension)
-p.restitution = 0.9
-p.friction = 0.5
+-- Create a large ground plane (100x100 units) at y=0
+p = Plane(0,1,0,0,100)
+p.restitution = 0.9  -- bounciness (0-1)
+p.friction = 0.5       -- friction coefficient
 
 p.col = "gray"
+-- Add custom POV-Ray texture with checker pattern
 p.sdl = [[
   texture { pigment{color rgbt<1,1,1,0.7>*1.1}
             finish {ambient 0.45 diffuse 0.85}}
@@ -78,16 +85,17 @@ p.sdl = [[
 ]]
 v:add(p)
 
--- a sphere with diameter 2 and mass 10
+-- a sphere with diameter 2 (radius 1) and mass 10
 s = Sphere(1,10)
-s.pos = btVector3( 0,10, 0) -- position
-s.vel = btVector3( 5, 0, 0) -- velocity
+s.pos = btVector3( 0,10, 0) -- start position (0, 10, 0)
+s.vel = btVector3( 5, 0, 0) -- initial velocity: (5, 0, 0)
 s.col = "red"
 s.restitution = 0.9
 s.friction = 0.5
 s.sdl = [[ texture { pigment { color rgb <1, 0, 0> } } ]]
 v:add(s)
 
+-- Function to set up camera with focal blur focused on the sphere
 function setcam()
   v.cam:setFieldOfView(0.15)
   v.cam:setUpVector(btVector3(0,1,0), true)
@@ -101,15 +109,19 @@ end
 
 setcam()
 
+-- preSim: Called before each simulation step
 v:preSim(function(N)
   if (N == 0) then print("N X Y Z") end
 end)
 
+-- postSim: Called after each simulation step
 v:postSim(function(N)
   setcam()
+  -- Output frame number and position (for gnuplot)
   if (debug_pov == 0) then
     print(N.." "..s.pos.x.." "..s.pos.y.." "..s.pos.z)
   end
+  -- Alternative: output POV-Ray scene
   if (debug_pov == 1) then
     v:clearDebugText()
     print(v:toPOV())

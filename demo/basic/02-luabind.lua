@@ -1,6 +1,13 @@
 --
--- Print all registered classes
+-- Luabind introspection demo
 --
+-- This demo shows how to inspect registered BPP classes,
+-- their properties and methods using luabind's class_info.
+--
+-- Usage: bpp -f demo/basic/02-luabind.lua
+--
+-- Tip: Use class_names() to list all available classes,
+-- class_info() to inspect a class, or dump() to explore the entire namespace.
 
 info = function(c)
   --printf("Type %s", type(c))

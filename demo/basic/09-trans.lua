@@ -1,6 +1,10 @@
 --
--- util/trans.lua library demo
+-- Transform utilities demo
 --
+-- Demonstrates the scad/trans module for rotating and moving objects.
+-- Shows a grid of spheres that can be manipulated.
+--
+-- Usage: bpp -f demo/basic/09-trans.lua
 
 local trans = require "scad/trans"
 

@@ -1,6 +1,10 @@
 --
 -- OpenSCAD template
 --
+-- Demonstrates using OpenSCAD to generate 3D geometry.
+-- The script embeds OpenSCAD code to create 3D letters.
+--
+-- Usage: bpp -f demo/basic/07-scad.lua
 
 v.gravity = btVector3(0,-9.81,0)
 

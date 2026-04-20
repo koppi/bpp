@@ -1,3 +1,12 @@
+--
+-- Joystick input demo
+--
+-- Demonstrates reading joystick/gamepad input.
+-- The callback receives axis positions and button states.
+--
+-- Usage: bpp -f demo/basic/12-input-joystick.lua
+-- (Requires a connected joystick/gamepad)
+
 v:onJoystick(function(N, joy)
   v:clearDebugText()
   print("onJoystick("..tostring(N)..")")

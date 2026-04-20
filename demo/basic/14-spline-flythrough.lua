@@ -1,3 +1,11 @@
+--
+-- Spline flythrough camera demo
+--
+-- Demonstrates camera animation along a spline path with object tracking.
+-- Shows an automatic camera that flies through the scene looking at different objects.
+--
+-- Usage: bpp -f demo/basic/14-spline-flythrough.lua
+
 local spline = require "spline"
 local color = require "color"
 
