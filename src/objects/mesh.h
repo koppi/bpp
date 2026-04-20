@@ -11,11 +11,29 @@
 
 #include "object.h"
 
+#include <QHash>
+#include <memory>
+
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include <btBulletDynamicsCommon.h>
 
+#include <assimp/cimport.h>
 #include <assimp/scene.h>
+
+class MeshCacheEntry {
+public:
+  MeshCacheEntry()
+      : m_shape(nullptr), m_mesh(nullptr), m_scene(nullptr), refCount(0) {}
+  ~MeshCacheEntry() {
+    delete m_shape;
+    delete m_mesh;
+  }
+  btGImpactMeshShape *m_shape;
+  btTriangleMesh *m_mesh;
+  const aiScene *m_scene;
+  int refCount;
+};
 
 class Mesh : public Object {
 public:
@@ -41,6 +59,8 @@ public:
 
   void loadFile(const QString &filename, btScalar mass);
 
+  void recreate(btDiscreteDynamicsWorld *world = nullptr);
+
   static void luaBind(lua_State *s);
   QString toString() const override;
   void toPOV(QTextStream *s) const override;
@@ -49,9 +69,13 @@ public:
   void renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) override;
 
 protected:
+  static QHash<QString, std::shared_ptr<MeshCacheEntry>> _meshCache;
+
   btGImpactMeshShape *m_shape;
   btTriangleMesh *m_mesh;
   const aiScene *m_scene;
+  QString m_filename;
+  btScalar m_mass;
 };
 
 #endif

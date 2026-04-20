@@ -28,6 +28,8 @@ using namespace std;
 #include <luabind/adopt_policy.hpp>
 #include <luabind/operator.hpp>
 
+QHash<QString, std::shared_ptr<MeshCacheEntry>> Mesh::_meshCache;
+
 class GlDrawcallback : public btTriangleCallback {
 
 public:
@@ -74,7 +76,9 @@ public:
 };
 
 Mesh::Mesh(const QString &filename, btScalar mass) {
-  m_mesh = new btTriangleMesh();
+  m_filename = filename;
+  m_mass = mass;
+  m_mesh = nullptr;
   m_shape = nullptr;
   m_scene = nullptr;
 
@@ -85,7 +89,9 @@ Mesh::Mesh(const QString &filename, btScalar mass) {
 }
 
 Mesh::Mesh(const QString &filename) {
-  m_mesh = new btTriangleMesh();
+  m_filename = filename;
+  m_mass = 0;
+  m_mesh = nullptr;
   m_shape = nullptr;
   m_scene = nullptr;
 
@@ -96,38 +102,58 @@ Mesh::Mesh(const QString &filename) {
 }
 
 Mesh::Mesh() {
+  m_filename = QString();
+  m_mass = 0;
   m_mesh = new btTriangleMesh();
   m_shape = new btGImpactMeshShape(m_mesh);
   m_scene = nullptr;
+  shape = m_shape;
 
   setColor(127, 127, 127);
   setMass(0);
 }
 
 Mesh::~Mesh() {
-  aiReleaseImport(m_scene);
-  delete m_shape;
   m_shape = nullptr;
-  delete m_mesh;
   m_mesh = nullptr;
+  m_scene = nullptr;
   if (body && body->getMotionState()) {
     delete body->getMotionState();
   }
 }
 
 void Mesh::loadFile(const QString &filename, btScalar mass) {
-  m_scene =
-      aiImportFile(filename.toUtf8(), aiProcessPreset_TargetRealtime_Fast);
+  m_filename = filename;
+  m_mass = mass;
 
-  if (!m_scene) {
-    return;
+  if (_meshCache.contains(filename)) {
+    auto entry = _meshCache.value(filename);
+    m_shape = entry->m_shape;
+    m_mesh = entry->m_mesh;
+    m_scene = entry->m_scene;
+    shape = m_shape;
   } else {
-    assert(m_scene->mNumMeshes > 0);
+    QFileInfo info(filename);
+    QString absPath;
+    if (info.exists()) {
+      absPath = filename;
+    } else {
+      absPath = QFileInfo(QDir::current(), filename).absoluteFilePath();
+    }
+    const aiScene *scene =
+        aiImportFile(absPath.toUtf8().constData(), aiProcessPreset_TargetRealtime_Fast);
 
-    const struct aiMesh *mesh = m_scene->mMeshes[0];
+    if (!scene) {
+      return;
+    }
 
-    for (unsigned int t = 0; t < mesh->mNumFaces; ++t) {
-      const struct aiFace *face = &mesh->mFaces[t];
+    assert(scene->mNumMeshes > 0);
+
+    btTriangleMesh *triMesh = new btTriangleMesh();
+    const struct aiMesh *amesh = scene->mMeshes[0];
+
+    for (unsigned int t = 0; t < amesh->mNumFaces; ++t) {
+      const struct aiFace *face = &amesh->mFaces[t];
 
       GLenum face_mode;
 
@@ -152,34 +178,43 @@ void Mesh::loadFile(const QString &filename, btScalar mass) {
       int i1 = face->mIndices[1];
       int i2 = face->mIndices[2];
 
-      m_mesh->addTriangle(
-          btVector3(mesh->mVertices[i0].x, mesh->mVertices[i0].y,
-                    mesh->mVertices[i0].z),
-          btVector3(mesh->mVertices[i1].x, mesh->mVertices[i1].y,
-                    mesh->mVertices[i1].z),
-          btVector3(mesh->mVertices[i2].x, mesh->mVertices[i2].y,
-                    mesh->mVertices[i2].z));
+      triMesh->addTriangle(
+          btVector3(amesh->mVertices[i0].x, amesh->mVertices[i0].y,
+                    amesh->mVertices[i0].z),
+          btVector3(amesh->mVertices[i1].x, amesh->mVertices[i1].y,
+                    amesh->mVertices[i1].z),
+          btVector3(amesh->mVertices[i2].x, amesh->mVertices[i2].y,
+                    amesh->mVertices[i2].z));
     }
 
-    // qDebug() << m_mesh->getNumTriangles();
+    auto entry = std::make_shared<MeshCacheEntry>();
+    entry->m_scene = scene;
+    entry->m_mesh = triMesh;
+    entry->m_shape = new btGImpactMeshShape(triMesh);
+    entry->m_shape->updateBound();
 
-    m_shape = new btGImpactMeshShape(m_mesh);
-    m_shape->updateBound();
+    _meshCache.insert(filename, entry);
 
-    btQuaternion qtn;
-    btTransform trans;
-    btDefaultMotionState *motionState = nullptr;
-
-    trans.setIdentity();
-    qtn.setEuler(0.0, 0.0, 0.0);
-    trans.setRotation(qtn);
-    trans.setOrigin(btVector3(0, 0, 0));
-    motionState = new btDefaultMotionState(trans);
-
-    btVector3 inertia;
-    m_shape->calculateLocalInertia(mass, inertia);
-    body = new btRigidBody(mass, motionState, m_shape, inertia);
+    m_shape = entry->m_shape;
+    m_mesh = entry->m_mesh;
+    m_scene = entry->m_scene;
   }
+
+  shape = m_shape;
+
+  btQuaternion qtn;
+  btTransform trans;
+  btDefaultMotionState *motionState = nullptr;
+
+  trans.setIdentity();
+  qtn.setEuler(0.0, 0.0, 0.0);
+  trans.setRotation(qtn);
+  trans.setOrigin(btVector3(0, 0, 0));
+  motionState = new btDefaultMotionState(trans);
+
+  btVector3 inertia;
+  m_shape->calculateLocalInertia(mass, inertia);
+  body = new btRigidBody(mass, motionState, m_shape, inertia);
 }
 
 void Mesh::luaBind(lua_State *s) {
@@ -439,6 +474,36 @@ void Mesh::setMass(btScalar _mass) {
     btVector3 inertia;
     m_shape->calculateLocalInertia(_mass, inertia);
     body->setMassProps(_mass, inertia);
+  }
+}
+
+void Mesh::recreate(btDiscreteDynamicsWorld *world) {
+  if (!m_filename.isNull() && body != nullptr && m_shape != nullptr) {
+    if (world) {
+      world->removeRigidBody(body);
+    }
+    if (body->getMotionState()) {
+      delete body->getMotionState();
+    }
+    delete body;
+    body = nullptr;
+
+    btQuaternion qtn;
+    btTransform trans;
+    btDefaultMotionState *motionState = nullptr;
+
+    trans.setIdentity();
+    qtn.setEuler(0.0, 0.0, 0.0);
+    trans.setRotation(qtn);
+    trans.setOrigin(btVector3(0, 0, 0));
+    motionState = new btDefaultMotionState(trans);
+
+    btVector3 inertia;
+    m_shape->calculateLocalInertia(m_mass, inertia);
+    body = new btRigidBody(m_mass, motionState, m_shape, inertia);
+    if (world) {
+      world->addRigidBody(body);
+    }
   }
 }
 
