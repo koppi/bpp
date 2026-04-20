@@ -174,6 +174,11 @@ public slots:
   void setCBOnJoystick(const luabind::object &fn);
   void setCBCycleObject(const luabind::object &fn);
 
+  void addParam(const QString &name, const QVariant &value);
+  QVariant getParam(const QString &name) const;
+  QHash<QString, QVariant> getParams() const;
+  void clearParams();
+
   void keyPressEvent(QKeyEvent *e);
 
   void command(QString cmd);
@@ -210,6 +215,7 @@ signals:
   void deactivationStateChanged(bool);
 
   void clearDebugText();
+  void paramsChanged();
 
 protected:
   virtual void init();
@@ -333,6 +339,9 @@ private:
   // joystick handler
   JoystickInterfaceSDL *_joystickInterface;
   JoystickHandler _joystickHandler;
+
+  // parameter storage for Lua scripts
+  QHash<QString, QVariant> _params;
 };
 
 #endif // VIEWER_H

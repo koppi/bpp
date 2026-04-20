@@ -175,6 +175,9 @@ void Viewer::luaBind(lua_State *s) {
                  (void(Viewer::*)(const luabind::object &fn)) &
                      Viewer::setCBCycleObject,
                  adopt(luabind::result))
+            .def("addParam", (void(Viewer::*)(const QString &, const QVariant &)) & Viewer::addParam)
+            .def("getParam", &Viewer::getParam)
+            .def("getParams", &Viewer::getParams)
             .def("savePrefs", &Viewer::setPrefs)
            .def("loadPrefs", &Viewer::getPrefs)
            .def("clearDebugText", &Viewer::clearDebugText)
@@ -911,6 +914,9 @@ emit scriptStarts();
 
 void Viewer::clear() {
   // qDebug() << "Viewer::clear() objects: " << _objects->size();
+
+  _params.clear();
+  emit paramsChanged();
 
   // Notify all objects that their luabind weak pointers are about to become
   // invalid (C++ objects will be deleted by clear() below).
@@ -1737,6 +1743,68 @@ void Viewer::setCBCycleObject(const luabind::object &fn) {
   if (luabind::type(fn) == LUA_TFUNCTION) {
     _cb_cycleObject = fn;
   }
+}
+
+void Viewer::addParam(const QString &name, const QVariant &value) {
+  _params[name] = value;
+  if (L) {
+    lua_State *ls = L;
+    lua_pushstring(ls, name.toUtf8().constData());
+
+    switch (value.type()) {
+    case QVariant::Int:
+    case QVariant::LongLong:
+      lua_pushinteger(ls, value.toInt());
+      break;
+    case QVariant::Double:
+      lua_pushnumber(ls, value.toDouble());
+      break;
+    case QVariant::Bool:
+      lua_pushboolean(ls, value.toBool());
+      break;
+    case QVariant::String:
+      lua_pushstring(ls, value.toString().toUtf8().constData());
+      break;
+    default:
+      lua_pushstring(ls, value.toString().toUtf8().constData());
+      break;
+    }
+
+    lua_settable(ls, LUA_GLOBALSINDEX);
+  }
+  emit paramsChanged();
+}
+
+QVariant Viewer::getParam(const QString &name) const {
+  if (L) {
+    lua_State *ls = L;
+    lua_getglobal(ls, name.toUtf8().constData());
+    int luaType = lua_type(ls, -1);
+    if (luaType == LUA_TNUMBER) {
+      double n = lua_tonumber(ls, -1);
+      lua_pop(ls, 1);
+      return QVariant(n);
+    } else if (luaType == LUA_TSTRING) {
+      const char *s = lua_tostring(ls, -1);
+      lua_pop(ls, 1);
+      return QVariant(QString(s));
+    } else if (luaType == LUA_TBOOLEAN) {
+      bool b = lua_toboolean(ls, -1);
+      lua_pop(ls, 1);
+      return QVariant(b);
+    }
+    lua_pop(ls, 1);
+  }
+  return _params.value(name);
+}
+
+QHash<QString, QVariant> Viewer::getParams() const {
+  return _params;
+}
+
+void Viewer::clearParams() {
+  _params.clear();
+  emit paramsChanged();
 }
 
 void Viewer::addShortcut(const QString &keys, const luabind::object &fn) {

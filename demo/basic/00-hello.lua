@@ -19,6 +19,11 @@ v.timeStep      = 1/25
 v.maxSubSteps   = 120
 v.fixedTimeStep = 1/60
 
+-- Add parameters accessible from GUI
+v:addParam("sphereColor", "red")
+v:addParam("cubeMass", 1.0)
+v:addParam("enableGravity", true)
+
 --
 -- SCENE SETUP
 --
@@ -73,12 +78,24 @@ end)
 
 -- preSim: Called before each physics simulation step
 v:preSim(function(N)
-  print("preSim("..tostring(N)..")")
+  
+  sp.col = tostring(v:getParam("sphereColor"))
+
+  mass = v:getParam("cubeMass")
+  if (mass ~= cu.mass) then
+    cu.mass = v:getParam("cubeMass")
+  end
+
+  if v:getParam("enableGravity") then
+    v.gravity = btVector3(0, -9.8, 0)
+  else
+    v.gravity = btVector3(0, 0, 0)
+  end
 end)
 
 -- postSim: Called after each physics simulation step
 v:postSim(function(N)
-  print("postSim("..tostring(N)..")")
+  --print("postSim("..tostring(N)..")")
   v.cam.focal_blur      = 7
   v.cam.focal_aperture  = 5
   -- set blur point to sphere shape position

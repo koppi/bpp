@@ -100,6 +100,7 @@ Gui::Gui(QSettings *s, QWidget *parent) : QMainWindow(parent), msgBox(nullptr) {
 
   connect(ui.viewer, &Viewer::postDrawShot, this, &Gui::postDraw);
   connect(ui.viewer, &Viewer::frameUpdate, this, &Gui::updateFrameLabel);
+  connect(ui.viewer, &Viewer::paramsChanged, this, &Gui::updateParamsTable);
   commandLine->setFocus();
 
 fileNew();
@@ -370,6 +371,17 @@ void Gui::createDock() {
   camText->setReadOnly(true);
 
   addDockWidget(Qt::RightDockWidgetArea, dw4);
+
+  QDockWidget *dw5 = new QDockWidget(this);
+  dw5->setObjectName("DockParams");
+  dw5->setWindowTitle("Parameters");
+  paramsTable = new QTableWidget(0, 2, this);
+  paramsTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+  paramsTable->setItemDelegate(new QItemDelegate());
+  dw5->setWidget(paramsTable);
+  addDockWidget(Qt::RightDockWidgetArea, dw5);
+  paramsTable->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(paramsTable, &QTableWidget::cellChanged, this, &Gui::onParamsTableCellChanged);
 }
 
 void Gui::helpAbout() {
@@ -451,6 +463,7 @@ void Gui::clearDebug() { debugText->clear(); }
 
 void Gui::fileNew() {
   editor->clear();
+  ui.viewer->clearParams();
   setCurrentFile(editor->scriptFile());
   ui.actionSave->setEnabled(true);
   _fileSaved = true;
@@ -490,6 +503,7 @@ void Gui::fileOpen(const QString &path) {
   }
 
   editor->load(path);
+  ui.viewer->clearParams();
   setCurrentFile(editor->scriptFile());
   ui.actionSave->setEnabled(false);
 
@@ -498,6 +512,7 @@ void Gui::fileOpen(const QString &path) {
 
 void Gui::fileReload() {
   editor->load(editor->scriptFile());
+  ui.viewer->clearParams();
   setCurrentFile(editor->scriptFile());
   ui.actionSave->setEnabled(false);
 
@@ -696,4 +711,56 @@ void Gui::hideProgressBar() {
   progressBar->hide();
   statusBar()->clearMessage();
   statusBar()->repaint();
+}
+
+void Gui::updateParamsTable() {
+  if (!paramsTable || !ui.viewer) return;
+
+  QSignalBlocker blocker(paramsTable);
+
+  QHash<QString, QVariant> params = ui.viewer->getParams();
+
+  paramsTable->setRowCount(params.size());
+
+  int row = 0;
+  for (auto it = params.constBegin(); it != params.constEnd(); ++it) {
+    QTableWidgetItem *nameItem = new QTableWidgetItem(it.key());
+    nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
+    paramsTable->setItem(row, 0, nameItem);
+
+    QTableWidgetItem *valueItem = new QTableWidgetItem(it.value().toString());
+    valueItem->setData(Qt::UserRole, it.value());
+    paramsTable->setItem(row, 1, valueItem);
+
+    row++;
+  }
+
+  paramsTable->resizeColumnToContents(0);
+}
+
+void Gui::onParamsTableCellChanged(int row, int column) {
+  if (!paramsTable || !ui.viewer || column != 1) return;
+
+  QTableWidgetItem *nameItem = paramsTable->item(row, 0);
+  QTableWidgetItem *valueItem = paramsTable->item(row, 1);
+
+  if (!nameItem || !valueItem) return;
+
+  QString name = nameItem->text();
+  QVariant oldValue = valueItem->data(Qt::UserRole);
+  QString newValueStr = valueItem->text();
+
+  QVariant newValue;
+  if (oldValue.type() == QVariant::Int) {
+    newValue = QVariant(newValueStr.toInt());
+  } else if (oldValue.type() == QVariant::Double) {
+    newValue = QVariant(newValueStr.toDouble());
+  } else if (oldValue.type() == QVariant::Bool) {
+    newValue = QVariant(newValueStr.toLower() == "true");
+  } else {
+    newValue = QVariant(newValueStr);
+  }
+
+  qDebug() << "GUI cellChanged: " << name << " = " << newValue;
+  ui.viewer->addParam(name, newValue);
 }
