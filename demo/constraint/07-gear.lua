@@ -1,6 +1,6 @@
 --
 -- btGearConstraint demo
--- Based on bullet3 ConstraintDemo.cpp gear constraint example
+-- Two gears coupled by btGearConstraint, gearA driven by motor
 --
 
 plane = Plane(0,1,0,0,10)
@@ -13,12 +13,12 @@ l1 = 2 - math.tan(theta)
 l2 = 1 / math.cos(theta)
 ratio = l2 / l1
 
-gearA = Cylinder(0.5, 0.25, 6.28)
+gearA = Cylinder(0.5, 0.25, 1)
 gearA.pos = btVector3(-8, 1, -8)
 gearA.col = "#444444"
 v:add(gearA)
 
-gearB = Cylinder(1.2, 0.26, 6.28)
+gearB = Cylinder(1.2, 0.26, 1)
 gearB.pos = btVector3(-10, 2, -8)
 q = btQuaternion()
 q:setEulerZYX(0, 0, -theta)
@@ -33,16 +33,12 @@ hinge = btHingeConstraint(
   gearA.body,
   btVector3(0, 0, 0),
   btVector3(0, 1, 0))
-hinge:enableAngularMotor(true, 1, 1.65)
+hinge:enableAngularMotor(true, 2, 10)
 v:addConstraint(hinge)
-
--- Add gear constraint after setting factors
-axisA = btVector3(0, 1, 0)
-axisB = btVector3(0, 1, 0)
 
 con = btGearConstraint(
   gearA.body, gearB.body,
-  axisA, axisB,
+  btVector3(0, 1, 0), btVector3(0, 1, 0),
   ratio)
 
 v:addConstraint(con)
