@@ -1,3 +1,0 @@
-r -f tests/00-hello.lua
-bt
-quit
