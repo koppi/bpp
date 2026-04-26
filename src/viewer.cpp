@@ -50,8 +50,8 @@
 
 #include <cstdlib>
 
-static void *aligned_lua_alloc(void *ud, void *ptr, size_t osize,
-                               size_t nsize) {
+#if defined(Q_OS_LINUX)
+static void *aligned_lua_alloc(void *ud, void *ptr, size_t osize, size_t nsize) {
   (void)ud;
   (void)osize;
   if (nsize == 0) {
@@ -73,6 +73,7 @@ static void *aligned_lua_alloc(void *ud, void *ptr, size_t osize,
     return nullptr;
   return newptr;
 }
+#endif
 
 #include <luabind/adopt_policy.hpp>
 #include <luabind/class_info.hpp>
@@ -302,6 +303,8 @@ Object *Viewer::removeObject(Object *o) {
 }
 
 void Viewer::addConstraint(btTypedConstraint *con) {
+  if (!con)
+    return;
   dynamicsWorld->addConstraint(con, true);
   _constraints->insert(con);
 }
@@ -313,9 +316,9 @@ btTypedConstraint *Viewer::removeConstraint(btTypedConstraint *con) {
 }
 
 void Viewer::addConstraints(QList<btTypedConstraint *> cons) {
-  for (int i = 0; i < cons.size(); ++i) {
-    addConstraint(cons[i]);
-  }
+  for (int i = 0; i < cons.size(); ++i)
+    if (cons[i])
+      addConstraint(cons[i]);
 }
 
 btVehicleRaycaster *Viewer::createVehicleRaycaster() {
@@ -775,7 +778,11 @@ emit scriptStarts();
 
   {
     // setup lua
+#if defined(Q_OS_LINUX)
     L = lua_newstate(aligned_lua_alloc, nullptr);
+#else
+    L = luaL_newstate();
+#endif
 
     // open all standard Lua libs
     luaL_openlibs(L);
@@ -1770,7 +1777,8 @@ void Viewer::addParam(const QString &name, const QVariant &value) {
       break;
     }
 
-    lua_settable(ls, LUA_GLOBALSINDEX);
+    //lua_settable(ls, LUA_GLOBALSINDEX);// Lua 5.1
+	lua_setglobal(ls, name.toUtf8().constData()); // Lua 5.1 and 5.2
   }
   emit paramsChanged();
 }
