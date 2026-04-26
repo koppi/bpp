@@ -13,8 +13,7 @@
 #include "prefs.h"
 #include "viewer.h"
 
-#define GLUT_DISABLE_ATEXIT_HACK
-#include <GL/freeglut.h>
+#include "glutils.h"
 
 QTextStream &qStdOut() {
   static QTextStream ts(stdout);
@@ -142,9 +141,6 @@ int main(int argc, char **argv) {
       !parser.isSet(luaExpressionOption) && positionalLuaFile.isEmpty()) {
     Gui *g;
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-
     if (!QIcon::hasThemeIcon("document-new")) {
       QIcon::setThemeName("humanity");
     }
@@ -155,7 +151,6 @@ int main(int argc, char **argv) {
     int ret = app->exec();
     delete g; // Qt will delete children, but explicit delete for top-level widget is good practice
     delete settings;
-    glutExit();
     return ret;
 } else {
     QStringList lua = parser.values(luaOption);
@@ -176,8 +171,6 @@ int main(int argc, char **argv) {
     if (!positionalLuaFile.isEmpty() && lua.isEmpty() &&
         !parser.isSet(luaStdinOption) && luaExpression.isEmpty()) {
       // GUI mode with a .lua file argument: open in editor and start sim
-      glutInit(&argc, argv);
-      glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
       if (!QIcon::hasThemeIcon("document-new")) {
         QIcon::setThemeName("humanity");
@@ -291,7 +284,6 @@ int main(int argc, char **argv) {
     int ret = app->exec();
     delete v;
     delete settings;
-    glutExit();
     return ret;
   }
 }

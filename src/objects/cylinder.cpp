@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif
 
-#include <GL/freeglut.h>
+#include "glutils.h"
 
 #include <QDebug>
 

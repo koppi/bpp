@@ -105,7 +105,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 21.10) : {
@@ -113,7 +113,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 22.04) : {
@@ -121,7 +121,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 22.10) : {
@@ -129,7 +129,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 23.04) : {
@@ -137,7 +137,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 23.10) : {
@@ -145,7 +145,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 24.04) : {
@@ -153,7 +153,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind 
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 25.04) : {
@@ -161,7 +161,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind 
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 25.10) : {
@@ -169,7 +169,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind 
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 26.04) : {
@@ -177,7 +177,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
   }
@@ -188,7 +188,7 @@ unix:link_pkgconfig {
       PKGCONFIG -= luabind
       PKGCONFIG += bullet
       PKGCONFIG += sdl2
-      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+      LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
       DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 12) : {
@@ -196,7 +196,7 @@ unix:link_pkgconfig {
      PKGCONFIG -= luabind
      PKGCONFIG += bullet
      PKGCONFIG += sdl2
-     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 13) : {
@@ -204,7 +204,7 @@ unix:link_pkgconfig {
      PKGCONFIG -= luabind
      PKGCONFIG += bullet
      PKGCONFIG += sdl2
-     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
   }
@@ -214,7 +214,7 @@ unix:link_pkgconfig {
      PKGCONFIG -= luabind
      PKGCONFIG += bullet
      PKGCONFIG += sdl2
-     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
     contains(LSB_RELEASE_REL, 13) : {
@@ -222,7 +222,7 @@ unix:link_pkgconfig {
      PKGCONFIG -= luabind
      PKGCONFIG += bullet
      PKGCONFIG += sdl2
-     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+     LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
      DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
     }
   }
@@ -231,13 +231,13 @@ unix:link_pkgconfig {
     PKGCONFIG -= luabind
     PKGCONFIG += bullet
     PKGCONFIG += sdl2
-    LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lglut -lluabind
+    LIBS += -lQGLViewer-qt5 -lGLEW -lGLU -lGL -lGL -lluabind
     DEFINES += HAVE_btHingeAccumulatedAngleConstraint
     DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
   }
   contains(LSB_RELEASE_ID, FreeBSD): {
     PKGCONFIG += bullet lua-5.1 sdl2
-    LIBS += -lluabind -lQGLViewer -lGLEW -lGLU -lGL -lglut
+    LIBS += -lluabind -lQGLViewer -lGLEW -lGLU -lGL -lGL
   }
 
   contains(DEFINES, HAS_LIB_ASSIMP) {
