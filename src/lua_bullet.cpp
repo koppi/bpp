@@ -946,18 +946,22 @@ void LuaBullet::luaBind(lua_State *s) {
            .def("getMaxAngMotorForce", &btSliderConstraint::getMaxAngMotorForce)
            .def("setParam", &btSliderConstraint::setParam)];
 
-  module(
-      s)[class_<btGeneric6DofConstraint, btTypedConstraint>(
-             "btGeneric6DofConstraint")
-             .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
-                              const btTransform &, bool>())
-             .def("setLinearUpperLimit",
-                  &btGeneric6DofConstraint::setLinearUpperLimit)
-             .def("setLinearLowerLimit",
-                  &btGeneric6DofConstraint::setLinearLowerLimit)
-             .def("setLimit", &btGeneric6DofConstraint::setLimit)
-             .def("setAxis", &btGeneric6DofConstraint::setAxis)
-             .def("setParam", &btGeneric6DofConstraint::setParam)];
+module(
+    s)[class_<btGeneric6DofConstraint, btTypedConstraint>(
+           "btGeneric6DofConstraint")
+           .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
+                            const btTransform &, bool>())
+           .def("setLinearUpperLimit",
+                &btGeneric6DofConstraint::setLinearUpperLimit)
+           .def("setLinearLowerLimit",
+                &btGeneric6DofConstraint::setLinearLowerLimit)
+           .def("setAngularUpperLimit",
+                &btGeneric6DofConstraint::setAngularUpperLimit)
+           .def("setAngularLowerLimit",
+                &btGeneric6DofConstraint::setAngularLowerLimit)
+           .def("setLimit", &btGeneric6DofConstraint::setLimit)
+           .def("setAxis", &btGeneric6DofConstraint::setAxis)
+           .def("setParam", &btGeneric6DofConstraint::setParam)];
 
   module(
       s)[class_<btGeneric6DofSpringConstraint, btTypedConstraint>(
