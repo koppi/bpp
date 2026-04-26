@@ -868,19 +868,33 @@ void LuaBullet::luaBind(lua_State *s) {
 
   /*
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtHingeAccumulatedAngleConstraint.html
-      [class_<btHingeAccumulatedAngleConstraint, btHingeConstraint>(
+[class_<btHingeAccumulatedAngleConstraint, btHingeConstraint>(
              "btHingeAccumulatedAngleConstraint")
-             .def(constructor<btRigidBody &, btRigidBody &, const btVector3 &,
-                              const btVector3 &, const btVector3 &,
-                              const btVector3 &, bool>())
              .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
-                              const btTransform &, bool>())
-             .def("setAccumulatedHingeAngle",
-                  &btHingeAccumulatedAngleConstraint::setAccumulatedHingeAngle)
-             .def(
-                 "getAccumulatedHingeAngle",
-                 &btHingeAccumulatedAngleConstraint::getAccumulatedHingeAngle)];
+                              const btTransform &>())
+             .def("getAccumulatedHingeAngle",
+                  &btHingeAccumulatedAngleConstraint::getAccumulatedHingeAngle)];
   */
+
+  module(s)
+      [class_<btConeTwistConstraint, btTypedConstraint>("btConeTwistConstraint")
+           .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
+                            const btTransform &>())
+           .def(constructor<btRigidBody &, const btTransform &>())
+           .def("getLimit", &btConeTwistConstraint::getLimit)
+           .def("setLimit",
+                (void(btConeTwistConstraint::*)(int, btScalar)) &
+                    btConeTwistConstraint::setLimit)
+           .def("setMotorTarget", &btConeTwistConstraint::setMotorTarget)
+           .def("setMotorTargetInConstraintSpace",
+                &btConeTwistConstraint::setMotorTargetInConstraintSpace)
+           .def("enableMotor", &btConeTwistConstraint::enableMotor)
+           .def("isMotorEnabled", &btConeTwistConstraint::isMotorEnabled)
+           .def("setMaxMotorImpulse", &btConeTwistConstraint::setMaxMotorImpulse)
+           .def("getPointForAngle", &btConeTwistConstraint::GetPointForAngle)
+           .def("setParam", &btConeTwistConstraint::setParam)
+           .def("getAFrame", &btConeTwistConstraint::getAFrame)
+           .def("getBFrame", &btConeTwistConstraint::getBFrame)];
 
   module(s)
       [class_<btSliderConstraint, btTypedConstraint>("btSliderConstraint")
