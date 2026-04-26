@@ -317,11 +317,11 @@ void LuaBullet::luaBind(lua_State *s) {
       [class_<btConeShape, btConvexInternalShape>("btConeShape")
            .def(constructor<btScalar, btScalar>(), adopt(result))
            .def("getRadius", &btConeShape::getRadius)
-           .def("setRadius", &btConeShape::setRadius)
-           .property("radius", &btConeShape::getRadius, &btConeShape::setRadius)
+	       //.def("setRadius", &btConeShape::setRadius)
+           //.property("radius", &btConeShape::getRadius, &btConeShape::setRadius)
            .def("getHeight", &btConeShape::getHeight)
-           .def("setHeight", &btConeShape::setHeight)
-           .property("height", &btConeShape::getHeight, &btConeShape::setHeight)
+	       //.def("setHeight", &btConeShape::setHeight)
+           //.property("height", &btConeShape::getHeight, &btConeShape::setHeight)
            .def("setConeUpIndex", &btConeShape::setConeUpIndex)
            .def("getConeUpIndex", &btConeShape::getConeUpIndex)
            .def("setLocalScaling", &btConeShape::setLocalScaling)
@@ -866,6 +866,7 @@ void LuaBullet::luaBind(lua_State *s) {
                                                   const btTransform &)) &
                       btHingeConstraint::getHingeAngle)];
 
+  /*
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtHingeAccumulatedAngleConstraint.html
       [class_<btHingeAccumulatedAngleConstraint, btHingeConstraint>(
              "btHingeAccumulatedAngleConstraint")
@@ -879,6 +880,7 @@ void LuaBullet::luaBind(lua_State *s) {
              .def(
                  "getAccumulatedHingeAngle",
                  &btHingeAccumulatedAngleConstraint::getAccumulatedHingeAngle)];
+  */
 
   module(s)
       [class_<btSliderConstraint, btTypedConstraint>("btSliderConstraint")
@@ -912,6 +914,22 @@ void LuaBullet::luaBind(lua_State *s) {
            .def("setRestitutionOrthoAng",
                 &btSliderConstraint::setRestitutionOrthoAng)
            .def("setDampingOrthoAng", &btSliderConstraint::setDampingOrthoAng)
+           .def("setPoweredLinMotor", &btSliderConstraint::setPoweredLinMotor)
+           .def("getPoweredLinMotor", &btSliderConstraint::getPoweredLinMotor)
+           .def("setTargetLinMotorVelocity",
+                &btSliderConstraint::setTargetLinMotorVelocity)
+           .def("getTargetLinMotorVelocity",
+                &btSliderConstraint::getTargetLinMotorVelocity)
+           .def("setMaxLinMotorForce", &btSliderConstraint::setMaxLinMotorForce)
+           .def("getMaxLinMotorForce", &btSliderConstraint::getMaxLinMotorForce)
+           .def("setPoweredAngMotor", &btSliderConstraint::setPoweredAngMotor)
+           .def("getPoweredAngMotor", &btSliderConstraint::getPoweredAngMotor)
+           .def("setTargetAngMotorVelocity",
+                &btSliderConstraint::setTargetAngMotorVelocity)
+           .def("getTargetAngMotorVelocity",
+                &btSliderConstraint::getTargetAngMotorVelocity)
+           .def("setMaxAngMotorForce", &btSliderConstraint::setMaxAngMotorForce)
+           .def("getMaxAngMotorForce", &btSliderConstraint::getMaxAngMotorForce)
            .def("setParam", &btSliderConstraint::setParam)];
 
   module(
