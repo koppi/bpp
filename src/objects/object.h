@@ -8,6 +8,7 @@
 
 #include <QColor>
 #include <QTextStream>
+#include <iostream>
 
 #include <btBulletDynamicsCommon.h>
 

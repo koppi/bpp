@@ -3,7 +3,7 @@ build_with_msys2 {
   QMAKE_LFLAGS += $$QMAKE_LFLAGS_WINDOWS
 
   HOME = $$PWD/..
-  #message($$HOME)
+  message($$HOME)
 
   DEFINES += WIN32_LINK_QGLVIEWER
   DEFINES += WIN32_LINK_BULLET
@@ -13,10 +13,12 @@ build_with_msys2 {
   #DEFINES += WIN32_LINK_AUTOIMPORT
 
   CONFIG += link_pkgconfig
-  PKGCONFIG += assimp bullet freeglut glew sdl2 lua5.1
+  PKGCONFIG += assimp bullet glew sdl2 lua glut
 
-  WIN32_DIR_LUABIND   = $$HOME\luabind
-  WIN32_DIR_QGLVIEWER = $$HOME\libQGLViewer
+  WIN32_DIR_LUABIND   = $$HOME/luabind
+  WIN32_DIR_QGLVIEWER = $$HOME/libQGLViewer
+
+  LIBS += -lSDL2main -lglut32
 }
 
 contains(DEFINES, WIN32_LINK_AUTOIMPORT) {
@@ -32,9 +34,9 @@ contains(DEFINES, WIN32_LINK_QGLVIEWER) {
   # Link
 
   CONFIG( debug, debug|release ) {
-    LIBS += -L$$WIN32_DIR_QGLVIEWER\\QGLViewer -lQGLViewerd2 -lopengl32
+    LIBS += -L$$WIN32_DIR_QGLVIEWER\\QGLViewer -lQGLViewerd3 -lopengl32
   } else {
-    LIBS += -L$$WIN32_DIR_QGLVIEWER\\QGLViewer -lQGLViewer2 -lopengl32
+    LIBS += -L$$WIN32_DIR_QGLVIEWER\\QGLViewer -lQGLViewer3 -lopengl32
   }
 }
 
@@ -64,7 +66,7 @@ contains(DEFINES, WIN32_LINK_LUABIND) {
 
   # include
 
-  LIBS += -L$$PATH_LUABIND/build/src -lluabind09
+  LIBS += -L$$PATH_LUABIND/build/src -lluabind
 
 #  CONFIG( debug, debug|release ) {
 ##XXX    LIBS += -lluabind

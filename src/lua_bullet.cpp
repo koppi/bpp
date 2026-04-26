@@ -848,23 +848,24 @@ void LuaBullet::luaBind(lua_State *s) {
                                  const btVector3 &, const btVector3 &>())
                 .def("setParam", &btPoint2PointConstraint::setParam)];
 
-  module(
-      s)[class_<btHingeConstraint, btTypedConstraint>("btHingeConstraint")
-             .def(constructor<btRigidBody &, btRigidBody &, const btVector3 &,
-                              const btVector3 &, const btVector3 &,
-                              const btVector3 &>())
-             .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
-                              const btTransform &>())
-             .def("setAxis", &btHingeConstraint::setAxis)
-             .def("setLimit", &btHingeConstraint::setLimit)
-             .def("setParam", &btHingeConstraint::setParam)
-             .def("enableAngularMotor", &btHingeConstraint::enableAngularMotor)
-             .def("getHingeAngle", (btScalar(btHingeConstraint::*)()) &
-                                       btHingeConstraint::getHingeAngle)
-             .def("getHingeAngle",
-                  (btScalar(btHingeConstraint::*)(const btTransform &,
-                                                  const btTransform &)) &
-                      btHingeConstraint::getHingeAngle)];
+module(
+    s)[class_<btHingeConstraint, btTypedConstraint>("btHingeConstraint")
+           .def(constructor<btRigidBody &, btRigidBody &, const btVector3 &,
+                            const btVector3 &, const btVector3 &,
+                            const btVector3 &>())
+           .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
+                            const btTransform &>())
+           .def(constructor<btRigidBody &, const btVector3 &, const btVector3 &>())
+           .def("setAxis", &btHingeConstraint::setAxis)
+           .def("setLimit", &btHingeConstraint::setLimit)
+           .def("setParam", &btHingeConstraint::setParam)
+           .def("enableAngularMotor", &btHingeConstraint::enableAngularMotor)
+           .def("getHingeAngle", (btScalar(btHingeConstraint::*)()) &
+                                        btHingeConstraint::getHingeAngle)
+           .def("getHingeAngle",
+                (btScalar(btHingeConstraint::*)(const btTransform &,
+                                                const btTransform &)) &
+                        btHingeConstraint::getHingeAngle)];
 
   /*
   module(s) // https://pybullet.org/Bullet/BulletFull/classbtHingeAccumulatedAngleConstraint.html
@@ -990,14 +991,24 @@ module(
                 (void(btGeneric6DofSpringConstraint::*)(int, btScalar)) &
                     btGeneric6DofSpringConstraint::setEquilibriumPoint)];
 
-  module(
-      s)[class_<btUniversalConstraint, btTypedConstraint>(
-             "btUniversalConstraint")
-             .def(constructor<btRigidBody &, btRigidBody &, const btVector3 &,
-                              const btVector3 &, const btVector3 &>())
-             .def("setAxis", &btUniversalConstraint::setAxis)
-             .def("setUpperLimit", &btHingeConstraint::setLimit)
-             .def("setLowerLimit", &btHingeConstraint::setParam)];
+module(
+    s)[class_<btUniversalConstraint, btTypedConstraint>(
+           "btUniversalConstraint")
+           .def(constructor<btRigidBody &, btRigidBody &, const btVector3 &,
+                            const btVector3 &, const btVector3 &>())
+           .def("setAxis", &btUniversalConstraint::setAxis)
+           .def("setUpperLimit", &btHingeConstraint::setLimit)
+           .def("setLowerLimit", &btHingeConstraint::setParam)];
+
+  module(s)[class_<btGearConstraint, btTypedConstraint>("btGearConstraint")
+           .def(constructor<btRigidBody &, btRigidBody &, const btVector3 &,
+                            const btVector3 &, btScalar>())
+           .def("setAxisA", &btGearConstraint::setAxisA)
+           .def("setAxisB", &btGearConstraint::setAxisB)
+           .def("setRatio", &btGearConstraint::setRatio)
+           .def("getAxisA", &btGearConstraint::getAxisA)
+           .def("getAxisB", &btGearConstraint::getAxisB)
+           .def("getRatio", &btGearConstraint::getRatio)];
 
   module(s)[class_<btVehicleRaycaster>("btVehicleRaycaster")];
 

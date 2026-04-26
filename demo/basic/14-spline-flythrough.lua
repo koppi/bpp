@@ -113,7 +113,7 @@ v.cam.look = btVector3(cam_path_points[2].x, cam_path_points[2].y, cam_path_poin
 
 local cam_spline = spline.CatmullRom(cam_path_points)
 
-local anim_duration = 1200
+local anim_duration = 3000
 local anim_frame = 0
 local animating = true
 local current_target_idx = 1
@@ -154,8 +154,6 @@ function cycle_object(direction)
   }
   transition_spline = spline.CatmullRom({from_pos, mid_pos, to_pos})
 end
-
-v:cycleObject(cycle_object)
 
 v:postSim(function(N)
   if not animating then return end

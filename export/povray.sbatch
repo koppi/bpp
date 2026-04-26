@@ -6,11 +6,6 @@
 #SBATCH --mail-user koppi
 #SBATCH --mail-type ALL
 
-#SBATCH --nodes=1                   # node count
-#SBATCH --ntasks-per-node=1         # total number of tasks per node
-#SBATCH --cpus-per-task=2           # cpu-cores per task (>1 if multi-threaded tasks)
-#SBATCH --mem=4GB
-
 SCENE=${1}
 FRAMES=${2}
 
