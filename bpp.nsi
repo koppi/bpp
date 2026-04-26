@@ -79,7 +79,6 @@ Section "BPP (required)" ;
   File "${DLL}\libiconv-*.dll"
   File "${DLL}\libBullet*.dll"
   File "${DLL}\libLinearMath.dll"
-  File "${DLL}\libfreeglut.dll"
   File "${DLL}\libwinpthread-1.dll"
   File "${DLL}\SDL2.dll"
   File "${DLL}\libzstd.dll"
