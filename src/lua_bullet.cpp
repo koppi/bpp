@@ -963,24 +963,32 @@ module(
            .def("setAxis", &btGeneric6DofConstraint::setAxis)
            .def("setParam", &btGeneric6DofConstraint::setParam)];
 
-  module(
-      s)[class_<btGeneric6DofSpringConstraint, btTypedConstraint>(
-             "btGeneric6DofSpringConstraint")
-             .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
-                              const btTransform &, bool>())
-             .def("enableSpring", &btGeneric6DofSpringConstraint::enableSpring)
-             .def("setStiffness", &btGeneric6DofSpringConstraint::setStiffness)
-             .def("setDamping", &btGeneric6DofSpringConstraint::setDamping)
-             .def("setAxis", &btGeneric6DofSpringConstraint::setAxis)
-             .def("setEquilibriumPoint",
-                  (void(btGeneric6DofSpringConstraint::*)()) &
-                      btGeneric6DofSpringConstraint::setEquilibriumPoint)
-             .def("setEquilibriumPoint",
-                  (void(btGeneric6DofSpringConstraint::*)(int)) &
-                      btGeneric6DofSpringConstraint::setEquilibriumPoint)
-             .def("setEquilibriumPoint",
-                  (void(btGeneric6DofSpringConstraint::*)(int, btScalar)) &
-                      btGeneric6DofSpringConstraint::setEquilibriumPoint)];
+module(
+    s)[class_<btGeneric6DofSpringConstraint, btTypedConstraint>(
+           "btGeneric6DofSpringConstraint")
+           .def(constructor<btRigidBody &, btRigidBody &, const btTransform &,
+                            const btTransform &, bool>())
+           .def("setLinearUpperLimit",
+                &btGeneric6DofSpringConstraint::setLinearUpperLimit)
+           .def("setLinearLowerLimit",
+                &btGeneric6DofSpringConstraint::setLinearLowerLimit)
+           .def("setAngularUpperLimit",
+                &btGeneric6DofSpringConstraint::setAngularUpperLimit)
+           .def("setAngularLowerLimit",
+                &btGeneric6DofSpringConstraint::setAngularLowerLimit)
+           .def("enableSpring", &btGeneric6DofSpringConstraint::enableSpring)
+           .def("setStiffness", &btGeneric6DofSpringConstraint::setStiffness)
+           .def("setDamping", &btGeneric6DofSpringConstraint::setDamping)
+           .def("setAxis", &btGeneric6DofSpringConstraint::setAxis)
+           .def("setEquilibriumPoint",
+                (void(btGeneric6DofSpringConstraint::*)()) &
+                    btGeneric6DofSpringConstraint::setEquilibriumPoint)
+           .def("setEquilibriumPoint",
+                (void(btGeneric6DofSpringConstraint::*)(int)) &
+                    btGeneric6DofSpringConstraint::setEquilibriumPoint)
+           .def("setEquilibriumPoint",
+                (void(btGeneric6DofSpringConstraint::*)(int, btScalar)) &
+                    btGeneric6DofSpringConstraint::setEquilibriumPoint)];
 
   module(
       s)[class_<btUniversalConstraint, btTypedConstraint>(
