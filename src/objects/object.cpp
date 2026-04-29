@@ -253,7 +253,7 @@ void Object::renderInLocalFramePre(btVector3 &oaabbmin, btVector3 &oaabbmax) {
 void Object::renderInLocalFramePost(btVector3 &oaabbmin, btVector3 &oaabbmax) {
   if (isfinite(oaabbmin[0]) && isfinite(oaabbmin[1]) && isfinite(oaabbmin[2]) &&
       isfinite(oaabbmax[0]) && isfinite(oaabbmax[1]) && isfinite(oaabbmax[2])) {
-    if (body)
+    if (body != nullptr && body->getMotionState() != nullptr)
       glPopMatrix();
   }
 }
