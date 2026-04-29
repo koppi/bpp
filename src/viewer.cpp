@@ -756,13 +756,6 @@ emit scriptStarts();
       }
     }
 
-<<<<<<< Updated upstream
-    // Clear the luabind registry map before closing Lua. The object
-    // destructors call luaL_unref, which needs a live lua_State.
-    // After lua_close(), the Lua state memory is freed and any attempt
-    // to unref will read freed memory (use-after-free).
-    _luabindRegistry.clear();
-=======
     // Clear the luabind registry BEFORE closing the Lua state.
     // Release Lua references from the registry while L is still valid.
     if (L != nullptr) {
@@ -771,7 +764,6 @@ emit scriptStarts();
       }
       _luabindRegistry.clear();
     }
->>>>>>> Stashed changes
 
     // lua_close() performs a final GC sweep that deletes all Lua-adopted
     // Bullet objects via their unique_ptr holders (adopt(result) policy).
@@ -1112,25 +1104,12 @@ Viewer::~Viewer() {
     }
   }
 
-<<<<<<< Updated upstream
-  // Clear the luabind registry map before closing Lua. The object
-  // destructors call luaL_unref, which needs a live lua_State.
-  // After lua_close(), the Lua state memory is freed and any attempt
-  // to unref will read freed memory (use-after-free).
-=======
   // Release Lua references from the registry BEFORE closing Lua state.
   // These are raw integer refs, not luabind::object instances.
   if (L != nullptr) {
     for (auto& pair : _luabindRegistry) {
       luaL_unref(L, LUA_REGISTRYINDEX, pair.second);
     }
-    _luabindRegistry.clear();
-  }
-
-  // lua_close() performs a final GC sweep that deletes all Lua-adopted
-  // Bullet objects via their unique_ptr holders (adopt(result) policy).
->>>>>>> Stashed changes
-  if (L != nullptr) {
     _luabindRegistry.clear();
     lua_close(L);
     L = nullptr;
