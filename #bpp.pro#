@@ -88,7 +88,7 @@ mac {
   INCLUDEPATH += /usr/local/include/luabind
   INCLUDEPATH += /usr/local/include/QGLViewer
   INCLUDEPATH += /usr/local/var/homebrew/tmp/.cellar/freeglut/3.8.0/include
-  INCLUDEPATH += /usr/local/Cellar/sdl2/include/SDL
+  INCLUDEPATH += /usr/local/Cellar/sdl2/include
   INCLUDEPATH += /usr/local/Cellar/sdl12-compat/include
   INCLUDEPATH += /usr/local/Cellar/bullet/3.25/include/bullet
   INCLUDEPATH += /usr/local/Cellar/assimp/6.0.4_1/include
@@ -107,14 +107,6 @@ mac {
   LIBS += -lLinearMath
   LIBS += -lassimp
   LIBS += -framework QGLViewer
-
-  export.commands = make -C export
-  QMAKE_EXTRA_TARGETS += export
-
-  tests.depends  = debug
-  tests.commands = make -C tests debug
-  tests.CONFIG   = phony
-  QMAKE_EXTRA_TARGETS += tests
 }
 
 win32 {

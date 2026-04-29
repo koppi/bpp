@@ -19,9 +19,13 @@
 #endif
 #define MAC_OS_X_VERSION_MIN_REQUIRED MAC_OS_X_VERSION_10_9
 #endif
+
+#ifdef Q_OS_MAC
+   #include <SDL2/SDL.h>
+#else
    #include <SDL.h>
 #endif
-
+#endif
 
 class JoystickInterfaceSDL : public JoystickInterface
 {

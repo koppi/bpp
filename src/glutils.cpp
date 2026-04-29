@@ -2,7 +2,17 @@
 
 #include <cmath>
 #include <cstdlib>
+
+#include <QObject>
+
+#ifdef Q_OS_MAC
+#include <OpenGL/gl.h>
+#else
+#ifdef _WIN32
+  #include <windows.h>
+#endif
 #include <GL/gl.h>
+#endif
 
 void glutSolidCube(double sz)
 {
