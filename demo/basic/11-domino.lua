@@ -28,22 +28,53 @@ end
 
 v:add(plane)
 
-function line(N,zpos,damp_lin,damp_ang,fri,res)
-  local s = Sphere(1,5)
-  s.pos = btVector3(-15, 1.5, zpos)
-  s.col = "#ffffff"
-  s.vel = btVector3(5,0,0)
-  s.sdl = [[
-  texture { Polished_Chrome }
-]]
+local spline = require("spline")
+local trans = require("scad/trans")
+
+local domino_height = 3
+local y_pos = domino_height / 2
+
+function spline_dominos(N, damp_lin, damp_ang, fri, res)
+  local num_control = 200
+  local control_points = {}
+
+  for i = 1, num_control do
+    local angle = (i - 1) * math.pi * 0.05
+    local radius = 5 + (i - 1) * 0.1
+    local cp = {
+      x = math.cos(angle) * radius,
+      y = y_pos,
+      z = math.sin(angle) * radius,
+    }
+    control_points[i] = cp
+
+    local marker = Sphere(0.1, 0)
+    marker.pos = btVector3(cp.x, cp.y, cp.z)
+    marker.col = "#ff0000"
+    --v:add(marker)
+  end
+
+  local sp = spline.CatmullRom(control_points, 0.5)
+
+  local s = Sphere(1, 10)
+  local start = sp:eval(1)
+  s.pos = btVector3(35, 2, -20)
+  s.col = "#ff0000"
+  s.vel = btVector3(-10, 0, 0)
+  s.sdl = [[ texture { Polished_Chrome } ]]
 
   v:add(s)
 
   local d_end
+  local spacing = 4
 
-  for i = 5,N do
-    local d = Cube(0.4,3,1.5, 1)
-    d.pos = btVector3(i*2, 1.5, zpos)
+  for i = 1, N do
+    local t = 1 + (i - 1) * 0.75
+    local p = sp:eval(t)
+
+    local p_next = sp:eval(t + 0.1)
+
+    local d = Cube(0.4, domino_height, 1.5, .1)
     d.col = "#cccccc"
 
     d.friction = fri
@@ -52,29 +83,29 @@ function line(N,zpos,damp_lin,damp_ang,fri,res)
     d.damp_lin = damp_lin
     d.damp_ang = damp_ang
 
+    local angle = math.atan2(p_next.z - p.z, p_next.x - p.x)
+    local q = btQuaternion(0, 0.8, 0, angle)
+    trans.rotate(d, q, btVector3(0, 0, 0))
+
+    local pos = btVector3(p.x, p.y, p.z)
+    trans.move(d, pos)
+
     v:add(d)
 
-    if (i == N / 2) then
+    if (i == math.floor(N / 2)) then
       d_end = d
     end
   end
 
-  return s,d_end
+  return s, d_end
 end
 
-n = 16
+n = 200
 
-line(n, -3, 0.01, 0.01, 0.1, 0.1)
-s,d = line(n,  0, 0.01,  0.01,  0.2, 0.2)
-line(n,  3, 0.01,  0.01,  0.3, 0.3)
-line(n,  6, 0.1,  0.01,  0.4, 0.4)
+s,d = spline_dominos(n, 0.01,  0.01,  0.5, 0.01)
 
-v:preDraw(function(N) --print(N)
-  v.cam:setHorizontalFieldOfView(0.28)
+v.cam:setUpVector(btVector3(-0.0268739, 0.890931, -0.453343), true)
+v.cam.up   = btVector3(-0.0268739, 0.890931, -0.453343)
+v.cam.pos  = btVector3(0.845566, 20.5427, 40.3213)
+v.cam.look = btVector3(-18681.3, -453855, -890829)
 
-  if (N < 50) then
-    v.cam.up = btVector3(0,1,0)
-    v.cam.pos  = d.pos + btVector3(75+N,20,45)
-    v.cam.look = d.pos + btVector3(-29+N*0.7,1,0)
-  end
-end)
