@@ -753,6 +753,12 @@ emit scriptStarts();
       }
     }
 
+    // Clear the luabind registry map before closing Lua. The object
+    // destructors call luaL_unref, which needs a live lua_State.
+    // After lua_close(), the Lua state memory is freed and any attempt
+    // to unref will read freed memory (use-after-free).
+    _luabindRegistry.clear();
+
     // lua_close() performs a final GC sweep that deletes all Lua-adopted
     // Bullet objects via their unique_ptr holders (adopt(result) policy).
     // After this call, C++ raw pointers to those objects become dangling.
@@ -1089,13 +1095,12 @@ Viewer::~Viewer() {
     }
   }
 
-  // Clear the luabind registry map before closing Lua, as object destructors
-  // may call back into the Lua API and expect a live lua_State.
-  _luabindRegistry.clear();
-
-  // lua_close() performs a final GC sweep that deletes all Lua-adopted
-  // Bullet objects via their unique_ptr holders (adopt(result) policy).
+  // Clear the luabind registry map before closing Lua. The object
+  // destructors call luaL_unref, which needs a live lua_State.
+  // After lua_close(), the Lua state memory is freed and any attempt
+  // to unref will read freed memory (use-after-free).
   if (L != nullptr) {
+    _luabindRegistry.clear();
     lua_close(L);
     L = nullptr;
   }
