@@ -40,8 +40,6 @@
 #include <windows.h>
 #endif
 
-#include <GL/glut.h>
-
 #include <QDebug>
 
 #include <boost/exception/all.hpp>
