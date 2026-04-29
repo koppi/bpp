@@ -7,7 +7,7 @@ CONFIG  += c++11
 # PRECOMPILED_HEADER = src/pch.h
 
 CONFIG  *= qt opengl warn_on shared thread debug_and_release
-QT      *= opengl xml gui core
+QT      *= opengl xml gui core svg
 
 DEFINES += HAS_LIB_ASSIMP
 DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
@@ -82,6 +82,8 @@ mac {
   CONFIG      += x86 ppc
   ICON         = icons/bpp.icns
 
+  RESOURCES   += res.qrc humanity.qrc
+
   INCLUDEPATH += /usr/local/include
   INCLUDEPATH += /usr/local/Cellar/lua/5.5.0/include
   INCLUDEPATH += /usr/local/include/lua5.5
@@ -115,6 +117,8 @@ mac {
   tests.commands = make -C tests debug
   tests.CONFIG   = phony
   QMAKE_EXTRA_TARGETS += tests
+
+  QMAKE_POST_LINK = $$PWD/scripts/deploy-mac.sh $$DESTDIR/$${TARGET}.app
 }
 
 win32 {

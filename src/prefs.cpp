@@ -125,11 +125,14 @@ void Prefs::setupPages() {
 
   QString pwd = QDir::currentPath();
 
-#ifdef Q_OS_WIN
+#if defined (Q_OS_WIN)
   defaultPovrayExe = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
   defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache, pwd);
-#else
+#elif defined (Q_OS_LINUX)
   defaultPovrayExe = QString("/usr/bin/povray");
+  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
+#else
+  defaultPovrayExe = QString("/usr/local/bin/povray");
   defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
 #endif
 
@@ -149,15 +152,18 @@ void Prefs::setupPages() {
   this->defaultmap["povray/preview"] =
       _settings->value("povray/preview", opts).toString();
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN)
   this->defaultmap["openscad/executable"] =
       _settings
           ->value("openscad/executable",
                   "C:\\Program Files\\OpenSCAD\\openscad.exe")
           .toString();
-#else
+#elif defined (Q_OS_LINUX)
   this->defaultmap["openscad/executable"] =
       _settings->value("openscad/executable", "/usr/bin/openscad").toString();
+#else
+  this->defaultmap["openscad/executable"] =
+      _settings->value("openscad/executable", "/usr/local/bin/openscad").toString();
 #endif
 
   connect(this->checkOpenLast, &QCheckBox::toggled, this,
