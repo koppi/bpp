@@ -78,3 +78,4 @@ export/*/GNUmakefile
 
 .gdb_history
 
+.DS_store

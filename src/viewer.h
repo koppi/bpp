@@ -16,6 +16,7 @@
 #include <QSettings>
 #include <QTextStream>
 #include <map>
+#include <functional>
 #include <luabind/object.hpp>
 
 #include "objects/cam.h"
@@ -262,7 +263,9 @@ private:
   QSet<Object *> *_objects;
   QSet<btTypedConstraint *> *_constraints;
   QSet<btRaycastVehicle *> *_raycast_vehicles;
-  std::map<Object*, luabind::object> _luabindRegistry;
+  // Store raw Lua registry references (not luabind::object) to avoid
+  // use-after-free when Lua state is destroyed.
+  std::map<Object*, int> _luabindRegistry;
 
   btScalar _aabb[6];
 

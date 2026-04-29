@@ -280,8 +280,11 @@ void Viewer::addObject(Object *o) {
     // calling from_stack would read invalid memory and corrupt luabind's
     // object_rep.
     if (lua_gettop(L) >= 2 && !lua_isnil(L, 2)) {
-      luabind::object obj(luabind::from_stack(L, 2));
-      _luabindRegistry[o] = obj;
+      // Create a Lua reference to the object on the stack.
+      // This avoids holding a luabind::object that calls luaL_unref in its destructor.
+      lua_pushvalue(L, 2);  // Copy the object at stack index 2
+      int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+      _luabindRegistry[o] = ref;
     }
   }
 
@@ -753,11 +756,22 @@ emit scriptStarts();
       }
     }
 
+<<<<<<< Updated upstream
     // Clear the luabind registry map before closing Lua. The object
     // destructors call luaL_unref, which needs a live lua_State.
     // After lua_close(), the Lua state memory is freed and any attempt
     // to unref will read freed memory (use-after-free).
     _luabindRegistry.clear();
+=======
+    // Clear the luabind registry BEFORE closing the Lua state.
+    // Release Lua references from the registry while L is still valid.
+    if (L != nullptr) {
+      for (auto& pair : _luabindRegistry) {
+        luaL_unref(L, LUA_REGISTRYINDEX, pair.second);
+      }
+      _luabindRegistry.clear();
+    }
+>>>>>>> Stashed changes
 
     // lua_close() performs a final GC sweep that deletes all Lua-adopted
     // Bullet objects via their unique_ptr holders (adopt(result) policy).
@@ -1076,7 +1090,10 @@ Viewer::~Viewer() {
   _cb_preStop = luabind::object();
   _cb_onCommand = luabind::object();
 
+  // Clear shortcuts BEFORE closing Lua state.
+  // The shared_ptr<luabind::object> destructors call luaL_unref.
   if (_cb_shortcuts) {
+    _cb_shortcuts->clear();
     delete _cb_shortcuts;
     _cb_shortcuts = nullptr;
   }
@@ -1095,10 +1112,24 @@ Viewer::~Viewer() {
     }
   }
 
+<<<<<<< Updated upstream
   // Clear the luabind registry map before closing Lua. The object
   // destructors call luaL_unref, which needs a live lua_State.
   // After lua_close(), the Lua state memory is freed and any attempt
   // to unref will read freed memory (use-after-free).
+=======
+  // Release Lua references from the registry BEFORE closing Lua state.
+  // These are raw integer refs, not luabind::object instances.
+  if (L != nullptr) {
+    for (auto& pair : _luabindRegistry) {
+      luaL_unref(L, LUA_REGISTRYINDEX, pair.second);
+    }
+    _luabindRegistry.clear();
+  }
+
+  // lua_close() performs a final GC sweep that deletes all Lua-adopted
+  // Bullet objects via their unique_ptr holders (adopt(result) policy).
+>>>>>>> Stashed changes
   if (L != nullptr) {
     _luabindRegistry.clear();
     lua_close(L);
