@@ -279,11 +279,10 @@ int main(int argc, char **argv) {
     v->stopAnimation();
     v->close();
 
-    QTimer::singleShot(100, qApp, []() { qApp->quit(); });
-
-    int ret = app->exec();
+    // In command-line mode, we don't need the event loop since simulation is done
+    // Just delete the viewer and return
     delete v;
     delete settings;
-    return ret;
+    return 0;
   }
 }

@@ -23,10 +23,14 @@ JoystickInterfaceSDL::JoystickInterfaceSDL(QObject* parent)
 JoystickInterfaceSDL::~JoystickInterfaceSDL()
 {
    #ifdef SDL1
-   SDL_JoystickClose(mActiveJoystick);
+   if (mActiveJoystick) {
+       SDL_JoystickClose(mActiveJoystick);
+   }
    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
    #else
-   SDL_GameControllerClose(mController);
+   if (mController) {
+       SDL_GameControllerClose(mController);
+   }
    SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC);
    delete getButtonMapping();
    #endif
