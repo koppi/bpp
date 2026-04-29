@@ -4,8 +4,6 @@
 
 #include "objects.h"
 
-#include <GL/glut.h>
-
 #include <QDebug>
 
 using namespace std;

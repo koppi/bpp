@@ -8,8 +8,6 @@
 #include <windows.h>
 #endif
 
-#include <GL/glut.h>
-
 #include <QDebug>
 
 using namespace std;
