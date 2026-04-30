@@ -78,7 +78,7 @@ ec2-down:
 	scp ${EC2}:${SCENE}/${SCENE}.mkv .
 
 slurm:
-	sbatch --hint=compute_bound -J ${SCENE} -a 0-`ls -1 *.inc|wc -l` ../povray.sbatch ${SCENE} `ls -1 *.inc | wc -l`
+	sbatch -J ${SCENE} -a 0-`ls -1 *.inc|wc -l` ../povray.sbatch ${SCENE} `ls -1 *.inc | wc -l`
 
 #youtube-up: mkv
 #	youtube-upload -t "Bullet Physics Playground – ${SCENE}" --privacy=unlisted --category "Science & Technology" ${SCENE}.mkv
@@ -87,10 +87,10 @@ slurm:
 #	youtube-upload -t "Bullet Physics Playground – ${SCENE}" --privacy=unlisted --category "Science & Technology" ${SCENE}-loop.mkv
 
 distclean: clean
-	rm -f ${SCENE}.pov ${SCENE}.ini *.pov-state ${SCENE}-*.inc *.log
+	rm -f ${SCENE}.pov ${SCENE}.ini ${SCENE}-*.inc
 
 clean:
-	rm -f ${SCENE}-*.png *.mkv *.pov-state
+	rm -f ${SCENE}-*.png *.mkv *.pov-state *.err *.out *.log
 
 dist: clean
 	cd .. && find ${SCENE} -print0 | sort -z | tar -cvJf ${SCENE}.tar.xz --no-recursion --null -T -

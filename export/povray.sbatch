@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-#SBATCH -e /nfs/log/%A-%a.err
-#SBATCH -o /nfs/log/%A-%a.out
-
-#SBATCH --mail-user koppi
-#SBATCH --mail-type ALL
+#SBATCH -e %a.err
+#SBATCH -o %a.out
 
 SCENE=${1}
 FRAMES=${2}
