@@ -3,51 +3,74 @@
 --
 -- Physics simulation of domino chains being struck by a sphere.
 -- Demonstrates collision, friction, and restitution settings.
---
--- Usage: bpp -f demo/basic/11-domino.lua
 
-v.pre_sdl = [[
+local scene = 0  -- 0: archimedean spiral, 1: random, 2: fixed table, 3: fermat spiral
 
-#include "textures.inc"
-
-]]
+v.pre_sdl = [[ #include "textures.inc" ]]
 
 plane = Plane(0,1,0,0,100)
 plane.col = "#333333"
 plane.friction = 2
+plane.sdl = [[ pigment { rgb <0.2,0.2,0.2> } ]]
+v:add(plane)
 
 v.timeStep      = 1/5
 v.fixedTimeStep = v.timeStep / 4
 v.maxSubSteps   = 10
 
-if (use_lightsys == 1) then
-  plane.sdl = [[ pigment { rgb ReferenceRGB(Gray20) } ]]
-else
-  plane.sdl = [[ pigment { rgb <0.2,0.2,0.2> } ]]
-end
-
-v:add(plane)
-
 local spline = require("spline")
 local trans = require("scad/trans")
 
 local domino_height = 3
+
 local y_pos = domino_height / 2
 
-function spline_dominos(N, damp_lin, damp_ang, fri, res)
-  local num_control = 200
+local fixed_control_points = {
+  {x =  0, y = y_pos, z =  0},
+  {x =  10, y = y_pos, z =  0},
+  {x =  10, y = y_pos, z =  10},
+  {x =  0, y = y_pos, z =  10},
+  {x =  0, y = y_pos, z =  0},
+}
+
+function spline_dominos(damp_lin, damp_ang, fri, res)
   local control_points = {}
 
-  for i = 1, num_control do
-    local angle = (i - 1) * math.pi * 0.05
-    local radius = 5 + (i - 1) * 0.1
-    local cp = {
-      x = math.cos(angle) * radius,
-      y = y_pos,
-      z = math.sin(angle) * radius,
-    }
-    control_points[i] = cp
+  if scene == 2 then
+    control_points = fixed_control_points
+  else
+    local num_control = 200
+    local angled = 0
+    for i = 1, num_control do
+      local cp
+      if scene == 0 then
+        local angle = (i - 1) * 0.09
+        local radius = 5 + angle * 0.95
+        cp = {
+          x = math.cos(angle) * radius,
+          y = y_pos,
+          z = math.sin(angle) * radius,
+        }
+      elseif scene == 3 then
+        local angle = (i - 1) * 0.09
+        local radius = 6 + math.sqrt(angle) * 4.2
+        cp = {
+          x = math.cos(angle) * radius,
+          y = y_pos,
+          z = math.sin(angle) * radius,
+        }
+      else
+        cp = {
+          x = math.random(-20, 20),
+          y = y_pos,
+          z = math.random(-20, 20),
+        }
+      end
+      control_points[i] = cp
+    end
+  end
 
+  for i, cp in ipairs(control_points) do
     local marker = Sphere(0.1, 0)
     marker.pos = btVector3(cp.x, cp.y, cp.z)
     marker.col = "#ff0000"
@@ -56,53 +79,46 @@ function spline_dominos(N, damp_lin, damp_ang, fri, res)
 
   local sp = spline.CatmullRom(control_points, 0.5)
 
-  local s = Sphere(1, 10)
+  local s = Sphere(1, 5)
   local start = sp:eval(1)
-  s.pos = btVector3(35, 2, -20)
+  s.pos = btVector3(25, 1, -20)
   s.col = "#ff0000"
-  s.vel = btVector3(-10, 0, 0)
+  s.vel = btVector3(-2.5, 0, 0)
   s.sdl = [[ texture { Polished_Chrome } ]]
-
   v:add(s)
 
-  local d_end
   local spacing = 4
 
-  for i = 1, N do
-    local t = 1 + (i - 1) * 0.75
-    local p = sp:eval(t)
+  local function tablelength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+  end
 
+  local N = tablelength(control_points)
+
+  for i = 1, N do
+    local t = 1 + (i - 1)
+    local p = sp:eval(t)
     local p_next = sp:eval(t + 0.1)
 
     local d = Cube(0.4, domino_height, 1.5, .1)
     d.col = "#cccccc"
-
     d.friction = fri
     d.restitution = res
-
     d.damp_lin = damp_lin
     d.damp_ang = damp_ang
 
     local angle = math.atan2(p_next.z - p.z, p_next.x - p.x)
     local q = btQuaternion(0, 0.8, 0, angle)
     trans.rotate(d, q, btVector3(0, 0, 0))
-
     local pos = btVector3(p.x, p.y, p.z)
     trans.move(d, pos)
-
     v:add(d)
-
-    if (i == math.floor(N / 2)) then
-      d_end = d
-    end
   end
-
-  return s, d_end
 end
 
-n = 200
-
-s,d = spline_dominos(n, 0.01,  0.01,  0.5, 0.01)
+spline_dominos(0.01,  0.01,  0.5, 0.01)
 
 v.cam:setUpVector(btVector3(-0.0268739, 0.890931, -0.453343), true)
 v.cam.up   = btVector3(-0.0268739, 0.890931, -0.453343)
