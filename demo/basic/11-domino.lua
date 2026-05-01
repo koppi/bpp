@@ -4,7 +4,7 @@
 -- Physics simulation of domino chains being struck by a sphere.
 -- Demonstrates collision, friction, and restitution settings.
 
-local scene = 0  -- 0: archimedean spiral, 1: random, 2: fixed table, 3: fermat spiral
+local scene = 0  -- 0: archimedean (arc-len), 1: random, 2: fixed table, 3: fermat, 4: log spiral
 
 v.pre_sdl = [[ #include "textures.inc" ]]
 
@@ -25,6 +25,24 @@ local domino_height = 3
 
 local y_pos = domino_height / 2
 
+local function arc_length(b, theta)
+  local sqrt_term = math.sqrt(1 + theta*theta)
+  return b/2 * (theta * sqrt_term + math.log(theta + sqrt_term))
+end
+
+local function solve_theta_for_arc(b, target_s, theta_max)
+  local lo, hi = 0, theta_max or 50
+  for _ = 1, 50 do
+    local mid = (lo + hi) / 2
+    if arc_length(b, mid) < target_s then
+      lo = mid
+    else
+      hi = mid
+    end
+  end
+  return (lo + hi) / 2
+end
+
 local fixed_control_points = {
   {x =  0, y = y_pos, z =  0},
   {x =  10, y = y_pos, z =  0},
@@ -44,16 +62,27 @@ function spline_dominos(damp_lin, damp_ang, fri, res)
     for i = 1, num_control do
       local cp
       if scene == 0 then
+        local a, b = 0, 0.65
+        local total_arc = arc_length(b, 30)
+        local s = (i - 1) / num_control * total_arc
+        local theta = solve_theta_for_arc(b, s, 30)
+        local radius = a + b * theta
+        cp = {
+          x = math.cos(theta) * radius,
+          y = y_pos,
+          z = math.sin(theta) * radius,
+        }
+      elseif scene == 3 then
         local angle = (i - 1) * 0.09
-        local radius = 5 + angle * 0.95
+        local radius = 6 + math.sqrt(angle) * 4.2
         cp = {
           x = math.cos(angle) * radius,
           y = y_pos,
           z = math.sin(angle) * radius,
         }
-      elseif scene == 3 then
+      elseif scene == 4 then
         local angle = (i - 1) * 0.09
-        local radius = 6 + math.sqrt(angle) * 4.2
+        local radius = 5 * math.exp(angle * 0.15)
         cp = {
           x = math.cos(angle) * radius,
           y = y_pos,
