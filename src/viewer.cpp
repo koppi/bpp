@@ -1381,7 +1381,7 @@ void Viewer::savePOV(bool force) {
   }
 
   QString fn = QString("%1").arg(_frameNum, 5, 10, QChar('0'));
-  QString file = QString("%1%2%3-%4.inc").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(qPrintable(sceneName)).arg(fn);
+  QString file = QString("%1%2%3.inc").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(fn);
   QString fileMain = QString("%1%2%3.pov").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(qPrintable(sceneName));
   QString fileINI = QString("%1%2%3.ini").arg(qPrintable(sceneDir)).arg(QDir::separator()).arg(qPrintable(sceneName));
 
@@ -1433,7 +1433,7 @@ void Viewer::savePOV(bool force) {
   ini << QString("; %1 by %2").arg(timestamp, name) << "\n"
       << "\n";
   ini << "Input_File_Name=" << sceneName << ".pov" << "\n";
-  ini << "Output_File_Name=" << sceneName << "-" << "\n";
+  ini << "Output_File_Name=" << sceneName << "\n";
   ini << "Output_to_File=On" << "\n";
   ini << "Pause_When_Done=Off" << "\n";
   ini << "Verbose=Off" << "\n";
@@ -1502,8 +1502,7 @@ void Viewer::savePOV(bool force) {
           << "\n";
   }
 
-  smain << "#include concat(concat(\"" << sceneName
-        << "-\",str(clock,-5,0)),\".inc\")" << "\n"
+  smain << "#include concat(concat(str(clock,-5,0)),\".inc\")" << "\n"
         << "\n";
 
   _fileMain->close();
