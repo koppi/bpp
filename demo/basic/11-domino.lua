@@ -6,6 +6,8 @@
 
 local scene = 0  -- 0: archimedean (arc-len), 1: random, 2: fixed table, 3: fermat, 4: log spiral
 
+math.randomseed(42)
+
 v.pre_sdl = [[
 
 #include "textures.inc"
@@ -28,7 +30,7 @@ v.fixedTimeStep = v.timeStep / 4
 v.maxSubSteps   = 10
 
 local spline = require("spline")
-local trans = require("scad/trans")
+
 local col = require("color")
 
 local domino_height = 3
@@ -67,7 +69,7 @@ function spline_dominos(damp_lin, damp_ang, fri, res)
   if scene == 2 then
     control_points = fixed_control_points
   else
-    local num_control = 200
+    local num_control = 250
     local angled = 0
     for i = 1, num_control do
       local cp
@@ -134,7 +136,7 @@ function spline_dominos(damp_lin, damp_ang, fri, res)
     return count
   end
 
-  local N = tablelength(control_points)
+  local N = tablelength(control_points) - 2
 
   for i = 1, N do
     local t = 1 + (i - 1)
@@ -151,11 +153,12 @@ function spline_dominos(damp_lin, damp_ang, fri, res)
     d.damp_lin = damp_lin
     d.damp_ang = damp_ang
 
-    local angle = math.atan2(p_next.z - p.z, p_next.x - p.x)
-    local q = btQuaternion(0, 0.8, 0, angle)
-    trans.rotate(d, q, btVector3(0, 0, 0))
-    local pos = btVector3(p.x, p.y, p.z)
-    trans.move(d, pos)
+    local dx = p_next.x - p.x
+    local dz = p_next.z - p.z
+    local normal_angle = math.atan2(dx, dz) + math.pi / 2
+    local q = btQuaternion()
+    q:setEulerZYX(0, normal_angle, 0)
+    d.trans = btTransform(q, btVector3(p.x, p.y, p.z))
     v:add(d)
   end
 end
