@@ -6,12 +6,21 @@
 
 local scene = 0  -- 0: archimedean (arc-len), 1: random, 2: fixed table, 3: fermat, 4: log spiral
 
-v.pre_sdl = [[ #include "textures.inc" ]]
+v.pre_sdl = [[
+
+#include "textures.inc"
+#include "domino.inc"
+]]
 
 plane = Plane(0,1,0,0,100)
 plane.col = "#333333"
 plane.friction = 2
-plane.sdl = [[ pigment { rgb <0.2,0.2,0.2> } ]]
+plane.sdl = [[
+   texture {
+      pigment { Blue_Agate scale <5, 5, 5> }
+      finish { Phong_Glossy }
+   }
+]]
 v:add(plane)
 
 v.timeStep      = 1/5
@@ -20,6 +29,7 @@ v.maxSubSteps   = 10
 
 local spline = require("spline")
 local trans = require("scad/trans")
+local col = require("color")
 
 local domino_height = 3
 
@@ -132,7 +142,10 @@ function spline_dominos(damp_lin, damp_ang, fri, res)
     local p_next = sp:eval(t + 0.1)
 
     local d = Cube(0.4, domino_height, 1.5, .1)
-    d.col = "#cccccc"
+    d.col = col.random_chrome()
+    d.pre_sdl = [[ object { domino]]..tostring(math.random(1,45))..
+[[ scale 0.1275 rotate y*90 rotate z*90 ]]
+    d.sdl = ""
     d.friction = fri
     d.restitution = res
     d.damp_lin = damp_lin
