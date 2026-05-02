@@ -31,6 +31,13 @@ using namespace qglviewer;
 class Object;
 class Viewer;
 
+struct ParamInfo {
+  QVariant value;
+  btScalar min = 0.0;
+  btScalar max = 100.0;
+  bool hasRange = false;
+};
+
 std::ostream &operator<<(std::ostream &, const Viewer &v);
 
 class Viewer : public QGLViewer {
@@ -174,11 +181,15 @@ public slots:
   void setCBOnCommand(const luabind::object &fn);
   void setCBOnJoystick(const luabind::object &fn);
   void setCBCycleObject(const luabind::object &fn);
+  void setCBOnParamChanged(const luabind::object &fn);
 
   void addParam(const QString &name, const QVariant &value);
+  void addParam(const QString &name, const btScalar &value, const btScalar &min, const btScalar &max);
   QVariant getParam(const QString &name) const;
   QHash<QString, QVariant> getParams() const;
   void clearParams();
+
+  ParamInfo getParamInfo(const QString &name) const;
 
   void keyPressEvent(QKeyEvent *e);
 
@@ -306,6 +317,7 @@ private:
   luabind::object _cb_onCommand;
   luabind::object _cb_onJoystick;
   luabind::object _cb_cycleObject;
+  luabind::object _cb_onParamChanged;
 
   #include <memory>
 
@@ -343,8 +355,9 @@ private:
   JoystickInterfaceSDL *_joystickInterface;
   JoystickHandler _joystickHandler;
 
-  // parameter storage for Lua scripts
-  QHash<QString, QVariant> _params;
+   // parameter storage for Lua scripts
+   QHash<QString, QVariant> _params;
+   QHash<QString, ParamInfo> _paramInfo;
 };
 
 #endif // VIEWER_H

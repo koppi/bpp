@@ -166,15 +166,20 @@ void Viewer::luaBind(lua_State *s) {
                 (void(Viewer::*)(const luabind::object &fn)) &
                     Viewer::setCBOnCommand,
                 adopt(luabind::result))
-.def("onJoystick",
+            .def("onJoystick",
                  (void(Viewer::*)(const luabind::object &fn)) &
-                     Viewer::setCBOnJoystick,
+                    Viewer::setCBOnJoystick,
                  adopt(luabind::result))
             .def("cycleObject",
                  (void(Viewer::*)(const luabind::object &fn)) &
-                     Viewer::setCBCycleObject,
+                    Viewer::setCBCycleObject,
+                 adopt(luabind::result))
+           .def("onParamChanged",
+                (void(Viewer::*)(const luabind::object &fn)) &
+                    Viewer::setCBOnParamChanged,
                  adopt(luabind::result))
             .def("addParam", (void(Viewer::*)(const QString &, const QVariant &)) & Viewer::addParam)
+            .def("addParam", (void(Viewer::*)(const QString &, const btScalar &, const btScalar &, const btScalar &)) & Viewer::addParam)
             .def("getParam", &Viewer::getParam)
             .def("getParams", &Viewer::getParams)
             .def("savePrefs", &Viewer::setPrefs)
@@ -730,6 +735,7 @@ emit scriptStarts();
     _cb_postSim = luabind::object();
     _cb_onCommand = luabind::object();
     _cb_onJoystick = luabind::object();
+    _cb_onParamChanged = luabind::object();
 
     if (_cb_shortcuts) {
       for (auto it = _cb_shortcuts->begin(); it != _cb_shortcuts->end(); ++it) {
@@ -1079,6 +1085,8 @@ Viewer::~Viewer() {
   _cb_postSim = luabind::object();
   _cb_preStop = luabind::object();
   _cb_onCommand = luabind::object();
+  _cb_onJoystick = luabind::object();
+  _cb_onParamChanged = luabind::object();
 
   // Clear shortcuts BEFORE closing Lua state.
   // The shared_ptr<luabind::object> destructors call luaL_unref.
@@ -1758,6 +1766,12 @@ void Viewer::setCBOnJoystick(const luabind::object &fn) {
   }
 }
 
+void Viewer::setCBOnParamChanged(const luabind::object &fn) {
+  if (luabind::type(fn) == LUA_TFUNCTION) {
+    _cb_onParamChanged = fn;
+  }
+}
+
 void Viewer::setCBCycleObject(const luabind::object &fn) {
   if (luabind::type(fn) == LUA_TFUNCTION) {
     _cb_cycleObject = fn;
@@ -1792,7 +1806,46 @@ void Viewer::addParam(const QString &name, const QVariant &value) {
     //lua_settable(ls, LUA_GLOBALSINDEX);// Lua 5.1
 	lua_setglobal(ls, name.toUtf8().constData()); // Lua 5.1 and 5.2
   }
+
+  if (_cb_onParamChanged) {
+    try {
+      luabind::call_function<void>(_cb_onParamChanged, _frameNum, name, value);
+    } catch (const std::exception &e) {
+      showLuaException(e, "onParamChanged()");
+    }
+  }
+
   emit paramsChanged();
+}
+
+void Viewer::addParam(const QString &name, const btScalar &value, const btScalar &min, const btScalar &max) {
+  _params[name] = QVariant(value);
+  ParamInfo info;
+  info.value = QVariant(value);
+  info.min = min;
+  info.max = max;
+  info.hasRange = true;
+  _paramInfo[name] = info;
+  if (L) {
+    lua_State *ls = L;
+    lua_pushstring(ls, name.toUtf8().constData());
+    lua_pushinteger(ls, value);
+    lua_setglobal(ls, name.toUtf8().constData());
+  }
+
+  if (_cb_onParamChanged) {
+    try {
+      luabind::call_function<void>(_cb_onParamChanged, _frameNum, name, value);
+    } catch (const std::exception &e) {
+      showLuaException(e, "onParamChanged()");
+    }
+  }
+
+  emit paramsChanged();
+}
+
+ParamInfo Viewer::getParamInfo(const QString &name) const {
+  return _paramInfo.value(name, ParamInfo());
 }
 
 QVariant Viewer::getParam(const QString &name) const {

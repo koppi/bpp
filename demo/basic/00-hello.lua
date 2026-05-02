@@ -23,6 +23,7 @@ v.fixedTimeStep = 1/60
 v:addParam("sphereColor", "red")
 v:addParam("cubeMass", 1.0)
 v:addParam("enableGravity", true)
+v:addParam("cam.fov", 0.02, 0.0, 1.0)
 
 --
 -- SCENE SETUP
@@ -114,9 +115,17 @@ end)
 
 -- onCommand: Called when a command is entered in the GUI
 v:onCommand(function(N, cmd)
-  print("onCommand("..tostring(N).."): '"..cmd)
+  print("onCommand("..tostring(N).."): '"..cmd.."'")
   local f = assert(loadstring(cmd))
   f(v)
+end)
+
+-- onParamChanged: Called when a parameter value is changed in the GUI
+v:onParamChanged(function(N, name, value)
+  print("onParamChanged("..tostring(N).."): "..name.." = "..value)
+  if (name == "cam.fov") then
+    v.cam:setFieldOfView(tonumber(value))
+  end
 end)
 
 -- EOF

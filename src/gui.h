@@ -26,7 +26,8 @@ public:
 private slots:
   void command(const QString &cmd);
   void updateFrameLabel(int frameNum);
-  void onParamsTableCellChanged(int row, int column);
+   void onParamsTableCellChanged(int row, int column);
+   void onParamSliderChanged(int value);
 
   void moveEvent(QMoveEvent *) override;
   void resizeEvent(QResizeEvent *) override;

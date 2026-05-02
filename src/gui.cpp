@@ -728,9 +728,21 @@ void Gui::updateParamsTable() {
     nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
     paramsTable->setItem(row, 0, nameItem);
 
-    QTableWidgetItem *valueItem = new QTableWidgetItem(it.value().toString());
-    valueItem->setData(Qt::UserRole, it.value());
-    paramsTable->setItem(row, 1, valueItem);
+    ParamInfo info = ui.viewer->getParamInfo(it.key());
+    if (info.hasRange && it.value().type() == QVariant::Int) {
+      QSlider *slider = new QSlider(Qt::Horizontal);
+      slider->setObjectName(it.key());
+      slider->setMinimum(info.min);
+      slider->setMaximum(info.max);
+      slider->setValue(it.value().toInt());
+      slider->setProperty("paramName", it.key());
+      connect(slider, &QSlider::valueChanged, this, &Gui::onParamSliderChanged);
+      paramsTable->setCellWidget(row, 1, slider);
+    } else {
+      QTableWidgetItem *valueItem = new QTableWidgetItem(it.value().toString());
+      valueItem->setData(Qt::UserRole, it.value());
+      paramsTable->setItem(row, 1, valueItem);
+    }
 
     row++;
   }
@@ -763,4 +775,12 @@ void Gui::onParamsTableCellChanged(int row, int column) {
 
   qDebug() << "GUI cellChanged: " << name << " = " << newValue;
   ui.viewer->addParam(name, newValue);
+}
+
+void Gui::onParamSliderChanged(int value) {
+  QSlider *slider = qobject_cast<QSlider *>(sender());
+  if (!slider || !ui.viewer) return;
+
+  QString name = slider->property("paramName").toString();
+  ui.viewer->addParam(name, QVariant(value));
 }
