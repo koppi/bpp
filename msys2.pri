@@ -13,12 +13,12 @@ build_with_msys2 {
   #DEFINES += WIN32_LINK_AUTOIMPORT
 
   CONFIG += link_pkgconfig
-  PKGCONFIG += assimp bullet glew sdl2 lua glut
+  PKGCONFIG += assimp bullet glew sdl2 lua5.1
 
   WIN32_DIR_LUABIND   = $$HOME/luabind
   WIN32_DIR_QGLVIEWER = $$HOME/libQGLViewer
 
-  LIBS += -lSDL2main -lglut32
+  LIBS += -lSDL2main
 }
 
 contains(DEFINES, WIN32_LINK_AUTOIMPORT) {
@@ -66,7 +66,7 @@ contains(DEFINES, WIN32_LINK_LUABIND) {
 
   # include
 
-  LIBS += -L$$PATH_LUABIND/build/src -lluabind
+  LIBS += -L$$PATH_LUABIND/build/src -lluabind09
 
 #  CONFIG( debug, debug|release ) {
 ##XXX    LIBS += -lluabind
