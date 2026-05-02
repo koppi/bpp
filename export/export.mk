@@ -7,7 +7,7 @@ EC2?=ec2
 
 # Custom POV-Ray options
 
-POV?=
+POV?=+W1280 +H720 -J
 
 # Custom POV-Ray include directives
 
@@ -78,7 +78,7 @@ ec2-down:
 	scp ${EC2}:${SCENE}/${SCENE}.mkv .
 
 slurm:
-	sbatch -J ${SCENE} -a 0-`ls -1 *.inc|wc -l` ../povray.sbatch ${SCENE} `ls -1 *.inc | wc -l`
+	sbatch -J ${SCENE} -a 0-`ls -1 *.inc|wc -l` --export=POVOPT='${POVOPT}' ../povray.sbatch ${SCENE} `ls -1 *.inc | wc -l`
 
 #youtube-up: mkv
 #	youtube-upload -t "Bullet Physics Playground – ${SCENE}" --privacy=unlisted --category "Science & Technology" ${SCENE}.mkv
