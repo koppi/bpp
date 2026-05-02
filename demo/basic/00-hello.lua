@@ -23,7 +23,7 @@ v.fixedTimeStep = 1/60
 v:addParam("sphereColor", "red")
 v:addParam("cubeMass", 1.0)
 v:addParam("enableGravity", true)
-v:addParam("cam.fov", 0.02, 0.0, 1.0)
+v:addParam("cam.fov", 0.03, 0.01, 0.1)
 
 --
 -- SCENE SETUP
@@ -64,7 +64,7 @@ v:preStart(function(N)
   print("preStart("..tostring(N)..")")
   
   -- Set a pseudo orthogonal camera view
-  v.cam:setFieldOfView(.02)
+  v.cam:setFieldOfView(0.03)
 
   v.cam:setUpVector(btVector3(0.259637, 0.929523, -0.261871), true)
   v.cam.up   = btVector3(0.259637, 0.929523, -0.261871)

@@ -729,12 +729,12 @@ void Gui::updateParamsTable() {
     paramsTable->setItem(row, 0, nameItem);
 
     ParamInfo info = ui.viewer->getParamInfo(it.key());
-    if (info.hasRange && it.value().type() == QVariant::Int) {
+    if (info.hasRange) {
       QSlider *slider = new QSlider(Qt::Horizontal);
       slider->setObjectName(it.key());
-      slider->setMinimum(info.min);
-      slider->setMaximum(info.max);
-      slider->setValue(it.value().toInt());
+      slider->setMinimum(info.min * 100);
+      slider->setMaximum(info.max * 100);
+      slider->setValue(it.value().toDouble() * 100);
       slider->setProperty("paramName", it.key());
       connect(slider, &QSlider::valueChanged, this, &Gui::onParamSliderChanged);
       paramsTable->setCellWidget(row, 1, slider);
@@ -782,5 +782,5 @@ void Gui::onParamSliderChanged(int value) {
   if (!slider || !ui.viewer) return;
 
   QString name = slider->property("paramName").toString();
-  ui.viewer->addParam(name, QVariant(value));
+  ui.viewer->addParam(name, QVariant(value/100.0));
 }
