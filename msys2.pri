@@ -10,10 +10,10 @@ build_with_msys2 {
   DEFINES += WIN32_LINK_LUABIND
   DEFINES += WIN32_LINK_BOOST
 
-  #DEFINES += WIN32_LINK_AUTOIMPORT
+  DEFINES += WIN32_LINK_AUTOIMPORT
 
   CONFIG += link_pkgconfig
-  PKGCONFIG += assimp bullet glew sdl2 lua5.1
+  PKGCONFIG += assimp bullet glew freeglut sdl2 lua5.1
 
   WIN32_DIR_LUABIND   = $$HOME/luabind
   WIN32_DIR_QGLVIEWER = $$HOME/libQGLViewer

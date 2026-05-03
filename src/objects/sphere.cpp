@@ -112,5 +112,5 @@ void Sphere::renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) {
 
   glScalef(radius, radius, radius);
   glColor3ub(color[0], color[1], color[2]);
-  glutSolidSphere(1.0f, 32, 16);
+  solidSphere(1.0f, 32, 16);
 }

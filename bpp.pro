@@ -12,6 +12,7 @@ QT      *= opengl xml gui core
 DEFINES += HAS_LIB_ASSIMP
 DEFINES += BOOST_BIND_GLOBAL_PLACEHOLDERS
 DEFINES += LUABIND_USE_CXX11
+DEFINES += GLUT_DISABLE_ATEXIT_HACK
 
 # QMAKE_CXXFLAGS += -Wno-attributes -Wno-deprecated -Wno-deprecated-copy -Wno-deprecated-declarations -Wno-reorder -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-local-typedefs -Wno-terminate
 QMAKE_CXXFLAGS += -Wno-deprecated-copy

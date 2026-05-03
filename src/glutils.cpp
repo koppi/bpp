@@ -14,7 +14,7 @@
 #include <GL/gl.h>
 #endif
 
-void glutSolidCube(double sz)
+void solidCube(double sz)
 {
 	int i, j, idx, gray, flip, rotx;
 	float vpos[3], norm[3];
@@ -40,7 +40,7 @@ void glutSolidCube(double sz)
 	glEnd();
 }
 
-void glutSolidSphere(double radius, int slices, int stacks) {
+void solidSphere(double radius, int slices, int stacks) {
   for(int i = 0; i < stacks; i++) {
     glBegin(GL_QUAD_STRIP);
     for(int j = 0; j <= slices; j++) {
@@ -62,7 +62,7 @@ void glutSolidSphere(double radius, int slices, int stacks) {
   }
 }
 
-void glutSolidCylinder(double radius, double height, int slices, int stacks) {
+void solidCylinder(double radius, double height, int slices, int stacks) {
     for (int i = 0; i < stacks; i++) {
         float z0 = (float)height * i / stacks;
         float z1 = (float)height * (i + 1) / stacks;

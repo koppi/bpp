@@ -120,5 +120,5 @@ void Cube::renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) {
 
   glScalef(lengths[0], lengths[1], lengths[2]);
   glColor3ubv(color);
-  glutSolidCube(1.0f);
+  solidCube(1.0f);
 }

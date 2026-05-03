@@ -118,5 +118,5 @@ void Cylinder::renderInLocalFrame(btVector3 &minaabb, btVector3 &maxaabb) {
   glTranslated(0, 0, -lengths[2] * .5);
   glScalef(lengths[0], lengths[1], lengths[2]);
   glColor3ubv(color);
-  glutSolidCylinder(1, 1, 16, 16);
+  solidCylinder(1, 1, 16, 16);
 }
