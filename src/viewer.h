@@ -247,9 +247,6 @@ protected:
 
   void savePOV(bool force = false);
 
-  void loadPrefs();
-  void savePrefs();
-
 public:
   //  QList<Object*> l[13];
 
