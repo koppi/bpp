@@ -17,7 +17,7 @@ function increment_version() {
 NEW_VERSION=$(increment_version $CURRENT_VERSION $TYPE)
 
 sed -i -- "s/PROJECT_NUMBER = .*/PROJECT_NUMBER = \"$NEW_VERSION\"/" Doxyfile
-sed -i -- "s/\!define VERSION.*/\!define VERSION $NEW_VERSION/" bpp.nsi
+sed -i -- "s/\!define VERSION.*/\!define VERSION \"$NEW_VERSION\"/" bpp.nsi
 sed -i -- "s/#define APP_VERSION QString(\".*\")/\#define APP_VERSION QString(\"$NEW_VERSION\")/" src/main.cpp
 
 dch -v $NEW_VERSION && git commit -p -m "Bump version $NEW_VERSION" && git tag v${NEW_VERSION}

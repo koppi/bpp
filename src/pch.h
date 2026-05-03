@@ -1,34 +1,82 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include <QApplication>
-#include <QMainWindow>
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-#include <QToolBar>
-#include <QStatusBar>
-#include <QDockWidget>
+// Qt Core
+#include <Qt>
+#include <QByteArray>
+#include <QCoreApplication>
+#include <QCryptographicHash>
+#include <QDebug>
+#include <QDir>
 #include <QFile>
-#include <QFileDialog>
-#include <QTextStream>
+#include <QFileInfo>
+#include <QHash>
+#include <QKeyEvent>
+#include <QList>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QObject>
+#include <QProcess>
+#include <QProcessEnvironment>
+#include <QRandomGenerator>
+#include <QRegExp>
+#include <QSettings>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
+#include <QTemporaryFile>
+#include <QTextStream>
 #include <QTimer>
-#include <QSettings>
-#include <QKeySequence>
-#include <QMouseEvent>
-#include <QWheelEvent>
+#include <QVariant>
+#include <QVarLengthArray>
+#include <QVector>
+
+// Qt GUI
+#include <QtGui>
 #include <QCloseEvent>
-#include <QDebug>
-#include <QLabel>
-#include <QProcess>
-#include <QMessageBox>
+#include <QColor>
+#include <QFont>
+#include <QMouseEvent>
+#include <QPalette>
+#include <QWheelEvent>
+
+// Qt Widgets
+#include <QtWidgets>
+#include <QAction>
+#include <QApplication>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QDialog>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QFontDialog>
 #include <QInputDialog>
+#include <QKeySequence>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QStatusBar>
+#include <QSyntaxHighlighter>
+#include <QToolBar>
+#include <QWidget>
+
+// Qt OpenGL
+#include <QGLViewer/camera.h>
+#include <QGLViewer/manipulatedFrame.h>
+#include <QGLViewer/qglviewer.h>
+
+// Gradients
+#include <QConicalGradient>
 #include <QLinearGradient>
 #include <QRadialGradient>
-#include <QConicalGradient>
 
+// STL
 #include <iostream>
 #include <cmath>
 #include <memory>

@@ -69,9 +69,9 @@ void JoystickHandler::initialize(int id)
    }
 }
 
-void JoystickHandler::setInterface(JoystickInterface* interface)
+void JoystickHandler::setInterface(JoystickInterface* iface)
 {
-   mJoystickInterface = interface;
+   mJoystickInterface = iface;
 }
 
 void JoystickHandler::setUpdateInterval(int interval)

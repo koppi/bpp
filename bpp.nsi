@@ -3,22 +3,22 @@
 !include "MUI2.nsh"
 
 Name "Bullet Physics Playground"
-SetCompressor lzma
+SetCompressor /SOLID lzma
 
 # Defines
-!define REGKEY "SOFTWARE\$(^Name)" ;
-!define VERSION 0.3.32
+!define REGKEY "SOFTWARE\$(^Name)"
+!define VERSION "0.3.32"
 !define COMPANY "Jakob Flierl"
-!define URL https://github.com/bullet-physics-playground
+!define URL "https://github.com/bullet-physics-playground"
 
-!define DLL C:\msys64\mingw64\bin
+!define DLL "C:\msys64\mingw64\bin"
 
 Caption "Bullet Physics Playground ${VERSION} Setup" 
 
 BrandingText " � Jakob Flierl "
 
 ; The file to write
-OutFile "bpp-${VERSION}-x64.exe"
+OutFile "bpp-${VERSION}-win-x64.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\bpp
@@ -50,22 +50,22 @@ RequestExecutionLevel admin
 
 ; !include "FileAssociation.nsh"
 
-Section "BPP (required)" ;
-  
+Section "BPP (required)"
+
   SetShellVarContext all
-  SetOverwrite on
 
   SectionIn RO
 
   SetOutPath $INSTDIR
   File "release\bpp.exe"
-  File "QGLViewer2.dll"
+  File "release\QGLViewer3.dll"
   File "${DLL}\libdouble-conversion.dll"
   File "${DLL}\libgcc_s_seh-1.dll"
-  File "${DLL}\libicuuc77.dll"
-  File "${DLL}\libicuin77.dll"
+  File "${DLL}\libicuuc7?.dll"
+  File "${DLL}\libicuin7?.dll"
+  File "${DLL}\libicudt7?.dll"
   File "${DLL}\libpcre2*.dll"
-  File "${DLL}\libstdc++-6.dll"
+  File "${DLL}\libstdc++-?.dll"
   File "${DLL}\Qt5Core.dll"
   File "${DLL}\Qt5OpenGL.dll"
   File "${DLL}\Qt5Gui.dll"
@@ -86,6 +86,24 @@ Section "BPP (required)" ;
   File "${DLL}\libmd4c.dll"
   File "${DLL}\libminizip-*.dll"
   File "${DLL}\libpng16-*.dll"
+  File "${DLL}\zlib1.dll"
+  File "${DLL}\libfreetype-6.dll"
+  File "${DLL}\libglib-2.0-?.dll"
+  File "${DLL}\libgraphite?.dll"
+  File "${DLL}\libintl-?.dll"
+  File "${DLL}\libbrotlidec.dll"
+  File "${DLL}\libbrotlicommon.dll"
+
+  File /r "release\imageformats"
+  File /r "release\iconengines"
+  File /r "release\platforms"
+  File /r "release\styles"
+  File /r "release\translations"
+
+  File /r "demo"
+  File /r "includes"
+
+  SetOutPath $INSTDIR
 
   WriteRegStr HKLM SOFTWARE\bpp "Install_Dir" "$INSTDIR"
   
@@ -100,7 +118,6 @@ SectionEnd
 Section "Start Menu Shortcuts"
 
   SetShellVarContext all
-  SetOverwrite on
 
   CreateDirectory "$SMPROGRAMS\bpp"
   CreateShortCut "$SMPROGRAMS\bpp\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
@@ -113,23 +130,50 @@ SectionEnd
 ; Uninstaller
 
 Section "Uninstall"
-  
-  SetShellVarContext all
-  SetOverwrite on
 
-  ; Remove registry keys
+  SetShellVarContext all
+
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bpp"
   DeleteRegKey HKLM SOFTWARE\bpp
 
-  ; Remove files and uninstaller
-  Delete $INSTDIR\bpp.exe
-  Delete $INSTDIR\uninstall.exe
+  Delete "$INSTDIR\bpp.exe"
+  Delete "$INSTDIR\QGLViewer2.dll"
+  Delete "$INSTDIR\libdouble-conversion.dll"
+  Delete "$INSTDIR\libgcc_s_seh-1.dll"
+  Delete "$INSTDIR\libicuuc77.dll"
+  Delete "$INSTDIR\libicuin77.dll"
+  Delete "$INSTDIR\libpcre2*.dll"
+  Delete "$INSTDIR\libstdc++-6.dll"
+  Delete "$INSTDIR\Qt5Core.dll"
+  Delete "$INSTDIR\Qt5OpenGL.dll"
+  Delete "$INSTDIR\Qt5Gui.dll"
+  Delete "$INSTDIR\Qt5Network.dll"
+  Delete "$INSTDIR\Qt5Svg.dll"
+  Delete "$INSTDIR\Qt5Widgets.dll"
+  Delete "$INSTDIR\Qt5Xml.dll"
+  Delete "$INSTDIR\lua51.dll"
+  Delete "$INSTDIR\libassimp-*.dll"
+  Delete "$INSTDIR\libbz2-*.dll"
+  Delete "$INSTDIR\libiconv-*.dll"
+  Delete "$INSTDIR\libBullet*.dll"
+  Delete "$INSTDIR\libLinearMath.dll"
+  Delete "$INSTDIR\libwinpthread-1.dll"
+  Delete "$INSTDIR\SDL2.dll"
+  Delete "$INSTDIR\libzstd.dll"
+  Delete "$INSTDIR\libharfbuzz-*.dll"
+  Delete "$INSTDIR\libmd4c.dll"
+  Delete "$INSTDIR\libminizip-*.dll"
+  Delete "$INSTDIR\libpng16-*.dll"
+  Delete "$INSTDIR\uninstall.exe"
 
-  ; Remove shortcuts, if any
+  RMDir /r "$INSTDIR\imageformats"
+  RMDir /r "$INSTDIR\iconengines"
+  RMDir /r "$INSTDIR\platforms"
+  RMDir /r "$INSTDIR\styles"
+  RMDir /r "$INSTDIR\translations"
+
   Delete "$SMPROGRAMS\bpp\*.*"
-
-  ; Remove directories used
   RMDir "$SMPROGRAMS\bpp"
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
 
 SectionEnd
