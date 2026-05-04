@@ -581,8 +581,6 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
 
   _cb_shortcuts = new QHash<QString, std::shared_ptr<luabind::object>>();
 
-  loadPrefs();
-
   setCamera(new Cam(this));
 
   // POV-Ray properties
@@ -612,8 +610,6 @@ void Viewer::onJoystickData(const JoystickInfo &ji) {
 }
 
 void Viewer::close() {
-  // qDebug() << "Viewer::close()";
-  savePrefs();
   QGLViewer::close();
 }
 
@@ -1060,15 +1056,6 @@ void Viewer::resetCamView() {
   camera()->setOrientation(_initialCameraOrientation);
   camera()->setHorizontalFieldOfView(_initialCameraHorizontalFieldOfView);
   // XXX updateGLViewer();
-}
-
-void Viewer::loadPrefs() {
-  // QGLViewer::restoreStateFromFile();
-}
-
-void Viewer::savePrefs() {
-  // qDebug() << "Viewer::savePrefs()";
-  QGLViewer::saveStateToFile();
 }
 
 Viewer::~Viewer() {
