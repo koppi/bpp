@@ -31,7 +31,7 @@ v:add(floor)
 
 local objects = {}
 
-for i = 1, 7 do
+for i = 1, 70 do
   local s = Sphere(1 + math.random() * 2, 1)
   local range = 20
   s.pos = btVector3(
@@ -64,7 +64,7 @@ for i = 1, 7 do
   table.insert(objects, s)
 end
 
-for i = 1, 7 do
+for i = 1, 70 do
   local size = 1 + math.random() * 2.5
   local c = Cube(size, size, size, 1)
   local range = 18
@@ -113,7 +113,7 @@ v.cam.look = btVector3(cam_path_points[2].x, cam_path_points[2].y, cam_path_poin
 
 local cam_spline = spline.CatmullRom(cam_path_points)
 
-local anim_duration = 3000
+local anim_duration = 300
 local anim_frame = 0
 local animating = true
 local current_target_idx = 1
