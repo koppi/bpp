@@ -7,7 +7,7 @@ EC2?=ec2
 
 # Custom POV-Ray options
 
-POV?=+W1280 +H720 -J
+POV?=+W1280 +H720 -J +FN10
 
 # Custom POV-Ray include directives
 
