@@ -3,6 +3,10 @@
 #SBATCH -e %a.err
 #SBATCH -o %a.out
 
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+
 SCENE=${1}
 FRAMES=${2}
 
