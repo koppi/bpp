@@ -12,7 +12,7 @@ if [ -z "${SCENE}" ]; then
 fi
 
 WORKDIR=`pwd`
-FRAME=$SLURM_ARRAY_TASK_ID
+FRAME=$(($SLURM_ARRAY_TASK_ID + 1))
 
 mkdir -p $WORKDIR
 cd $WORKDIR
