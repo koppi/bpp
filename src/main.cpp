@@ -272,7 +272,7 @@ int main(int argc, char **argv) {
     v->parse(txt);
     v->startSim();
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 1; i <= n; ++i) {
       v->animate();
     }
 
