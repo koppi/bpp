@@ -64,6 +64,9 @@ final: 720p
 mkv:
 	ffmpeg -y -err_detect ignore_err -pattern_type glob -i '*.png' -c:v libx264 -preset veryslow -qp 0 -r 25 -pix_fmt yuv444p '${SCENE}.mkv'
 
+mkv-8k:
+	ffmpeg -y -threads 1 -filter_threads 1 -filter_complex_threads 1 -err_detect ignore_err -i %05d.png -c:v libx265 -r 25 -crf 18 -preset slow -pix_fmt yuv420p10le -vf "colorspace=bt709:iall=bt709:range=tv:fast=1" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -movflags +faststart '${SCENE}.mkv'
+
 mkv-loop: mkv
 	for i in {1..${MKV_LOOP}}; do printf "file '%s'\n" ${SCENE}.mkv >> loop.txt; done
 	ffmpeg -y -f concat -i loop.txt -c copy ${SCENE}-loop.mkv
@@ -90,7 +93,7 @@ distclean: clean
 	rm -f ${SCENE}.pov ${SCENE}.ini ?????.inc
 
 clean:
-	rm -f *.png *.mkv *.pov-state *.err *.out *.log
+	rm -f *.png *.mp4 *.mkv *.pov-state *.err *.out *.log
 
 dist: clean
 	cd .. && find ${SCENE} -print0 | sort -z | tar -cvJf ${SCENE}.tar.xz --no-recursion --null -T -
