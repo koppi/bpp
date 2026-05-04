@@ -576,8 +576,8 @@ Viewer::Viewer(QWidget *parent, QSettings *settings, bool savePOV)
   btCollisionDispatcher *dispatcher_ptr = dispatcher;
   btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher_ptr);
 
-  _frameNum = 0;
-  _firstFrame = 0;
+  _frameNum = 1;
+  _firstFrame = 1;
 
   _cb_shortcuts = new QHash<QString, std::shared_ptr<luabind::object>>();
 
@@ -915,8 +915,8 @@ emit scriptStarts();
     lua_error = tr("ok");
   }
 
-  _frameNum = 0; // reset frames counter
-  _firstFrame = 0;
+  _frameNum = 1; // reset frames counter
+  _firstFrame = 1;
 
   if (animStarted) {
     startAnimation();
