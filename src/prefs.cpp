@@ -127,19 +127,19 @@ void Prefs::setupPages() {
 
 #if defined (Q_OS_WIN)
   defaultPovrayExe = QString("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe");
-  defaultIncludes  = QString("+L%1 +L%2\\includes").arg(cache, pwd);
+  defaultIncludes  = QString("+L'%1' +L'%2/includes'").arg(cache, pwd);
 #elif defined (Q_OS_LINUX)
   defaultPovrayExe = QString("/usr/bin/povray");
-  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
+  defaultIncludes  = QString("+L'%1' +L'%2/includes'").arg(cache, pwd);
 #else
   defaultPovrayExe = QString("/usr/local/bin/povray");
-  defaultIncludes  = QString("+L%1 +L%2/includes").arg(cache, pwd);
+  defaultIncludes  = QString("+L'%1' +L'%2/includes'").arg(cache, pwd);
 #endif
 
   QString systemPovExe = QStandardPaths::findExecutable(defaultPovrayExe);
   if (systemPovExe.isEmpty()) systemPovExe = "POV-Ray not found!";
 
-  QString defaultPreview = QString("%1 -c +d -A +p +Q4 +GA").arg(defaultIncludes);
+  QString defaultPreview = QString("%1 -c +d -A +p +Q11 +GA -CC").arg(defaultIncludes);
 
   QString povray = _settings->value("povray/executable", systemPovExe).toString();
   QString opts =   _settings->value("povray/preview", defaultPreview).toString();
