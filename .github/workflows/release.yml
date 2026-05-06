@@ -68,7 +68,7 @@ jobs:
           WORKSPACE_PARENT="$(dirname "$GITHUB_WORKSPACE")"
           REPO_DIR="$(basename "$GITHUB_WORKSPACE")"
 
-            docker run --platform "$PLATFORM" --rm \
+          docker run --platform "$PLATFORM" --rm \
             -v "${WORKSPACE_PARENT}:/workspace" \
             -w "/workspace/${REPO_DIR}" \
             -e VERSION="${VERSION}" \
