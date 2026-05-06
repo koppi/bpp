@@ -79,7 +79,7 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -qq
             apt-get install -y -qq build-essential devscripts debhelper dh-make equivs
-            mk-build-deps -i -s sudo -t "apt --yes --no-install-recommends"
+            mk-build-deps -i -t "apt --yes --no-install-recommends"
             sed -i "1s/.*/bpp (${VERSION}) ${CODENAME}; urgency=medium/" debian/changelog
             dpkg-buildpackage -b -uc -us -d
             mkdir -p "/workspace/${REPO_DIR}/deb-output"
