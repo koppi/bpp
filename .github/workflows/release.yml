@@ -78,7 +78,7 @@ jobs:
             ${{ matrix.distro }}:"${CODENAME}" bash -ec '
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -qq
-            apt-get install -y -qq build-essential devscripts debhelper dh-make
+            apt-get install -y -qq build-essential devscripts debhelper dh-make equivs
             mk-build-deps -i -s sudo -t "apt --yes --no-install-recommends"
             sed -i "1s/.*/bpp (${VERSION}) ${CODENAME}; urgency=medium/" debian/changelog
             dpkg-buildpackage -b -uc -us -d
